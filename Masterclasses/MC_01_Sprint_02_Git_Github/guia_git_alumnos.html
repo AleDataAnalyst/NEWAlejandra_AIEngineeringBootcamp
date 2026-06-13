@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Git & GitHub — Guía completa · The Bridge AIE</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --dark:#0d1117;--dark2:#161b22;
+  --surface:#fff;--surface2:#f6f8fa;--border:#d0d7de;
+  --text:#1f2328;--muted:#57606a;
+  --bm:#0969da;--bf:#1a7f37;--bd:#8250df;--bh:#cf222e;--br:#9a6700;
+  --nav-h:52px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);background:var(--surface);line-height:1.6;font-size:15px;}
+
+/* NAV */
+.topnav{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--nav-h);background:var(--dark);border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;padding:0 20px;gap:0;}
+.nav-brand{font-weight:700;color:#fff;font-size:15px;margin-right:20px;white-space:nowrap;display:flex;align-items:center;gap:8px;}
+.nav-brand-dot{width:8px;height:8px;border-radius:50%;background:var(--bm);}
+.nav-links{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;flex:1;}
+.nav-links::-webkit-scrollbar{display:none;}
+.nl{color:rgba(255,255,255,.55);font-size:13px;text-decoration:none;padding:5px 9px;border-radius:6px;white-space:nowrap;transition:all .15s;}
+.nl:hover{color:#fff;background:rgba(255,255,255,.1);}
+
+/* LAYOUT */
+.layout{display:flex;padding-top:var(--nav-h);}
+.sidebar{width:228px;flex-shrink:0;position:sticky;top:var(--nav-h);height:calc(100vh - var(--nav-h));overflow-y:auto;padding:20px 14px;border-right:1px solid var(--border);scrollbar-width:thin;}
+.sidebar::-webkit-scrollbar{width:4px;}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.toc-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:4px 8px;margin:12px 0 4px;}
+.toc-label:first-child{margin-top:0;}
+.tl{display:block;padding:5px 8px;font-size:13px;color:var(--muted);text-decoration:none;border-radius:6px;margin-bottom:1px;transition:all .15s;}
+.tl:hover{color:var(--text);background:var(--surface2);}
+.tl.active{color:var(--bm);background:#ddf4ff;font-weight:500;}
+
+/* CONTENT */
+.content{flex:1;max-width:840px;padding:40px 48px 80px;}
+.sect{margin-bottom:64px;scroll-margin-top:68px;}
+.sect-tag{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.sect h2{font-size:26px;font-weight:700;padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:24px;}
+.sect h3{font-size:18px;font-weight:600;margin:28px 0 10px;}
+.sect h4{font-size:15px;font-weight:600;margin:20px 0 7px;}
+.sect p{margin-bottom:12px;line-height:1.7;}
+.sect ul,.sect ol{padding-left:20px;margin-bottom:12px;}
+.sect li{margin-bottom:5px;line-height:1.6;}
+
+/* CODE BLOCKS */
+.code-wrap{position:relative;margin:10px 0 16px;}
+pre.code{background:var(--dark);color:#e6edf3;border-radius:10px;padding:16px 48px 16px 16px;font-family:'JetBrains Mono','Courier New',monospace;font-size:13px;line-height:1.7;overflow-x:auto;border:1px solid rgba(255,255,255,.08);}
+.code-copy{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.1);color:#aaa;border:none;border-radius:5px;padding:4px 8px;font-size:11px;cursor:pointer;font-family:inherit;transition:all .15s;}
+.code-copy:hover{background:rgba(255,255,255,.2);color:#fff;}
+.cm{color:#8b949e;}
+.ck{color:#79c0ff;}
+.cv{color:#ffa657;}
+.cs{color:#a5d6ff;}
+
+/* INLINE CODE */
+code{font-family:'JetBrains Mono','Courier New',monospace;font-size:13px;background:var(--surface2);padding:2px 6px;border-radius:4px;border:1px solid var(--border);}
+
+/* CALLOUTS */
+.note{padding:12px 16px;border-radius:8px;margin:14px 0;font-size:14px;line-height:1.6;}
+.note strong{display:block;margin-bottom:3px;font-size:13px;font-weight:700;letter-spacing:.03em;}
+.note-info{background:#ddf4ff;border-left:3px solid var(--bm);}
+.note-tip{background:#dafbe1;border-left:3px solid var(--bf);}
+.note-warn{background:#fff8c5;border-left:3px solid var(--br);}
+.note-danger{background:#ffebe9;border-left:3px solid var(--bh);}
+
+/* EXERCISES */
+.exercise{background:var(--surface2);border:1px solid var(--border);border-left:4px solid var(--bm);border-radius:8px;padding:20px;margin:24px 0;}
+.ex-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bm);margin-bottom:8px;}
+.exercise h4{font-size:16px;font-weight:600;margin-bottom:12px;}
+.exercise ol{padding-left:18px;}
+.exercise li{margin-bottom:6px;font-size:14px;}
+.exercise .bonus{color:var(--br);font-weight:600;}
+
+/* BRANCH BADGES */
+.bb{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-family:'JetBrains Mono',monospace;padding:2px 8px;border-radius:20px;font-weight:500;vertical-align:middle;}
+.bb::before{content:'';width:7px;height:7px;border-radius:50%;}
+.bb-main{background:#ddf4ff;color:var(--bm);border:1px solid #b6e3ff;}.bb-main::before{background:var(--bm);}
+.bb-feature{background:#dafbe1;color:var(--bf);border:1px solid #b6f0c4;}.bb-feature::before{background:var(--bf);}
+.bb-develop{background:#fbefff;color:var(--bd);border:1px solid #e2c5ff;}.bb-develop::before{background:var(--bd);}
+.bb-hotfix{background:#ffebe9;color:var(--bh);border:1px solid #ffc1ba;}.bb-hotfix::before{background:var(--bh);}
+.bb-release{background:#fff8c5;color:var(--br);border:1px solid #f1e05a;}.bb-release::before{background:var(--br);}
+
+/* BRANCH DIAGRAMS */
+.branch-diagram{background:var(--dark);border-radius:10px;padding:20px;margin:16px 0;overflow-x:auto;font-family:'JetBrains Mono','Courier New',monospace;font-size:13px;line-height:2;border:1px solid rgba(255,255,255,.08);}
+.bm{color:#79c0ff;font-weight:700;}
+.bf{color:#7ee787;font-weight:700;}
+.bd{color:#d2a8ff;font-weight:700;}
+.bh{color:#ffa198;font-weight:700;}
+.br{color:#e3b341;font-weight:700;}
+.bc{color:#e6edf3;}
+
+/* FLOW COMPARISON */
+.flow-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0;}
+.flow-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.flow-card-head{padding:12px 16px;font-weight:600;font-size:14px;}
+.fch-simple{background:#dafbe1;color:#1a5c3a;}
+.fch-full{background:#fbefff;color:#5319d4;}
+.flow-card-body{padding:14px 16px;font-size:13px;color:var(--muted);}
+.flow-card-body ul{padding-left:16px;}
+.flow-card-body li{margin-bottom:5px;}
+.flow-card-body strong{color:var(--text);}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px;}
+th{background:var(--surface2);text-align:left;padding:9px 12px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);}
+td{padding:9px 12px;border-bottom:1px solid var(--surface2);vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+
+/* REF CARD */
+.ref-section{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:20px;margin:16px 0;}
+.ref-section h4{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:12px;}
+.ref-row{display:flex;gap:12px;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;align-items:baseline;}
+.ref-row:last-child{border-bottom:none;}
+.ref-cmd{font-family:'JetBrains Mono',monospace;color:var(--bm);min-width:280px;flex-shrink:0;}
+.ref-desc{color:var(--muted);}
+
+@media(max-width:900px){
+  .sidebar{display:none;}
+  .content{padding:24px 20px 60px;max-width:100%;}
+  .flow-grid{grid-template-columns:1fr;}
+  .ref-row{flex-direction:column;gap:2px;}
+  .ref-cmd{min-width:0;}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-brand"><span class="nav-brand-dot"></span>Git & GitHub</div>
+  <div class="nav-links">
+    <a class="nl" href="#intro">Intro</a>
+    <a class="nl" href="#flujo">Flujo</a>
+    <a class="nl" href="#comandos">Comandos</a>
+    <a class="nl" href="#ramas">Ramas</a>
+    <a class="nl" href="#merge">Merge</a>
+    <a class="nl" href="#remoto">Remoto</a>
+    <a class="nl" href="#github">GitHub</a>
+    <a class="nl" href="#github-flow">GitHub Flow</a>
+    <a class="nl" href="#git-flow">Git Flow</a>
+    <a class="nl" href="#commits">Best practices</a>
+    <a class="nl" href="#ejercicios">Ejercicios</a>
+    <a class="nl" href="#ref">Referencia</a>
+    <a class="nl" href="#enlaces">Recursos</a>
+  </div>
+</nav>
+
+<div class="layout">
+<aside class="sidebar">
+  <div class="toc-label">Fundamentos</div>
+  <a class="tl" href="#intro">¿Qué es Git?</a>
+  <a class="tl" href="#flujo">Flujo de trabajo</a>
+  <a class="tl" href="#comandos">Primeros comandos</a>
+  <a class="tl" href="#historial">Historial y diferencias</a>
+  <div class="toc-label">Ramas y colaboración</div>
+  <a class="tl" href="#ramas">Ramas</a>
+  <a class="tl" href="#merge">Merge</a>
+  <a class="tl" href="#conflictos">Conflictos y stash</a>
+  <a class="tl" href="#remoto">Trabajo remoto</a>
+  <a class="tl" href="#github">GitHub y PRs</a>
+  <div class="toc-label">Flujos de trabajo</div>
+  <a class="tl" href="#github-flow">GitHub Flow — simplificado</a>
+  <a class="tl" href="#git-flow">Git Flow — completo</a>
+  <div class="toc-label">Profesionalización</div>
+  <a class="tl" href="#commits">Buenas prácticas</a>
+  <a class="tl" href="#ejercicios">Ejercicios</a>
+  <a class="tl" href="#ref">Referencia rápida</a>
+  <a class="tl" href="#enlaces">Enlaces de interés</a>
+</aside>
+
+<main class="content">
+
+<!-- ====== INTRO ====== -->
+<section class="sect" id="intro">
+  <div class="sect-tag">01 — fundamentos</div>
+  <h2>¿Qué es Git?</h2>
+  <p>Git es un <strong>sistema de control de versiones distribuido</strong> creado por Linus Torvalds en 2005. Permite registrar el historial completo de cambios de un proyecto, trabajar en paralelo sin pisar el trabajo de otros, y volver a cualquier punto anterior.</p>
+
+  <div class="note note-info"><strong>Git ≠ GitHub</strong>Git es la herramienta que corre en tu máquina. GitHub, GitLab y Bitbucket son plataformas en la nube que alojan repositorios Git y añaden herramientas de colaboración.</div>
+
+  <h3>Repositorio</h3>
+  <p>Un repositorio (o "repo") es la carpeta que Git vigila. Contiene todos los archivos del proyecto y la carpeta oculta <code>.git/</code> con toda la historia. Cada repositorio es independiente y puede vivir solo en tu máquina o sincronizarse con un remoto (GitHub).</p>
+
+  <h3>Las tres zonas de Git</h3>
+  <div class="branch-diagram"><span class="bm">Directorio de trabajo</span> <span class="bc">──→</span> <span class="bf">Staging Area</span> <span class="bc">──→</span> <span class="bd">Repositorio (.git)</span>
+<span class="bc">  (tus archivos)         </span><span class="bc">  git add          </span><span class="bc">  git commit</span></div>
+</section>
+
+<!-- ====== FLUJO ====== -->
+<section class="sect" id="flujo">
+  <div class="sect-tag">02 — flujo fundamental</div>
+  <h2>Flujo de trabajo</h2>
+
+  <h3>Staging area</h3>
+  <p>La <strong>staging area</strong> es un espacio intermedio donde preparas los cambios antes de confirmarlos. Puedes tener 10 archivos modificados y hacer commit solo de 3.</p>
+
+  <div class="code-wrap"><pre class="code"><span class="ck">git add</span> archivo.txt          <span class="cm"># añade un archivo concreto</span>
+<span class="ck">git add</span> .                    <span class="cm"># añade todos los cambios</span>
+<span class="ck">git add</span> <span class="cv">-p</span>                   <span class="cm"># modo interactivo: elige qué partes añadir</span></pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+
+  <h3>Commit</h3>
+  <p>Un <strong>commit</strong> es una instantánea permanente del proyecto. Cada commit tiene un hash SHA-1 único, un mensaje, el autor, la fecha, y un puntero al commit anterior.</p>
+
+  <div class="code-wrap"><pre class="code"><span class="ck">git commit</span> <span class="cv">-m</span> <span class="cs">"feat: add user login form"</span>
+<span class="ck">git commit</span>                   <span class="cm"># abre el editor para un mensaje largo</span>
+<span class="ck">git commit</span> <span class="cv">--amend</span>           <span class="cm"># modifica el último commit (¡solo antes de push!)</span></pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+
+  <h3>HEAD</h3>
+  <p><strong>HEAD</strong> es un puntero que indica dónde estás ahora en la historia del repositorio. Normalmente apunta a la rama activa.</p>
+
+  <div class="branch-diagram"><span class="bc">commit C ← commit B ← commit A</span>
+<span class="bc">                           ↑</span>
+<span class="bc">                      HEAD (</span><span class="bm">main</span><span class="bc">)</span></div>
+</section>
+
+<!-- ====== COMANDOS ====== -->
+<section class="sect" id="comandos">
+  <div class="sect-tag">03 — primeros pasos</div>
+  <h2>Primeros comandos</h2>
+
+  <h3>Configuración inicial</h3>
+  <div class="code-wrap"><pre class="code"><span class="ck">git config</span> <span class="cv">--global</span> user.name <span class="cs">"Tu Nombre"</span>
+<span class="ck">git config</span> <span class="cv">--global</span> user.email <span class="cs">"tu@email.com"</span>
+<span class="ck">git config</span> <span class="cv">--global</span> core.editor <span class="cs">"code --wait"</span>
+<span class="ck">git config</span> <span class="cv">--list</span>                   <span class="cm"># ver toda la configuración</span></pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+
+  <h3>Crear e inspeccionar un repositorio</h3>
+  <div class="code-wrap"><pre class="code"><span class="ck">git init</span>                    <span class="cm"># inicia un repo en la carpeta actual</span>
+<span class="ck">git status</span>                  <span class="cm"># estado: modified, staged, untracked</span>
+<span class="ck">git add</span> .                   <span class="cm"># añade todo al staging</span>
+<span class="ck">git commit</span> <span class="cv">-m</span> <span class="cs">"mensaje"</span>     <span class="cm"># guarda un commit</span></pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+
+  <h3>.gitignore</h3>
+  <p>El archivo <code>.gitignore</code> indica a Git qué archivos <strong>nunca</strong> debe rastrear. Es imprescindible en cualquier proyecto real.</p>
+  <div class="code-wrap"><pre class="code"><span class="cm"># .gitignore</span>
+node_modules/
+.env
+*.log
+dist/
+.DS_Store
+__pycache__/
+*.pyc</pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+  <div class="note note-tip"><strong>Tip</strong>Crea tu <code>.gitignore</code> desde el inicio. <a href="https://gitignore.io" target="_blank">gitignore.io</a> genera uno automáticamente según tu stack.</div>
+</section>
+
+<!-- ====== HISTORIAL ====== -->
+<section class="sect" id="historial">
+  <div class="sect-tag">04 — inspección</div>
+  <h2>Historial y diferencias</h2>
+
+  <h3>Ver el historial</h3>
+  <div class="code-wrap"><pre class="code"><span class="ck">git log</span>                          <span class="cm"># historial completo</span>
+<span class="ck">git log</span> <span class="cv">--oneline</span>                <span class="cm"># una línea por commit</span>
+<span class="ck">git log</span> <span class="cv">--oneline --graph --all</span>  <span class="cm"># árbol visual de todas las ramas</span>
+<span class="ck">git log</span> <span class="cv">--author=</span><span class="cs">"Nombre"</span>        <span class="cm"># filtrar por autor</span>
+<span class="ck">git log</span> <span class="cv">--since=</span><span class="cs">"2024-01-01"</span>    <span class="cm"># filtrar por fecha</span></pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+
+  <h3>Ver diferencias</h3>
+  <div class="code-wrap"><pre class="code"><span class="ck">git diff</span>                         <span class="cm"># cambios sin stage</span>
+<span class="ck">git diff</span> <span class="cv">--staged</span>                <span class="cm"># cambios en staging (listos para commit)</span>
+<span class="ck">git diff</span> main..develop           <span class="cm"># diferencia entre dos ramas</span>
+<span class="ck">git show</span> abc1234                 <span class="cm"># ver un commit concreto por su hash</span></pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+
+  <h3>Deshacer cambios</h3>
+  <div class="code-wrap"><pre class="code"><span class="ck">git restore</span> archivo.txt          <span class="cm"># descarta cambios (¡irreversible!)</span>
+<span class="ck">git restore</span> <span class="cv">--staged</span> archivo.txt <span class="cm"># saca del staging sin borrar cambios</span>
+<span class="ck">git revert</span> abc1234               <span class="cm"># deshace commit creando uno nuevo (seguro)</span>
+<span class="ck">git reset</span> <span class="cv">--soft</span> HEAD~1          <span class="cm"># deshace commit, mantiene cambios en staging</span></pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+  <div class="note note-danger"><strong>Cuidado</strong><code>git reset --hard</code> borra cambios permanentemente. Úsalo solo si sabes exactamente lo que haces.</div>
+</section>
+
+<!-- ====== RAMAS ====== -->
+<section class="sect" id="ramas">
+  <div class="sect-tag">05 — ramas</div>
+  <h2>Ramas (Branches)</h2>
+  <p>Las ramas son <strong>líneas de desarrollo paralelas</strong>. Permiten trabajar en una nueva funcionalidad sin tocar el código estable de <span class="bb bb-main">main</span>.</p>
+
+  <div class="branch-diagram"><span class="bm">main:</span>    <span class="bc">A ── B ── C ──────────── F</span>
+<span class="bc">                    \            /</span>
+<span class="bf">feature:</span>            <span class="bc">C ── D ── E</span></div>
+
+  <h3>Comandos de ramas</h3>
+  <div class="code-wrap"><pre class="code"><span class="ck">git branch</span>                       <span class="cm"># lista ramas locales</span>
+<span class="ck">git branch</span> <span class="cv">-a</span>                    <span class="cm"># lista locales + remotas</span>
+<span class="ck">git branch</span> nueva-rama            <span class="cm"># crea una rama (no cambia a ella)</span>
+
+<span class="ck">git switch</span> nombre-rama           <span class="cm"># cambia a una rama existente</span>
+<span class="ck">git switch</span> <span class="cv">-c</span> nueva-rama         <span class="cm"># crea Y cambia de una vez ✓</span>
+
+<span class="ck">git branch</span> <span class="cv">-d</span> rama               <span class="cm"># elimina (solo si ya fue fusionada)</span>
+<span class="ck">git branch</span> <span class="cv">-D</span> rama               <span class="cm"># fuerza la eliminación</span></pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+
+  <h3>Convención de nombres</h3>
+  <table>
+    <tr><th>Tipo</th><th>Ejemplo</th></tr>
+    <tr><td>Nueva funcionalidad</td><td><code>feature/user-login</code></td></tr>
+    <tr><td>Corrección de bug</td><td><code>fix/navbar-overflow</code></td></tr>
+    <tr><td>Corrección urgente en producción</td><td><code>hotfix/payment-crash</code></td></tr>
+    <tr><td>Preparación de versión</td><td><code>release/v2.1.0</code></td></tr>
+    <tr><td>Experimento</td><td><code>experiment/new-animation</code></td></tr>
+  </table>
+</section>
+
+<!-- ====== MERGE ====== -->
+<section class="sect" id="merge">
+  <div class="sect-tag">06 — fusión</div>
+  <h2>Fusión de ramas (Merge)</h2>
+  <p>Fusionar integra los cambios de una rama en otra. Siempre te fusionas <strong>hacia la rama activa (HEAD)</strong>.</p>
+
+  <div class="code-wrap"><pre class="code"><span class="ck">git switch</span> main              <span class="cm"># primero ve a la rama destino</span>
+<span class="ck">git merge</span> feature/login      <span class="cm"># trae los cambios a main</span></pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+
+  <h3>Fast-forward</h3>
+  <p>Cuando la rama destino no tiene commits nuevos desde la bifurcación, Git simplemente mueve el puntero.</p>
+  <div class="branch-diagram"><span class="cm"># Antes:</span>  <span class="bm">main:</span> <span class="bc">A ── B</span>
+<span class="bc">                 \</span>
+         <span class="bf">feature:</span>  <span class="bc">B ── C ── D</span>
+
+<span class="cm"># Después:</span> <span class="bm">main:</span> <span class="bc">A ── B ── C ── D   ← solo movió el puntero</span></div>
+
+  <h3>Merge commit</h3>
+  <p>Cuando ambas ramas tienen commits distintos, Git crea un commit nuevo que une ambas historias.</p>
+  <div class="branch-diagram"><span class="cm"># Antes:</span>   <span class="bm">main:</span>    <span class="bc">A ── B ── E</span>
+<span class="bc">                    \</span>
+           <span class="bf">feature:</span>  <span class="bc">B ── C ── D</span>
+
+<span class="cm"># Después:</span>  <span class="bm">main:</span>    <span class="bc">A ── B ── E ── M   ← M es el merge commit</span>
+<span class="bc">                    \          /</span>
+           <span class="bf">feature:</span>  <span class="bc">B ── C ── D</span></div>
+
+  <div class="code-wrap"><pre class="code"><span class="ck">git merge</span> <span class="cv">--no-ff</span> feature/login  <span class="cm"># fuerza merge commit (recomendado en equipos)</span>
+<span class="ck">git merge</span> <span class="cv">--squash</span> feature/login <span class="cm"># aplasta todos los commits en uno</span></pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+</section>
+
+<!-- ====== CONFLICTOS ====== -->
+<section class="sect" id="conflictos">
+  <div class="sect-tag">07 — conflictos</div>
+  <h2>Conflictos y stash</h2>
+  <p>Un <strong>conflicto</strong> ocurre cuando dos ramas modifican las mismas líneas. Git te pide que decidas cuál versión prevalece.</p>
+
+  <h3>Cómo se ve un conflicto</h3>
+  <div class="code-wrap"><pre class="code"><span class="bh">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
+<span class="bc">Esta es la versión de tu rama actual (main)</span>
+<span class="bc">=======</span>
+<span class="bc">Esta es la versión de la rama que estás fusionando (feature/x)</span>
+<span class="bh">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/x</span></pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+
+  <h3>Pasos para resolver un conflicto</h3>
+  <div class="code-wrap"><pre class="code"><span class="cm"># 1. Intenta el merge</span>
+<span class="ck">git merge</span> feature/x
+
+<span class="cm"># 2. Git te avisa: CONFLICT (content): Merge conflict in archivo.txt</span>
+
+<span class="cm"># 3. Abre el archivo, edítalo manualmente y elimina los marcadores</span>
+
+<span class="cm"># 4. Marca el conflicto como resuelto</span>
+<span class="ck">git add</span> archivo.txt
+
+<span class="cm"># 5. Completa el merge</span>
+<span class="ck">git commit</span></pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+
+  <div class="note note-tip"><strong>Tip</strong>VS Code tiene un editor visual de conflictos ("Accept Current", "Accept Incoming", "Accept Both"). Es mucho más cómodo que editar el texto a mano.</div>
+
+  <h3>Git stash — guardar trabajo sin hacer commit</h3>
+  <div class="code-wrap"><pre class="code"><span class="ck">git stash</span>                    <span class="cm"># guarda los cambios temporalmente</span>
+<span class="ck">git switch</span> otra-rama         <span class="cm"># trabaja en otra cosa</span>
+<span class="ck">git switch</span> mi-rama           <span class="cm"># vuelve</span>
+<span class="ck">git stash pop</span>                <span class="cm"># recupera los cambios guardados</span>
+<span class="ck">git stash list</span>               <span class="cm"># lista todos los stash guardados</span></pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+</section>
+
+<!-- ====== REMOTO ====== -->
+<section class="sect" id="remoto">
+  <div class="sect-tag">08 — remoto</div>
+  <h2>Trabajo remoto</h2>
+
+  <h3>Conectar y clonar</h3>
+  <div class="code-wrap"><pre class="code"><span class="ck">git remote add</span> origin https://github.com/usuario/repo.git
+<span class="ck">git remote</span> <span class="cv">-v</span>                           <span class="cm"># ver remotos configurados</span>
+<span class="ck">git clone</span> https://github.com/usuario/repo.git
+<span class="ck">git clone</span> https://github.com/usuario/repo.git mi-carpeta</pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+
+  <h3>Subir y bajar cambios</h3>
+  <div class="code-wrap"><pre class="code"><span class="ck">git push</span> <span class="cv">-u</span> origin main                 <span class="cm"># sube y configura seguimiento (primera vez)</span>
+<span class="ck">git push</span>                                <span class="cm"># si ya hay seguimiento configurado</span>
+
+<span class="ck">git pull</span>                                <span class="cm"># fetch + merge en un paso</span>
+<span class="ck">git fetch</span> origin                        <span class="cm"># descarga cambios SIN aplicarlos</span></pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+
+  <table>
+    <tr><th>Comando</th><th>Qué hace</th><th>Cuándo usarlo</th></tr>
+    <tr><td><code>git fetch</code></td><td>Descarga sin tocar tu directorio</td><td>Revisar qué hay nuevo antes de integrar</td></tr>
+    <tr><td><code>git pull</code></td><td>Fetch + merge automático</td><td>Actualizar tu rama directamente</td></tr>
+  </table>
+
+  <h3>Ramas remotas</h3>
+  <div class="code-wrap"><pre class="code"><span class="ck">git branch</span> <span class="cv">-r</span>                           <span class="cm"># ver ramas remotas</span>
+<span class="ck">git switch</span> <span class="cv">-c</span> feature/x origin/feature/x  <span class="cm"># crear rama local desde remota</span>
+<span class="ck">git push</span> origin <span class="cv">--delete</span> rama           <span class="cm"># eliminar rama remota</span></pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+</section>
+
+<!-- ====== GITHUB ====== -->
+<section class="sect" id="github">
+  <div class="sect-tag">09 — colaboración</div>
+  <h2>GitHub y colaboración real</h2>
+
+  <h3>Pull Request (PR)</h3>
+  <p>Un <strong>Pull Request</strong> es una propuesta de cambio: pides que tus commits en una rama se fusionen en otra. Es el mecanismo central de la colaboración.</p>
+
+  <ol style="padding-left:20px;margin:12px 0;">
+    <li>Creas una rama y trabajas en ella</li>
+    <li>Subes los commits a GitHub</li>
+    <li>Abres un PR en GitHub (base: main ← compare: feature/x)</li>
+    <li>Un compañero revisa el código y comenta</li>
+    <li>Corriges si hace falta y el PR se aprueba</li>
+    <li>Se hace merge a la rama principal</li>
+  </ol>
+
+  <h3>Fork</h3>
+  <p>Un <strong>fork</strong> es una copia completa de un repositorio en tu cuenta de GitHub. Permite contribuir a proyectos en los que no tienes permisos de escritura directa.</p>
+  <div class="code-wrap"><pre class="code"><span class="cm"># 1. Fork en GitHub (botón en la web)</span>
+<span class="cm"># 2. Clona tu fork</span>
+<span class="ck">git clone</span> https://github.com/TU_USUARIO/repo-forkeado.git
+
+<span class="cm"># 3. Añade el repo original como remoto "upstream"</span>
+<span class="ck">git remote add</span> upstream https://github.com/AUTOR_ORIGINAL/repo.git
+
+<span class="cm"># 4. Trabaja en una rama, haz push a tu fork</span>
+<span class="ck">git switch</span> <span class="cv">-c</span> mi-contribucion
+<span class="ck">git push</span> origin mi-contribucion
+
+<span class="cm"># 5. Abre PR desde tu fork al repo original</span></pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+
+  <h3>Funcionalidades clave de GitHub</h3>
+  <table>
+    <tr><th>Feature</th><th>Para qué sirve</th></tr>
+    <tr><td><strong>Issues</strong></td><td>Seguimiento de tareas, bugs y mejoras</td></tr>
+    <tr><td><strong>GitHub Actions</strong></td><td>CI/CD — automatización de tests y deploy</td></tr>
+    <tr><td><strong>GitHub Pages</strong></td><td>Hosting gratuito de sitios estáticos</td></tr>
+    <tr><td><strong>Projects</strong></td><td>Tableros kanban para organizar el trabajo</td></tr>
+    <tr><td><strong>Discussions</strong></td><td>Foro de conversación del proyecto</td></tr>
+  </table>
+</section>
+
+<!-- ====== GITHUB FLOW ====== -->
+<section class="sect" id="github-flow">
+  <div class="sect-tag">10 — flujo simplificado</div>
+  <h2>GitHub Flow — flujo simplificado</h2>
+
+  <p>El <strong>GitHub Flow</strong> es el flujo recomendado para proyectos pequeños, equipos ágiles y entrega continua. Es el que usáis en los Team Challenges.</p>
+
+  <div class="note note-tip"><strong>Cuándo usarlo</strong>Proyectos de bootcamp, equipos pequeños (&lt;10 personas), proyectos sin ciclos de versión formal, entornos con CI/CD donde cada merge a main se despliega automáticamente.</div>
+
+  <h3>Estructura de ramas</h3>
+  <div class="branch-diagram"><span class="bm">main:</span>    <span class="bc">●──────────────────────●──────────────────●</span>
+<span class="bc">          \              ↗   \              ↗</span>
+<span class="bf">feature/login:</span>  <span class="bc">●──●──●(PR)    \              /</span>
+<span class="bc">                              \            /</span>
+<span class="bf">feature/dashboard:</span>            <span class="bc">●──●──●(PR)──</span></div>
+
+  <h3>Reglas del GitHub Flow</h3>
+  <ul>
+    <li><span class="bb bb-main">main</span> siempre contiene código que funciona y se podría desplegar</li>
+    <li>Todo trabajo nuevo va en una rama <span class="bb bb-feature">feature/*</span></li>
+    <li>Los cambios entran a <span class="bb bb-main">main</span> solo via Pull Request con revisión</li>
+    <li>No existe <span class="bb bb-develop">develop</span>, ni <span class="bb bb-hotfix">hotfix</span>, ni <span class="bb bb-release">release</span></li>
+  </ul>
+
+  <h3>Flujo completo de una feature</h3>
+  <div class="code-wrap"><pre class="code"><span class="cm"># 1. Partir de main actualizado</span>
+<span class="ck">git switch</span> main
+<span class="ck">git pull</span> origin main
+
+<span class="cm"># 2. Crear rama de trabajo</span>
+<span class="ck">git switch</span> <span class="cv">-c</span> feature/nueva-funcionalidad
+
+<span class="cm"># 3. Desarrollar con commits descriptivos</span>
+<span class="ck">git add</span> .
+<span class="ck">git commit</span> <span class="cv">-m</span> <span class="cs">"feat: add user login form"</span>
+
+<span class="cm"># 4. Subir la rama a GitHub</span>
+<span class="ck">git push</span> <span class="cv">-u</span> origin feature/nueva-funcionalidad
+
+<span class="cm"># 5. Abrir Pull Request en GitHub</span>
+<span class="cm">#    base: main ← compare: feature/nueva-funcionalidad</span>
+
+<span class="cm"># 6. Tras el merge, limpiar</span>
+<span class="ck">git switch</span> main
+<span class="ck">git pull</span> origin main
+<span class="ck">git branch</span> <span class="cv">-d</span> feature/nueva-funcionalidad</pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+</section>
+
+<!-- ====== GIT FLOW ====== -->
+<section class="sect" id="git-flow">
+  <div class="sect-tag">11 — flujo completo</div>
+  <h2>Git Flow — flujo completo</h2>
+
+  <p>El <strong>Git Flow</strong> añade capas de estructura para proyectos con versiones formales, ciclos de release y equipos más grandes.</p>
+
+  <div class="note note-info"><strong>Cuándo usarlo</strong>Software con versiones numeradas (v1.0.0, v2.3.1), equipos medianos/grandes, proyectos que no se despliegan continuamente sino por releases planificadas.</div>
+
+  <h3>Estructura de ramas</h3>
+  <div class="branch-diagram"><span class="bm">main:</span>    <span class="bc">●──────────────────────────────────●────●</span>
+<span class="bc">          \                             ↗  ↗</span>
+<span class="bd">develop:</span>  <span class="bc">●──●──────────────────●──●──●     |</span>
+<span class="bc">               \     \            ↗    ↑     |</span>
+<span class="bf">feature/A:</span>     <span class="bc">●──●  \          /    |     |</span>
+<span class="bf">feature/B:</span>          <span class="bc">●──●──●──●  release/ </span><span class="br">●──●</span>
+<span class="bh">hotfix:</span>   <span class="bc">         (desde main) ●──●──────────/</span></div>
+
+  <h3>Ramas permanentes</h3>
+  <table>
+    <tr><th>Rama</th><th>Propósito</th></tr>
+    <tr><td><span class="bb bb-main">main</span></td><td>Código en producción. Solo recibe merges via PR desde <code>release/*</code> o <code>hotfix/*</code>.</td></tr>
+    <tr><td><span class="bb bb-develop">develop</span></td><td>Integración continua de features. Se despliega a entorno de staging.</td></tr>
+  </table>
+
+  <h3>Ramas temporales</h3>
+  <table>
+    <tr><th>Tipo</th><th>Desde</th><th>Fusionar a</th><th>Propósito</th></tr>
+    <tr><td><span class="bb bb-feature">feature/*</span></td><td>develop</td><td>develop</td><td>Nueva funcionalidad</td></tr>
+    <tr><td><span class="bb bb-feature">fix/*</span></td><td>develop</td><td>develop</td><td>Corrección de bug en develop</td></tr>
+    <tr><td><span class="bb bb-release">release/*</span></td><td>develop</td><td>main + develop + tag</td><td>Preparar un lanzamiento</td></tr>
+    <tr><td><span class="bb bb-hotfix">hotfix/*</span></td><td>main</td><td>main + develop + tag</td><td>Corrección urgente en producción</td></tr>
+  </table>
+
+  <h3>Flujo típico de una feature</h3>
+  <div class="code-wrap"><pre class="code"><span class="cm"># Partir de develop</span>
+<span class="ck">git switch</span> develop && <span class="ck">git pull</span> origin develop
+<span class="ck">git switch</span> <span class="cv">-c</span> feature/nueva-funcionalidad
+
+<span class="cm"># Desarrollar...</span>
+<span class="ck">git commit</span> <span class="cv">-m</span> <span class="cs">"feat: add feature"</span>
+
+<span class="cm"># PR: feature/nueva-funcionalidad → develop</span>
+<span class="ck">git push</span> origin feature/nueva-funcionalidad</pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+
+  <h3>Flujo de un hotfix</h3>
+  <div class="code-wrap"><pre class="code"><span class="cm"># Partir de main (problema en producción)</span>
+<span class="ck">git switch</span> main && <span class="ck">git pull</span>
+<span class="ck">git switch</span> <span class="cv">-c</span> hotfix/login-crash
+
+<span class="cm"># Arreglar y hacer commit</span>
+<span class="ck">git commit</span> <span class="cv">-m</span> <span class="cs">"fix: resolve login crash on expired tokens"</span>
+
+<span class="cm"># PR a main Y también a develop</span>
+<span class="ck">git switch</span> main && <span class="ck">git merge</span> hotfix/login-crash
+<span class="ck">git tag</span> <span class="cv">-a</span> v1.0.1 <span class="cv">-m</span> <span class="cs">"hotfix: login crash"</span>
+
+<span class="ck">git switch</span> develop && <span class="ck">git merge</span> hotfix/login-crash
+<span class="ck">git branch</span> <span class="cv">-d</span> hotfix/login-crash</pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+
+  <h3>Tags: marcar versiones</h3>
+  <div class="code-wrap"><pre class="code"><span class="ck">git tag</span> <span class="cv">-a</span> v1.0.0 <span class="cv">-m</span> <span class="cs">"Primera versión"</span>  <span class="cm"># tag anotado (recomendado)</span>
+<span class="ck">git push</span> origin v1.0.0                   <span class="cm"># subir un tag concreto</span>
+<span class="ck">git push</span> origin <span class="cv">--tags</span>                   <span class="cm"># subir todos los tags</span></pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+
+  <div class="flow-grid">
+    <div class="flow-card">
+      <div class="flow-card-head fch-simple">GitHub Flow — simplificado</div>
+      <div class="flow-card-body">
+        <ul>
+          <li><strong>Ramas permanentes:</strong> solo <code>main</code></li>
+          <li><strong>Ramas temporales:</strong> <code>feature/*</code></li>
+          <li>PRs directamente a <code>main</code></li>
+          <li>Sin <code>develop</code>, sin <code>hotfix</code>, sin <code>release</code></li>
+          <li>Ideal para: bootcamp, proyectos pequeños, CI/CD</li>
+        </ul>
+      </div>
+    </div>
+    <div class="flow-card">
+      <div class="flow-card-head fch-full">Git Flow — completo</div>
+      <div class="flow-card-body">
+        <ul>
+          <li><strong>Ramas permanentes:</strong> <code>main</code> + <code>develop</code></li>
+          <li><strong>Ramas temporales:</strong> <code>feature/*</code>, <code>release/*</code>, <code>hotfix/*</code></li>
+          <li>PRs feature → develop, release → main</li>
+          <li>Hotfixes aplican a main Y develop</li>
+          <li>Ideal para: software versionado, equipos medianos</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== COMMITS ====== -->
+<section class="sect" id="commits">
+  <div class="sect-tag">12 — best practices</div>
+  <h2>Buenas prácticas</h2>
+
+  <h3>Conventional Commits</h3>
+  <p>El estándar <strong>Conventional Commits</strong> da formato consistente a los mensajes y permite generar CHANGELOGs automáticamente.</p>
+  <div class="code-wrap"><pre class="code"><span class="cv">&lt;tipo&gt;</span>(<span class="cv">ámbito opcional</span>): <span class="cs">&lt;descripción corta en presente e imperativo&gt;</span>
+
+<span class="cm">[cuerpo opcional: el por qué, no el cómo]</span></pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+
+  <table>
+    <tr><th>Tipo</th><th>Cuándo usarlo</th></tr>
+    <tr><td><code>feat</code></td><td>Nueva funcionalidad</td></tr>
+    <tr><td><code>fix</code></td><td>Corrección de bug</td></tr>
+    <tr><td><code>chore</code></td><td>Build, dependencias, configuración</td></tr>
+    <tr><td><code>docs</code></td><td>Solo documentación</td></tr>
+    <tr><td><code>test</code></td><td>Añadir o modificar tests</td></tr>
+    <tr><td><code>refactor</code></td><td>Refactorización sin cambio de comportamiento</td></tr>
+    <tr><td><code>style</code></td><td>Formato, espacios (sin cambio de lógica)</td></tr>
+    <tr><td><code>perf</code></td><td>Mejoras de rendimiento</td></tr>
+  </table>
+
+  <h3>Ejemplos reales</h3>
+  <div class="code-wrap"><pre class="code"><span class="ck">git commit</span> <span class="cv">-m</span> <span class="cs">"feat(auth): add OAuth2 login with Google"</span>
+<span class="ck">git commit</span> <span class="cv">-m</span> <span class="cs">"fix(cart): prevent negative item quantity"</span>
+<span class="ck">git commit</span> <span class="cv">-m</span> <span class="cs">"chore: upgrade dependencies to latest"</span>
+<span class="ck">git commit</span> <span class="cv">-m</span> <span class="cs">"docs: update README with setup instructions"</span>
+<span class="ck">git commit</span> <span class="cv">-m</span> <span class="cs">"feat!: redesign user profile API"</span>  <span class="cm"># ! = breaking change</span></pre><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+
+  <h3>Commits atómicos</h3>
+  <p>Cada commit debe representar <strong>un solo cambio lógico</strong>. Un buen commit es pequeño y enfocado, el código funciona antes y después, y el mensaje explica el <em>qué</em> y el <em>por qué</em>, no el <em>cómo</em>.</p>
+
+  <h3>Checklist antes de hacer push</h3>
+  <ul>
+    <li><code>git status</code> limpio (nada inesperado)</li>
+    <li><code>git diff --staged</code> revisado</li>
+    <li>Mensaje de commit en formato Conventional Commits</li>
+    <li><code>.gitignore</code> actualizado si añadiste archivos ignorables</li>
+    <li>Tests pasando (si los hay)</li>
+  </ul>
+</section>
+
+<!-- ====== EJERCICIOS ====== -->
+<section class="sect" id="ejercicios">
+  <div class="sect-tag">13 — práctica</div>
+  <h2>Ejercicios</h2>
+
+  <div class="exercise">
+    <div class="ex-label">Ejercicio 1</div>
+    <h4>Tu primer repositorio</h4>
+    <ol>
+      <li>Crea una carpeta <code>mi-proyecto</code> y entra en ella.</li>
+      <li>Ejecuta <code>git init</code> y verifica con <code>git status</code>.</li>
+      <li>Crea un archivo <code>.gitignore</code> con <code>*.log</code> dentro.</li>
+      <li>Crea <code>README.md</code> con una línea de texto.</li>
+      <li>Añade ambos al staging con <code>git add .</code></li>
+      <li>Haz el primer commit: <code>git commit -m "chore: initial project setup"</code></li>
+      <li>Verifica el resultado con <code>git log</code></li>
+    </ol>
+  </div>
+
+  <div class="exercise">
+    <div class="ex-label">Ejercicio 2</div>
+    <h4>Ramas Patronus</h4>
+    <ol>
+      <li>Crea una carpeta <code>Patronus</code> e inicializa un repositorio Git.</li>
+      <li>Crea <code>patronus.txt</code> vacío y haz commit: <code>"chore: add empty patronus file"</code></li>
+      <li>Crea dos ramas desde <code>main</code>: <code>harry</code> y <code>snape</code>.</li>
+      <li>En rama <code>harry</code>: añade arte ASCII del ciervo. Commit: <code>"feat: add Harry's stag patronus"</code></li>
+      <li>En rama <code>snape</code>: añade arte ASCII de la cierva. Commit: <code>"feat: add Snape's doe patronus"</code></li>
+      <li>Desde <code>snape</code>, crea la rama <code>lily</code> con <code>git switch -c lily</code>.</li>
+      <li>Ejecuta <code>git log --oneline --graph --all</code> para ver el árbol.</li>
+      <li class="bonus">Bonus: elimina la rama <code>snape</code> con <code>git branch -d snape</code>.</li>
+    </ol>
+  </div>
+
+  <div class="exercise">
+    <div class="ex-label">Ejercicio 3</div>
+    <h4>Fusionando el Patronus</h4>
+    <ol>
+      <li>Cambia a <code>main</code> y fusiona la rama <code>harry</code>.</li>
+      <li>Fusiona también la rama <code>lily</code>. Observa el merge commit.</li>
+      <li>Visualiza la historia con <code>git log --oneline --graph --all</code>.</li>
+      <li>Elimina las ramas ya fusionadas: <code>git branch -d harry lily</code>.</li>
+    </ol>
+  </div>
+
+  <div class="exercise">
+    <div class="ex-label">Ejercicio 4</div>
+    <h4>Conectar con GitHub</h4>
+    <ol>
+      <li>Crea un repositorio nuevo en github.com (sin inicializarlo).</li>
+      <li>En tu repo local, conecta el remoto: <code>git remote add origin https://github.com/TU_USUARIO/mi-proyecto.git</code></li>
+      <li>Sube tu trabajo: <code>git push -u origin main</code></li>
+      <li>Haz un cambio en <code>README.md</code> directamente en GitHub (edita en la web).</li>
+      <li>Descarga el cambio con <code>git pull</code> y verifica que está en tu máquina.</li>
+    </ol>
+  </div>
+
+  <div class="exercise">
+    <div class="ex-label">Ejercicio 5 — integrador</div>
+    <h4>Flujo completo en equipo (GitHub Flow)</h4>
+    <ol>
+      <li>Crea un repo <code>tienda-online</code> con <code>README.md</code> inicial.</li>
+      <li>Desde <code>main</code>, crea <code>feature/productos</code>.</li>
+      <li>Añade <code>productos.txt</code> con 3 productos. Haz 2 commits con mensajes Conventional Commits.</li>
+      <li>Sube y abre un PR en GitHub: <code>feature/productos → main</code>.</li>
+      <li>Desde <code>main</code>, crea <code>feature/carrito</code>. Añade <code>carrito.txt</code>. Haz commit.</li>
+      <li>Abre un PR para <code>feature/carrito</code> también.</li>
+      <li>Fusiona ambos PRs y visualiza toda la historia: <code>git log --oneline --graph --all</code>.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ====== REF ====== -->
+<section class="sect" id="ref">
+  <div class="sect-tag">14 — referencia rápida</div>
+  <h2>Referencia rápida</h2>
+
+  <div class="ref-section">
+    <h4>Repositorio</h4>
+    <div class="ref-row"><span class="ref-cmd">git init</span><span class="ref-desc">Iniciar un repositorio</span></div>
+    <div class="ref-row"><span class="ref-cmd">git clone &lt;url&gt;</span><span class="ref-desc">Clonar un repo remoto</span></div>
+    <div class="ref-row"><span class="ref-cmd">git status</span><span class="ref-desc">Estado actual del repositorio</span></div>
+  </div>
+
+  <div class="ref-section">
+    <h4>Staging y commits</h4>
+    <div class="ref-row"><span class="ref-cmd">git add .</span><span class="ref-desc">Añadir todos los cambios al staging</span></div>
+    <div class="ref-row"><span class="ref-cmd">git add -p</span><span class="ref-desc">Seleccionar partes a añadir interactivamente</span></div>
+    <div class="ref-row"><span class="ref-cmd">git commit -m "mensaje"</span><span class="ref-desc">Crear un commit</span></div>
+    <div class="ref-row"><span class="ref-cmd">git commit --amend</span><span class="ref-desc">Modificar el último commit</span></div>
+  </div>
+
+  <div class="ref-section">
+    <h4>Historial</h4>
+    <div class="ref-row"><span class="ref-cmd">git log --oneline --graph --all</span><span class="ref-desc">Árbol visual de commits</span></div>
+    <div class="ref-row"><span class="ref-cmd">git diff --staged</span><span class="ref-desc">Cambios en staging</span></div>
+    <div class="ref-row"><span class="ref-cmd">git show &lt;hash&gt;</span><span class="ref-desc">Ver un commit concreto</span></div>
+  </div>
+
+  <div class="ref-section">
+    <h4>Ramas</h4>
+    <div class="ref-row"><span class="ref-cmd">git switch -c &lt;rama&gt;</span><span class="ref-desc">Crear y cambiar a una rama</span></div>
+    <div class="ref-row"><span class="ref-cmd">git switch &lt;rama&gt;</span><span class="ref-desc">Cambiar de rama</span></div>
+    <div class="ref-row"><span class="ref-cmd">git merge &lt;rama&gt;</span><span class="ref-desc">Fusionar rama en la activa</span></div>
+    <div class="ref-row"><span class="ref-cmd">git branch -d &lt;rama&gt;</span><span class="ref-desc">Eliminar rama ya fusionada</span></div>
+  </div>
+
+  <div class="ref-section">
+    <h4>Deshacer</h4>
+    <div class="ref-row"><span class="ref-cmd">git restore &lt;archivo&gt;</span><span class="ref-desc">Descartar cambios del directorio de trabajo</span></div>
+    <div class="ref-row"><span class="ref-cmd">git restore --staged &lt;archivo&gt;</span><span class="ref-desc">Sacar del staging sin borrar cambios</span></div>
+    <div class="ref-row"><span class="ref-cmd">git revert &lt;hash&gt;</span><span class="ref-desc">Deshacer commit de forma segura (crea nuevo commit)</span></div>
+    <div class="ref-row"><span class="ref-cmd">git stash / git stash pop</span><span class="ref-desc">Guardar y recuperar trabajo temporal</span></div>
+  </div>
+
+  <div class="ref-section">
+    <h4>Remoto</h4>
+    <div class="ref-row"><span class="ref-cmd">git remote add origin &lt;url&gt;</span><span class="ref-desc">Conectar un remoto</span></div>
+    <div class="ref-row"><span class="ref-cmd">git push -u origin main</span><span class="ref-desc">Subir rama (primera vez)</span></div>
+    <div class="ref-row"><span class="ref-cmd">git pull</span><span class="ref-desc">Bajar e integrar cambios</span></div>
+    <div class="ref-row"><span class="ref-cmd">git fetch</span><span class="ref-desc">Bajar cambios sin integrar</span></div>
+  </div>
+
+  <div class="ref-section">
+    <h4>Tags</h4>
+    <div class="ref-row"><span class="ref-cmd">git tag -a v1.0.0 -m "mensaje"</span><span class="ref-desc">Crear tag anotado</span></div>
+    <div class="ref-row"><span class="ref-cmd">git push origin --tags</span><span class="ref-desc">Subir todos los tags</span></div>
+  </div>
+</section>
+
+<!-- ====== ENLACES DE INTERÉS ====== -->
+<section class="sect" id="enlaces">
+  <div class="sect-tag">15 — recursos</div>
+  <h2>Enlaces de interés</h2>
+
+  <p>Para profundizar en cómo escribir buenos mensajes de commit:</p>
+  <ul>
+    <li><a href="https://medium.com/innovation-incubator/how-to-write-a-useful-commit-message-a-git-guide-2c10570dc65f" target="_blank" rel="noopener">How to Write a Useful Commit Message — A Git Guide</a></li>
+    <li><a href="https://medium.com/swlh/writing-better-commit-messages-9b0b6ff60c67" target="_blank" rel="noopener">Writing Better Commit Messages</a></li>
+  </ul>
+</section>
+
+</main>
+</div>
+
+<script>
+function copyCode(btn){
+  const pre=btn.previousElementSibling;
+  navigator.clipboard.writeText(pre.innerText).then(()=>{
+    const orig=btn.textContent;btn.textContent='¡Copiado!';
+    setTimeout(()=>btn.textContent=orig,1800);
+  });
+}
+
+const sects=document.querySelectorAll('.sect');
+const links=document.querySelectorAll('.tl');
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(l=>l.classList.remove('active'));
+      const link=document.querySelector(`.tl[href="#${e.target.id}"]`);
+      if(link)link.classList.add('active');
+    }
+  });
+},{rootMargin:'-20% 0px -70% 0px',threshold:0});
+sects.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>
