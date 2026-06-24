@@ -1,0 +1,36 @@
+# context.py — selección de contexto relevante (sin embeddings)
+
+import json
+from pathlib import Path
+
+
+def cargar_faq(ruta: Path) -> list[dict]:
+    with ruta.open(encoding="utf-8") as f:
+        data = json.load(f)
+    if not isinstance(data, list):
+        raise ValueError("faq.json debe ser una lista de entradas")
+    return data
+
+
+def seleccionar_faq(faq: list[dict], consulta: str, max_entradas: int = 1) -> list[dict]:
+    """Selección simple por keywords (sin vector DB)."""
+    q = (consulta or "").lower()
+    puntuaciones: list[tuple[int, dict]] = []
+
+    for entry in faq:
+        score = 0
+        for kw in entry.get("keywords", []):
+            if kw.lower() in q:
+                score += 2
+        if entry.get("topic_id", "").lower() in q:
+            score += 3
+        if score > 0:
+            puntuaciones.append((score, entry))
+
+    puntuaciones.sort(key=lambda x: x[0], reverse=True)
+    return [e for _, e in puntuaciones[:max_entradas]]
+
+
+def seleccionar_faq_por_topic(faq: list[dict], topic_id: str) -> list[dict]:
+    t = (topic_id or "").strip().lower()
+    return [e for e in faq if str(e.get("topic_id", "")).lower() == t]

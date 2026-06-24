@@ -1,0 +1,38 @@
+[
+  {
+    "topic_id": "horarios",
+    "keywords": ["horario", "horarios", "clase", "sesión", "19:00", "21:00"],
+    "question": "¿Cuándo son las clases en directo?",
+    "answer": "Las live sessions suelen ser de 19:00 a 21:00 (hora peninsular). Consulta el calendario oficial del campus para fechas concretas de cada sprint."
+  },
+  {
+    "topic_id": "live_review",
+    "keywords": ["live review", "práctica", "corrección", "lunes", "martes"],
+    "question": "¿Qué es la live review?",
+    "answer": "Son dos sesiones (lunes y martes) donde trabajas un proyecto integrador del sprint y lo revisas con el profesor. Sustituye a la antigua práctica obligatoria por unidad."
+  },
+  {
+    "topic_id": "evaluacion",
+    "keywords": ["evaluación", "nota", "proyecto", "entrega", "aprobado"],
+    "question": "¿Cómo se evalúa el bootcamp?",
+    "answer": "La evaluación combina workouts, proyectos y participación en live reviews. Cada sprint tiene criterios publicados en el campus; los proyectos se entregan en GitHub según las instrucciones."
+  },
+  {
+    "topic_id": "sprints",
+    "keywords": ["sprint", "unidad", "módulo", "temario"],
+    "question": "¿Cómo está organizado el contenido?",
+    "answer": "El bootcamp se divide en sprints y unidades. Cada unidad tiene teoría (01_Teoria) y workouts (02_Workout). El Sprint 5 cubre lógica en Python, Prompt Engineering y Context Engineering."
+  },
+  {
+    "topic_id": "gemini_api",
+    "keywords": ["api", "gemini", "clave", "google ai studio", "token"],
+    "question": "¿Cómo obtengo la API key de Gemini?",
+    "answer": "Créala en Google AI Studio (aistudio.google.com). No la subas a Git: usa .env o getpass en local. El campus puede indicar límites de uso."
+  },
+  {
+    "topic_id": "context_engineering",
+    "keywords": ["contexto", "historial", "faq", "rag", "tokens"],
+    "question": "¿Qué es Context Engineering?",
+    "answer": "Es decidir qué información enviar al modelo en cada llamada: FAQ relevante, historial reciente, perfil del usuario. También implica filtrar ruido y controlar el presupuesto de tokens."
+  }
+]
