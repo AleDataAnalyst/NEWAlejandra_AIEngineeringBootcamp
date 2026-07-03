@@ -1,0 +1,20 @@
+[
+  {
+    "topic_id": "embeddings",
+    "keywords": ["embedding", "embeddings", "vector", "vectores"],
+    "question": "¿Qué es un embedding?",
+    "answer": "Un embedding es una representación numérica (vector) de un texto u otro dato. Permite comparar similitud entre piezas de información."
+  },
+  {
+    "topic_id": "assistant_engineering",
+    "keywords": ["asistente", "assistant", "arquitectura", "estado", "config"],
+    "question": "¿Qué es Assistant Engineering?",
+    "answer": "Assistant Engineering es diseñar un sistema Python que orquesta turnos conversacionales: configuración, estado, prompts y llamadas al LLM de forma mantenible."
+  },
+  {
+    "topic_id": "context_engineering",
+    "keywords": ["contexto", "historial", "memoria", "tokens"],
+    "question": "¿Qué es Context Engineering?",
+    "answer": "Context Engineering decide qué información incluir en cada llamada al modelo y cómo recortar ruido, historial y presupuesto de tokens."
+  }
+]
