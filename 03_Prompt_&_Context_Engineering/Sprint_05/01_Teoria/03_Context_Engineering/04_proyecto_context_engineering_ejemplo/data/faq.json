@@ -1,0 +1,32 @@
+[
+  {
+    "topic_id": "embeddings",
+    "keywords": ["embedding", "embeddings", "vector", "vectores"],
+    "question": "¿Qué es un embedding?",
+    "answer": "Un embedding es una representación numérica (vector) de un texto, imagen u otro dato. Permite comparar similitud entre piezas de información. En IA generativa se usa para buscar contexto relevante antes de responder."
+  },
+  {
+    "topic_id": "transformers",
+    "keywords": ["transformer", "transformers", "atencion", "self-attention"],
+    "question": "¿Qué es un transformer?",
+    "answer": "Un transformer es una arquitectura de red neuronal basada en mecanismos de atención (self-attention). Procesa secuencias en paralelo y es la base de muchos LLM modernos como Gemini."
+  },
+  {
+    "topic_id": "prompt_engineering",
+    "keywords": ["prompt", "prompts", "instrucciones", "rol"],
+    "question": "¿Qué es Prompt Engineering?",
+    "answer": "Prompt Engineering es diseñar y construir desde código las instrucciones que recibe un LLM: rol, tarea, restricciones y formato de salida. El objetivo es controlar el comportamiento del modelo sin cambiar de API."
+  },
+  {
+    "topic_id": "context_engineering",
+    "keywords": ["contexto", "context", "historial", "memoria", "tokens"],
+    "question": "¿Qué es Context Engineering?",
+    "answer": "Context Engineering es decidir qué información incluir en cada llamada al modelo: datos de referencia, historial reciente, perfil del usuario y resúmenes. También implica eliminar ruido y controlar el presupuesto de tokens."
+  },
+  {
+    "topic_id": "tokens",
+    "keywords": ["token", "tokens", "coste", "latencia"],
+    "question": "¿Por qué importan los tokens?",
+    "answer": "Los tokens miden el tamaño del input y output de cada llamada. Más contexto implica más tokens, más coste y más latencia. Por eso se filtra, recorta y resume información antes de enviarla al modelo."
+  }
+]

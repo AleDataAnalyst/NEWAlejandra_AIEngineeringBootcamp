@@ -1,0 +1,28 @@
+# gemini_auth.py — configuración de GEMINI_API_KEY (mismo patrón que Sprint 4)
+
+import os
+import getpass
+
+from dotenv import load_dotenv
+
+_configured = False
+
+
+def configurar_gemini_api_key() -> None:
+    """Carga .env si existe; si no hay clave, la pide con getpass (solo esta sesión)."""
+    global _configured
+    if _configured:
+        return
+
+    load_dotenv()
+
+    if not os.getenv("GEMINI_API_KEY"):
+        os.environ["GEMINI_API_KEY"] = getpass.getpass(
+            "Pega aquí tu GEMINI_API_KEY (input oculto): "
+        )
+
+    print(
+        "GEMINI_API_KEY configurada:",
+        "sí" if os.getenv("GEMINI_API_KEY") else "no",
+    )
+    _configured = True
