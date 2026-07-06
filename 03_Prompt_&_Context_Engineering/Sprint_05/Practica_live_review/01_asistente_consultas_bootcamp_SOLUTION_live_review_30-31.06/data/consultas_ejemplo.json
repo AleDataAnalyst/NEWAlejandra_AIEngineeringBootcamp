@@ -1,0 +1,22 @@
+[
+  {
+    "nombre": "Ana García",
+    "email": "ana.garcia@ejemplo.com",
+    "mensaje": "No entiendo cuándo es la live review del Sprint 5 y qué tengo que entregar."
+  },
+  {
+    "nombre": "Luis Pérez",
+    "email": "luis@ejemplo.com",
+    "mensaje": "Mi GEMINI_API_KEY no funciona en el notebook, ¿qué reviso?"
+  },
+  {
+    "nombre": "",
+    "email": "correo-invalido",
+    "mensaje": "Hola"
+  },
+  {
+    "nombre": "María",
+    "email": "maria@ejemplo.com",
+    "mensaje": "¿Cómo se evalúa el proyecto final del bootcamp y qué pasa si falto a una sesión?"
+  }
+]
