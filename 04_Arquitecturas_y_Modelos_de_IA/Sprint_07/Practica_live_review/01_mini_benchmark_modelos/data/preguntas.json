@@ -1,0 +1,22 @@
+[
+  {
+    "id": "ejemplo_solo_formato",
+    "prompt": "ESTE ES SOLO UN EJEMPLO DE FORMATO — bórralo al personalizar.\n\nEres soporte del bootcamp. Responde en 2 frases.\n\nUsuario: ¿Cuándo es la live review?"
+  },
+  {
+    "id": "TODO_pregunta_1",
+    "prompt": "TODO: redacta tu primera pregunta del benchmark (tarea normal de tu caso de uso)."
+  },
+  {
+    "id": "TODO_pregunta_2",
+    "prompt": "TODO: segunda pregunta (otra tarea representativa de tu dominio)."
+  },
+  {
+    "id": "TODO_pregunta_estructurada",
+    "prompt": "TODO: pregunta con salida estructurada (JSON válido o clasificación en lista cerrada)."
+  },
+  {
+    "id": "TODO_pregunta_limite",
+    "prompt": "TODO: caso límite (vacío, fuera de dominio, inyección suave o formato muy estricto)."
+  }
+]

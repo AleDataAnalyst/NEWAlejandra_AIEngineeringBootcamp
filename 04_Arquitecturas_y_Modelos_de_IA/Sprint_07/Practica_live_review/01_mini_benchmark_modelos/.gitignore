@@ -1,0 +1,14 @@
+# Entorno virtual
+.venv/
+
+# API keys (usa .env.example como plantilla)
+.env
+
+# Artefactos Python
+__pycache__/
+*.pyc
+
+# Salida del benchmark (CSV e informes generados por main.py)
+output/*.csv
+output/*.md
+!output/.gitkeep
