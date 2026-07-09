@@ -1,0 +1,18 @@
+[
+  {
+    "id": "soporte",
+    "prompt": "Eres soporte de una app. Responde en 2 frases.\n\nUsuario: No veo un cargo que hice ayer."
+  },
+  {
+    "id": "clasificar",
+    "prompt": "Clasifica en una palabra: FACTURACION, TECNICO, VENTAS o LEGAL.\n\nEl servidor no arranca tras el deploy."
+  },
+  {
+    "id": "json",
+    "prompt": "Devuelve solo JSON válido: {\"riesgo\": \"bajo|medio|alto\", \"motivo\": \"texto corto\"}\n\nCaso: usuario compartió contraseña por chat público."
+  },
+  {
+    "id": "limite",
+    "prompt": "Explica qué es un embedding en una frase, sin analogías largas."
+  }
+]

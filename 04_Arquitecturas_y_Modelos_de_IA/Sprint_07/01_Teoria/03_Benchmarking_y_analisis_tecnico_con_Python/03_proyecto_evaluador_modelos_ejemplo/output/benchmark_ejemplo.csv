@@ -1,0 +1,24 @@
+timestamp,pregunta_id,modelo,elapsed_ms,prompt_tokens,output_tokens,total_tokens,respuesta,error
+2026-06-29T10:38:45.704050+00:00,soporte,gemini-2.5-flash,2276,31,34,315,"Entiendo que no ves un cargo reciente en tu listado. Para ayudarte, ¿podrías indicarme la fecha exacta, el monto y el comercio del cargo?",
+2026-06-29T10:38:47.981639+00:00,soporte,gemini-3.1-flash-lite,641,31,55,86,"Lamento el inconveniente, pero ten en cuenta que algunos movimientos pueden tardar hasta 48 horas hábiles en reflejarse en tu historial. Si después de este tiempo el cargo sigue sin aparecer, por favor contáctanos nuevamente para revisar tu cuenta a detalle.",
+2026-06-29T10:38:48.623434+00:00,clasificar,gemini-2.5-flash,1970,33,3,356,TECNICO,
+2026-06-29T10:38:50.594160+00:00,clasificar,gemini-3.1-flash-lite,399,33,3,36,TECNICO,
+2026-06-29T10:38:50.993558+00:00,resumen,gemini-2.5-flash,4299,38,82,853,"Aquí tienes el resumen en 3 viñetas:
+
+1.  **Retraso del Lanzamiento:** Se acordó posponer el lanzamiento una semana debido a fallos en los pagos.
+2.  **Tiempo Extra para QA:** El equipo de QA requiere dos días adicionales para sus tareas.
+3.  **Actualización de Marketing:** Marketing se encargará de actualizar la landing page.",
+2026-06-29T10:38:55.293797+00:00,resumen,gemini-3.1-flash-lite,753,38,63,101,"Aquí tienes el resumen:
+
+* **Retraso:** El lanzamiento se pospone una semana debido a problemas en el sistema de pagos.
+* **QA:** El equipo de calidad requiere dos días adicionales para sus pruebas.
+* **Marketing:** Se actualizará la *landing page* para ajustar la comunicación.",
+2026-06-29T10:38:56.047694+00:00,json,gemini-2.5-flash,1615,36,32,271,"```json
+{
+  ""riesgo"": ""alto"",
+  ""motivo"": ""Contraseña expuesta en chat público.""
+}
+```",
+2026-06-29T10:38:57.663294+00:00,json,gemini-3.1-flash-lite,532,36,25,61,"{""riesgo"": ""alto"", ""motivo"": ""Exposición de credenciales sensibles en un canal inseguro.""}",
+2026-06-29T10:38:58.196661+00:00,limite,gemini-2.5-flash,3967,16,27,819,Un embedding es una representación numérica (vector) de un elemento que codifica su significado y relaciones con otros elementos en un espacio continuo.,
+2026-06-29T10:39:02.164861+00:00,limite,gemini-3.1-flash-lite,544,16,34,50,"Un *embedding* es una representación numérica de datos (como palabras o imágenes) en un espacio vectorial, donde la proximidad geométrica refleja su similitud semántica.",
