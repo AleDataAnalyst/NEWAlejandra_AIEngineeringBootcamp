@@ -1,68 +1,64 @@
-"""validators.py — Validación de consultas en Python (Fase 1).
+"""validators.py — Validación de inputs y dominio (Fase 2).
 
 Qué hace este módulo:
-  - Comprueba nombre, email y mensaje antes de llamar a Gemini.
-  - Devuelve una lista de errores (vacía = consulta válida).
+  - Capa 1: `validate_input()` — vacío, longitud, patrones sospechosos.
+  - Capa 2: `parece_dominio_python()` — filtro didáctico antes del LLM.
 
 Para qué sirve:
-  - Ahorrar tokens y evitar llamadas a la API con datos mal formados.
-  - Es el primer paso del flujo en `clasificar_consulta()` (logic.py).
+  - Rechazar ataques e inputs inválidos sin gastar tokens en Gemini.
 
-Función a implementar:
-  - `validar_consulta(datos)` — ver README FASE 1, Tarea 1.
+Funciones a implementar (Fase 2):
+  - validate_input, parece_dominio_python, rechazo_fuera_de_dominio
 """
 
-from config import (
-    MAX_CHARS_MENSAJE,
-    MIN_CHARS_MENSAJE,
-    PATRON_EMAIL,
-)
+from config import DOMINIO_KEYWORDS, MAX_INPUT_CHARS, PATRONES_SOSPECHOSOS
 
 
-def validar_consulta(datos: dict) -> list[str]:
-    """TODO: clasificación — valida nombre, email y mensaje antes de llamar a Gemini.
+def validate_input(texto: str) -> list[str]:
+    """TODO: Fase 2 — devuelve lista de errores (vacía = OK).
 
-    Entrada: {"nombre": "Ana", "email": "ana@ejemplo.com", "mensaje": "..."}
-    Salida OK: []
-    Salida error: ["Nombre inválido: ...", "Email inválido: ...", ...]
+    Reglas: vacío, MAX_INPUT_CHARS, PATRONES_SOSPECHOSOS en config.py.
 
-    Ver README FASE 1, Tarea 1 y config.py (MIN/MAX_CHARS, PATRON_EMAIL).
+    Ver README Fase 2, Tarea 1.
     """
-    # TODO: clasificación — implementar validación
-    
     errores: list[str] = []
-
-    # Si la entrada no es un dict, devolver error y salir.
-    if not isinstance(datos, dict):
-        return ["La consulta debe ser un dict."]
-
-    # Si el nombre está vacío o no es un string, añadir error a la lista.
-    nombre = str(datos.get("nombre", "")).strip()
-    if not nombre:
-        errores.append("Nombre inválido: no puede estar vacío.")
-
-    # Si el email no coincide con PATRON_EMAIL, añadir error a la lista.
-    email = str(datos.get("email", "")).strip()
-    if not email:
-        errores.append("Email inválido: no puede estar vacío.")
-    elif PATRON_EMAIL.fullmatch(email) is None:
-        errores.append("Email inválido: formato incorrecto.")
-
-    # Si el mensaje es demasiado corto o demasiado largo, añadir error a la lista
-    mensaje = str(datos.get("mensaje", "")).strip()
-    if len(mensaje) < MIN_CHARS_MENSAJE:
-        errores.append(
-            f"Mensaje demasiado corto (mínimo {MIN_CHARS_MENSAJE} caracteres)."
-        )
-    elif len(mensaje) > MAX_CHARS_MENSAJE:
-        errores.append(
-            f"Mensaje demasiado largo (máximo {MAX_CHARS_MENSAJE} caracteres)."
-        )
-
-    """
-    raise NotImplementedError(
-        "Completa validar_consulta() — revisa config.py y data/consultas_ejemplo.json"
-    )
-    """
-
+    t = (texto or "").strip()
+    if not t:
+        errores.append("El mensaje no puede estar vacío.")
+    if len(t) > MAX_INPUT_CHARS:
+        errores.append(f"Mensaje demasiado largo (máx {MAX_INPUT_CHARS} caracteres).")
+    t_lower = t.lower()
+    for patron in PATRONES_SOSPECHOSOS:
+        if patron in t_lower:
+            errores.append(f"Patrón no permitido detectado: {patron!r}")
     return errores
+
+    # raise NotImplementedError("Implementa validate_input()")
+
+
+def parece_dominio_python(texto: str) -> bool:
+    """TODO: Fase 2 — True si el mensaje parece de Python/bootcamp.
+
+    Usa DOMINIO_KEYWORDS de config.py.
+
+    Ver README Fase 2, Tarea 2.
+    """
+
+    t = texto.lower()
+    return any(k in t for k in DOMINIO_KEYWORDS)
+
+    # raise NotImplementedError("Implementa parece_dominio_python()")
+
+
+def rechazo_fuera_de_dominio() -> str:
+    """TODO: Fase 2 — mensaje fijo cuando la pregunta no encaja en el producto.
+
+    Ver README Fase 2, Tarea 2.
+    """
+    
+    return (
+        "Solo puedo ayudarte con Python y ejercicios del bootcamp. "
+        "Reformula tu pregunta en ese contexto."
+    )
+    
+    # raise NotImplementedError("Implementa rechazo_fuera_de_dominio()")

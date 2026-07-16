@@ -1,15 +1,15 @@
-"""context.py — Selección de contexto desde el FAQ (Fase 2).
+"""context.py — Selección de contexto desde el FAQ (código dado).
 
 Qué hace este módulo:
-  - `cargar_faq()` lee `data/faq.json` (ya implementada).
-  - `seleccionar_faq()` elige las entradas más relevantes para una pregunta.
+  - `cargar_faq()` lee `data/faq.json`.
+  - `seleccionar_faq()` elige entradas relevantes por keywords (sin embeddings).
 
 Para qué sirve:
-  - No meter las 6 entradas del FAQ en cada prompt (ahorro de tokens y ruido).
-  - Devolver solo la información que el modelo necesita para responder.
+  - No inyectar todo el FAQ en cada prompt (ahorro de tokens y ruido).
 
-Función a implementar:
-  - `seleccionar_faq()` — ver README FASE 2, Tarea 1.
+Qué NO debes hacer aquí:
+  - Este archivo ya está completo en la práctica. Léelo antes de la live review.
+  - Si quieres repasar la lógica, consulta los vídeos del Sprint 5.
 """
 
 import json
@@ -17,7 +17,7 @@ from pathlib import Path
 
 
 def cargar_faq(ruta: Path) -> list[dict]:
-    """Carga faq.json desde disco. Ya está implementada; no necesitas modificarla."""
+    """Carga faq.json desde disco."""
     with ruta.open(encoding="utf-8") as f:
         data = json.load(f)
     if not isinstance(data, list):
@@ -26,14 +26,7 @@ def cargar_faq(ruta: Path) -> list[dict]:
 
 
 def seleccionar_faq(faq: list[dict], consulta: str, max_entradas: int = 1) -> list[dict]:
-    """TODO: contexto y chat — elige entradas del FAQ por keywords (sin vector DB).
-
-    Entrada: faq (6 entradas), consulta = "¿Qué es la live review del bootcamp?"
-    Salida: lista con 0 o max_entradas dicts del FAQ más relevantes.
-    Salida vacía [] si ninguna keyword coincide.
-
-    Ver README FASE 2, Tarea 1 (incluye pseudocódigo).
-    """
+    """Elige entradas del FAQ por keywords (sin vector DB)."""
     q = (consulta or "").lower()
     puntuaciones: list[tuple[int, dict]] = []
 
@@ -49,5 +42,3 @@ def seleccionar_faq(faq: list[dict], consulta: str, max_entradas: int = 1) -> li
 
     puntuaciones.sort(key=lambda x: x[0], reverse=True)
     return [e for _, e in puntuaciones[:max_entradas]]
-
-    # raise NotImplementedError("Implementa seleccionar_faq()")
