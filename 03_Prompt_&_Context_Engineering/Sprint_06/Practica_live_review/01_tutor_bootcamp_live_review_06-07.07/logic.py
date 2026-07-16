@@ -1,174 +1,121 @@
-"""logic.py — Orquestación: validar, clasificar y responder.
+"""logic.py — Orquestación de turnos (Fase 1 arquitectura + Fase 2 seguridad).
 
 Qué hace este módulo:
-  - Fase 1: `clasificar_consulta()` — validar → prompt → Gemini → parsear JSON.
-  - Fase 2: `responder_chat()` — prompt con contexto → Gemini → actualizar state.
-  - Helpers `respuesta_ok()` y `respuesta_error()` (ya implementados).
+  - Fase 1: `procesar_turno()` — pipeline con perfiles, FAQ e historial.
+  - Fase 2: `procesar_turno_vulnerable()` vs `procesar_turno_seguro()`.
 
 Para qué sirve:
-  - Es el «cerebro» que conecta validators, prompts, context, state y gemini_client.
-  - `main.py` solo llama funciones de aquí; no duplica reglas.
+  - Punto único de reglas de negocio; main.py solo imprime resultados.
 
-Reglas importantes:
-  - No uses `print` en este archivo (la salida la hace main.py).
-  - Importa `llamar_gemini_json` / `safe_generate_texto` dentro de las funciones.
+Qué NO debes hacer aquí:
+  - No uses `print()` — devuelve dicts con respuesta_ok/respuesta_error.
 
-Funciones a implementar:
-  - Fase 1: `parsear_clasificacion`, `clasificar_consulta`
-  - Fase 2: `demo_seleccion_faq`, `responder_chat`
+Funciones ya implementadas (código dado):
+  - `respuesta_ok`, `respuesta_error`, `crear_estado_demo`, `demo_seleccion_faq`
 """
-import json
 
+import json
 from pathlib import Path
 
-from validators import validar_consulta
-
-from config import (
-    CATEGORIAS,
-    MSG_CHAT_OK,
-    MSG_CLASIFICACION_OK,
-    MSG_ERROR_VALIDACION,
-    PRIORIDADES,
-    WINDOW,
+from config import ASSISTANT_CONFIG_DEFAULT, TEMPERATURE, TEMPERATURE_VULNERABLE
+from context import cargar_faq, seleccionar_faq
+from gemini_client import MetricasLlamada, safe_generate
+from prompts import (
+    build_assistant_prompt,
+    build_secure_prompt,
+    build_vulnerable_prompt,
+)
+from state import (
+    actualizar_perfil_desde_mensaje,
+    append_assistant,
+    append_user,
+    inicializar_estado,
+    ultimos_n,
+)
+from validators import (
+    parece_dominio_python,
+    rechazo_fuera_de_dominio,
+    validate_input,
 )
 
-from prompts import build_chat_prompt, build_clasificacion_prompt
-
-from context import cargar_faq, seleccionar_faq
-
-from state import append_model, append_user, guardar_clasificacion, ultimos_n
 
 def respuesta_ok(mensaje: str, data: dict | None = None) -> dict:
+    """Formato estándar de éxito. Ya implementada."""
     return {"status": "ok", "mensaje": mensaje, "data": data or {}}
 
 
 def respuesta_error(mensaje: str, errores: list[str]) -> dict:
+    """Formato estándar de error. Ya implementada."""
     return {"status": "error", "mensaje": mensaje, "data": {"errores": errores}}
 
 
-def parsear_clasificacion(raw: str) -> dict:
-    """TODO: clasificación — json.loads + whitelist de category y priority.
-
-    Entrada: '{"category": "tecnico", "priority": "media", "summary": "..."}'
-    Salida: dict con esas tres claves validadas.
-    Lanza ValueError si el JSON es inválido o las claves no están en config.
-
-    Ver README FASE 1, Tarea 3.
-    """
-    try:
-        obj = json.loads(raw)
-    except json.JSONDecodeError as e:
-        raise ValueError(f"JSON inválido del modelo: {raw!r}") from e
-
-    if not isinstance(obj, dict):
-        raise ValueError(f"Se esperaba un objeto JSON, recibido: {type(obj)}")
-
-    faltan = {"category", "priority", "summary"} - obj.keys()
-    if faltan:
-        raise ValueError(f"Faltan claves en la respuesta: {faltan}")
-
-    if obj["category"] not in CATEGORIAS:
-        raise ValueError(f"category inválida: {obj['category']!r}")
-    if obj["priority"] not in PRIORIDADES:
-        raise ValueError(f"priority inválida: {obj['priority']!r}")
-
-    return obj
-
-    # raise NotImplementedError("Implementa parsear_clasificacion()")
+def _metricas_a_dict(m: MetricasLlamada) -> dict:
+    return {
+        "elapsed_ms": m.elapsed_ms,
+        "prompt_tokens": m.prompt_tokens,
+        "output_tokens": m.output_tokens,
+        "total_tokens": m.total_tokens,
+    }
 
 
-def clasificar_consulta(datos: dict) -> dict:
-    """TODO: clasificación — orquesta validar → prompt → Gemini → parsear.
-
-    Entrada: dict como en consultas_ejemplo.json.
-    Salida OK: {"status": "ok", "mensaje": "...", "data": {category, priority, summary}}
-    Salida error: {"status": "error", "mensaje": "...", "data": {"errores": [...]}}
-
-    Sin print. Ver README FASE 1, Tarea 4.
-    """
-    errores = validar_consulta(datos)
-    if errores:
-        return respuesta_error(MSG_ERROR_VALIDACION, errores)
-
-    mensaje = str(datos.get("mensaje", "")).strip()
-    prompt = build_clasificacion_prompt(mensaje)
-
-    try:
-        from gemini_client import llamar_gemini_json
-
-        raw = llamar_gemini_json(prompt)
-        obj = parsear_clasificacion(raw)
-        return respuesta_ok(MSG_CLASIFICACION_OK, obj)
-    except ValueError as e:
-        return respuesta_error("Salida del modelo inválida", [str(e)])
-    except Exception as e:
-        return respuesta_error("Error al llamar al modelo", [str(e)])
-    
-    # raise NotImplementedError("Implementa clasificar_consulta()")
-
-def responder_chat(
+def procesar_turno(
     state: dict,
-    pregunta: str,
-    faq_entries: list[dict],
+    user_message: str,
+    assistant_config: dict | None = None,
+    faq_entries: list[dict] | None = None,
 ) -> dict:
-    """TODO: contexto y chat — prompt con perfil, FAQ filtrado e historial.
+    """TODO: Fase 1 — pipeline: prompt → Gemini → actualizar estado.
 
-    Entrada: state (inicializar_estado), pregunta del alumno, faq_entries de seleccionar_faq.
-    Salida OK: respuesta del modelo + metricas (elapsed_ms, tokens).
-    Actualiza state con append_user/append_model tras respuesta OK.
-
-    Ver README FASE 2, Tarea 4.
+    Ver README Fase 1, Tarea 5 (incluye pseudocódigo).
     """
-    if not pregunta.strip():
-        return respuesta_error("Pregunta vacía", ["La pregunta no puede estar vacía."])
+    if not user_message.strip():
+        return respuesta_error("Mensaje vacío", ["El mensaje no puede estar vacío."])
 
-    # Construir prompt que se enviará a Gemini
-    profile = state.get("user_profile", {})
-    prompt = build_chat_prompt(
-        pregunta=pregunta,
-        profile=profile,
-        faq_entries=faq_entries,
-        recent_messages=ultimos_n(state, WINDOW),
+    config = assistant_config or ASSISTANT_CONFIG_DEFAULT.copy()
+    ventana = config.get("max_turnos_historial", 6)
+
+    prompt = build_assistant_prompt(
+        assistant_config=config,
+        user_state=state,
+        user_message=user_message,
+        extra_context=faq_entries or [],
+        recent_messages=ultimos_n(state, ventana),
     )
 
-    # Llamar a Gemini y manejar errores
     try:
-        from gemini_client import safe_generate_texto
-
-        texto, metricas = safe_generate_texto(prompt)
+        texto, metricas = safe_generate(prompt, temperature=config["temperature"])
     except ValueError as e:
-        return respuesta_error("Contexto demasiado grande", [str(e)])
-    except Exception as e:
-        return respuesta_error("Error al llamar al modelo", [str(e)])
-    
-    # Actualizar state con la pregunta del usuario y la respuesta del modelo
-    append_user(state, pregunta)
-    append_model(state, texto)
+        return respuesta_error("Error de contexto", [str(e)])
+
+    actualizar_perfil_desde_mensaje(state, user_message)
+    append_user(state, user_message)
+    append_assistant(state, texto)
 
     return respuesta_ok(
-        MSG_CHAT_OK,
+        "Turno completado",
         {
             "respuesta": texto,
-            "metricas": {
-                "elapsed_ms": metricas.elapsed_ms,
-                "prompt_tokens": metricas.prompt_tokens,
-                "output_tokens": metricas.output_tokens,
-                "total_tokens": metricas.total_tokens,
-            },
+            "perfil_activo": config["perfil_activo"],
+            "metricas": _metricas_a_dict(metricas),
         },
     )
 
-    # raise NotImplementedError("Implementa responder_chat()")
+    # raise NotImplementedError("Implementa procesar_turno()")
+
+
+def crear_estado_demo() -> dict:
+    """Estado inicial para las demos de Fase 1. Ya implementada; no necesitas modificarla."""
+    return inicializar_estado(
+        {
+            "nombre": "",
+            "nivel": "junior",
+            "tema_actual": "",
+        }
+    )
 
 
 def demo_seleccion_faq(faq_path: Path, consulta: str) -> dict:
-    """TODO: contexto y chat — prueba seleccionar_faq sin chat completo.
-
-    Entrada: ruta a faq.json y texto de consulta.
-    Salida OK: {"status": "ok", "data": {"topic_id": "...", "entry": {...}}}
-
-    Ver README FASE 2, Tarea 4.
-    """
+    """Muestra qué entrada FAQ se seleccionó. Ya implementada; no necesitas modificarla."""
     faq = cargar_faq(faq_path)
     seleccion = seleccionar_faq(faq, consulta, max_entradas=1)
     if not seleccion:
@@ -176,10 +123,94 @@ def demo_seleccion_faq(faq_path: Path, consulta: str) -> dict:
             "FAQ sin coincidencias",
             ["Ninguna entrada del FAQ coincide con la consulta."],
         )
-    entry = seleccion[0]
     return respuesta_ok(
         "Entrada FAQ seleccionada",
-        {"topic_id": entry.get("topic_id"), "entry": entry},
+        {"topic_id": seleccion[0].get("topic_id"), "entry": seleccion[0]},
     )
-    
-    # raise NotImplementedError("Implementa demo_seleccion_faq()")
+
+
+def parsear_respuesta_tutor(raw: str) -> dict:
+    """TODO: Fase 2 — parsea y valida JSON del modelo (claves obligatorias).
+
+    Ver README Fase 2, Tarea 5.
+    """
+    try:
+        obj = json.loads(raw)
+    except json.JSONDecodeError as e:
+        raise ValueError(f"JSON inválido del modelo: {raw!r}") from e
+    for key in ("in_scope", "category", "answer"):
+        if key not in obj:
+            raise ValueError(f"Falta clave obligatoria en JSON: {key}")
+    return obj
+
+    # raise NotImplementedError("Implementa parsear_respuesta_tutor()")
+
+
+def procesar_turno_vulnerable(user_message: str) -> dict:
+    """TODO: Fase 2 — pipeline débil para comparativa.
+
+    Ver README Fase 2, Tarea 6.
+    """
+    if not user_message.strip():
+        return respuesta_error("Mensaje vacío", ["El mensaje no puede estar vacío."])
+
+    prompt = build_vulnerable_prompt(user_message)
+    try:
+        texto, metricas = safe_generate(prompt, temperature=TEMPERATURE_VULNERABLE)
+    except ValueError as e:
+        return respuesta_error("Error de contexto", [str(e)])
+
+    return respuesta_ok(
+        "Turno vulnerable completado",
+        {
+            "modo": "vulnerable",
+            "respuesta": texto,
+            "metricas": _metricas_a_dict(metricas),
+        },
+    )
+
+    # raise NotImplementedError("Implementa procesar_turno_vulnerable()")
+
+
+def procesar_turno_seguro(user_message: str) -> dict:
+    """TODO: Fase 2 — pipeline seguro con defensa en capas.
+
+    Ver README Fase 2, Tarea 7 (incluye pseudocódigo).
+    """
+    errores = validate_input(user_message)
+    if errores:
+        return respuesta_error("Input rechazado", errores)
+
+    if not parece_dominio_python(user_message):
+        return respuesta_ok(
+            "Fuera de dominio (sin llamar al modelo)",
+            {
+                "modo": "seguro",
+                "respuesta": rechazo_fuera_de_dominio(),
+                "json": {
+                    "in_scope": False,
+                    "category": "out_of_scope",
+                    "answer": rechazo_fuera_de_dominio(),
+                },
+                "metricas": None,
+            },
+        )
+
+    prompt = build_secure_prompt(user_message)
+    try:
+        raw, metricas = safe_generate(prompt, temperature=TEMPERATURE, json_mode=True)
+        obj = parsear_respuesta_tutor(raw)
+    except ValueError as e:
+        return respuesta_error("Error al procesar respuesta", [str(e)])
+
+    return respuesta_ok(
+        "Turno seguro completado",
+        {
+            "modo": "seguro",
+            "respuesta": obj.get("answer", ""),
+            "json": obj,
+            "metricas": _metricas_a_dict(metricas),
+        },
+    )
+
+    # raise NotImplementedError("Implementa procesar_turno_seguro()")

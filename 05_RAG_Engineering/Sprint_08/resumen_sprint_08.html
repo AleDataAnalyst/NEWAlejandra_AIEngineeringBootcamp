@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía visual · Sprint 08 — Data Ingestion & Embeddings (RAG)</title>
+<style>
+  :root{
+    --bg:#0e1117; --bg2:#161b22; --card:#1b222c; --card2:#212a36;
+    --border:#2b3542; --text:#e6edf3; --muted:#9aa7b4; --dim:#7d8b98;
+    --accent:#7c9cff; --accent2:#5eead4; --amber:#fbbf24; --rose:#fb7185;
+    --green:#4ade80; --violet:#c084fc; --code:#0b0f14;
+    --shadow:0 8px 30px rgba(0,0,0,.35);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:linear-gradient(180deg,#0b0e13,#0e1117 240px);
+    color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.65; font-size:16px;
+  }
+  a{color:var(--accent); text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* Layout */
+  .wrap{max-width:1180px; margin:0 auto; padding:0 22px}
+  header.hero{
+    padding:56px 22px 30px; text-align:center;
+    border-bottom:1px solid var(--border);
+    background:radial-gradient(1200px 400px at 50% -120px, rgba(124,156,255,.16), transparent);
+  }
+  .kicker{
+    display:inline-block; font-size:12.5px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--accent2); background:rgba(94,234,212,.08); border:1px solid rgba(94,234,212,.25);
+    padding:5px 12px; border-radius:999px; margin-bottom:16px; font-weight:600;
+  }
+  h1{font-size:clamp(28px,4.4vw,44px); margin:.1em 0 .2em; line-height:1.12; letter-spacing:-.02em}
+  .hero p{color:var(--muted); max-width:740px; margin:10px auto 0; font-size:17px}
+  .hero .tag{color:var(--dim); font-size:13.5px; margin-top:18px}
+
+  /* Sticky nav */
+  nav.toc{
+    position:sticky; top:0; z-index:20; background:rgba(14,17,23,.82);
+    backdrop-filter:blur(10px); border-bottom:1px solid var(--border);
+  }
+  nav.toc .wrap{display:flex; gap:6px; overflow-x:auto; padding:10px 22px; scrollbar-width:thin}
+  nav.toc a{
+    white-space:nowrap; color:var(--muted); font-size:13.5px; font-weight:600;
+    padding:7px 13px; border-radius:9px; border:1px solid transparent;
+  }
+  nav.toc a:hover{color:var(--text); background:var(--card); text-decoration:none}
+  nav.toc a.active{color:var(--text); background:var(--card2); border-color:var(--border)}
+
+  section{padding:44px 0 8px}
+  section > .wrap > .sec-head{display:flex; align-items:center; gap:14px; margin-bottom:6px}
+  .sec-num{
+    flex:0 0 auto; width:38px; height:38px; border-radius:11px; display:grid; place-items:center;
+    font-weight:700; font-size:16px; color:#0b0f14; background:linear-gradient(135deg,var(--accent),var(--accent2));
+  }
+  h2{font-size:clamp(22px,3vw,30px); margin:0; letter-spacing:-.01em}
+  .lead{color:var(--muted); font-size:16.5px; margin:6px 0 26px; max-width:840px}
+  h3{font-size:19px; margin:30px 0 10px; letter-spacing:-.01em}
+  h4{font-size:15.5px; margin:20px 0 8px; color:var(--text)}
+  p{margin:10px 0}
+
+  /* Cards & grids */
+  .grid{display:grid; gap:16px}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:960px){.g4{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 20px; box-shadow:var(--shadow);
+  }
+  .card h4{margin-top:0}
+  .card .ico{font-size:22px}
+  .pill{
+    display:inline-block; font-size:12px; font-weight:600; padding:3px 10px; border-radius:999px;
+    border:1px solid var(--border); color:var(--muted); background:var(--bg2);
+  }
+  .pill.a{color:var(--accent); border-color:rgba(124,156,255,.35); background:rgba(124,156,255,.08)}
+  .pill.t{color:var(--accent2); border-color:rgba(94,234,212,.35); background:rgba(94,234,212,.08)}
+  .pill.v{color:var(--violet); border-color:rgba(192,132,252,.35); background:rgba(192,132,252,.08)}
+  .pill.g{color:var(--green); border-color:rgba(74,222,128,.35); background:rgba(74,222,128,.08)}
+  .pill.am{color:var(--amber); border-color:rgba(251,191,36,.35); background:rgba(251,191,36,.08)}
+
+  /* Tables */
+  .tbl{overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); margin:16px 0}
+  table{border-collapse:collapse; width:100%; font-size:14.5px; min-width:520px}
+  th,td{padding:11px 14px; text-align:left; border-bottom:1px solid var(--border); vertical-align:top}
+  th{background:var(--bg2); color:var(--muted); font-weight:600; font-size:12.5px; text-transform:uppercase; letter-spacing:.04em}
+  tr:last-child td{border-bottom:none}
+  td strong{color:var(--text)}
+
+  /* Code / diagrams */
+  pre{
+    background:var(--code); border:1px solid var(--border); border-radius:12px;
+    padding:16px 18px; overflow-x:auto; font-size:13.5px; line-height:1.5;
+    font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace; color:#d5dde6; margin:14px 0;
+  }
+  pre .c{color:#6a7787}
+  pre .k{color:#c084fc}
+  pre .s{color:#5eead4}
+  pre .f{color:#7c9cff}
+  pre .n{color:#fbbf24}
+  code.inl{background:var(--bg2); border:1px solid var(--border); border-radius:6px; padding:1px 6px; font-size:13px; font-family:Consolas,monospace; color:var(--accent2)}
+
+  .callout{
+    border-left:3px solid var(--accent); background:rgba(124,156,255,.06);
+    padding:14px 18px; border-radius:0 12px 12px 0; margin:18px 0;
+  }
+  .callout.warn{border-color:var(--amber); background:rgba(251,191,36,.06)}
+  .callout.key{border-color:var(--accent2); background:rgba(94,234,212,.06)}
+  .callout .lab{font-weight:700; font-size:12.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:3px}
+
+  ul.clean{list-style:none; padding-left:0; margin:12px 0}
+  ul.clean li{padding:7px 0 7px 28px; position:relative; border-bottom:1px dashed var(--border)}
+  ul.clean li:last-child{border-bottom:none}
+  ul.clean li:before{content:"▹"; position:absolute; left:6px; color:var(--accent)}
+
+  /* Pipeline / module diagram */
+  .modmap{display:grid; grid-template-columns:1fr; gap:0; margin:20px 0}
+  .layer{
+    border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin:8px 0; background:var(--card);
+    position:relative;
+  }
+  .layer .lname{font-weight:700; font-size:14px; color:var(--text)}
+  .layer .ldesc{color:var(--muted); font-size:13.5px; margin-top:2px}
+  .layer.entry{border-color:rgba(251,113,133,.4)}
+  .layer.cfg{border-color:rgba(251,191,36,.4)}
+  .layer.engine{border-color:rgba(124,156,255,.4)}
+  .layer.io{border-color:rgba(94,234,212,.4)}
+  .flowarrow{text-align:center; color:var(--dim); font-size:20px; margin:-2px 0}
+
+  .filecard{display:flex; gap:12px; align-items:flex-start; padding:12px 0; border-bottom:1px dashed var(--border)}
+  .filecard:last-child{border-bottom:none}
+  .filecard .fn{
+    flex:0 0 auto; font-family:Consolas,monospace; font-size:13px; color:var(--amber);
+    background:var(--code); border:1px solid var(--border); border-radius:7px; padding:4px 9px; min-width:118px; text-align:center;
+  }
+  .filecard .fd{color:var(--muted); font-size:14px}
+  .filecard .fd b{color:var(--text)}
+
+  .step{display:flex; gap:14px; margin:14px 0}
+  .step .num{flex:0 0 auto; width:30px; height:30px; border-radius:50%; background:var(--card2); border:1px solid var(--border); display:grid; place-items:center; font-weight:700; font-size:14px; color:var(--accent)}
+  .step .body{flex:1}
+  .step .body b{color:var(--text)}
+
+  /* pipeline horizontal strip */
+  .pipe{display:flex; align-items:stretch; gap:0; flex-wrap:wrap; margin:18px 0}
+  .pipe .stage{flex:1 1 140px; min-width:130px; border:1px solid var(--border); border-radius:12px; background:var(--card); padding:12px 12px; text-align:center; position:relative}
+  .pipe .stage .st-ic{font-size:20px}
+  .pipe .stage .st-nm{font-weight:700; font-size:13.5px; margin-top:4px; color:var(--text)}
+  .pipe .stage .st-ds{font-size:11.5px; color:var(--dim); margin-top:2px; line-height:1.35}
+  .pipe .sep{flex:0 0 26px; display:grid; place-items:center; color:var(--dim); font-size:20px}
+  @media(max-width:820px){.pipe .sep{width:100%; flex-basis:100%; transform:rotate(90deg); height:22px}}
+
+  footer{margin-top:50px; padding:30px 22px 60px; border-top:1px solid var(--border); text-align:center; color:var(--dim); font-size:13.5px}
+
+  .antipattern{border-left:3px solid var(--rose); background:rgba(251,113,133,.06); padding:12px 16px; border-radius:0 10px 10px 0; margin:10px 0; font-size:14.5px}
+  .goodpattern{border-left:3px solid var(--green); background:rgba(74,222,128,.06); padding:12px 16px; border-radius:0 10px 10px 0; margin:10px 0; font-size:14.5px}
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  @media(max-width:820px){.two-col{grid-template-columns:1fr}}
+  .mini{font-size:13px; color:var(--dim)}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="kicker">Bootcamp IA Generativa · Guía del alumno · Módulo 4 RAG</span>
+  <h1>Sprint 08 — Data Ingestion &amp; Embeddings</h1>
+  <p>Arranca el <b>RAG Engineering</b>. La pregunta central: <b>¿cómo convierto documentos en conocimiento recuperable?</b> Todavía no montas un chatbot: primero preparas el pipeline <b>offline</b> — ingesta, chunking y embeddings.</p>
+  <div class="tag">Guía visual y sintetizada · orientada al proyecto <b>ingesta + chunking + embedding</b></div>
+</header>
+
+<nav class="toc" id="toc">
+  <div class="wrap">
+    <a href="#mapa">Mapa del módulo</a>
+    <a href="#rag">1 · Qué es RAG</a>
+    <a href="#arquitectura">2 · Arquitectura</a>
+    <a href="#ingesta">3 · Ingesta</a>
+    <a href="#chunking">4 · Chunking</a>
+    <a href="#embeddings">5 · Embeddings</a>
+    <a href="#modular">6 · Pipeline modular ★</a>
+    <a href="#proyecto">7 · El proyecto</a>
+    <a href="#checklist">Checklist</a>
+  </div>
+</nav>
+
+<!-- ================= MAPA ================= -->
+<section id="mapa">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">◎</div><h2>Dónde estás en el módulo RAG</h2></div>
+    <p class="lead">RAG (<b>Retrieval-Augmented Generation</b>) se construye en tres sprints. Este es el primero: <b>preparar</b> el conocimiento. Al final tendrás <b>vectores listos para indexar</b>, no un asistente que responde todavía — y eso es lo esperado.</p>
+
+    <div class="grid g3">
+      <div class="card" style="border-color:rgba(124,156,255,.5)">
+        <div class="ico">📦</div>
+        <span class="pill a">Sprint 08 · estás aquí</span>
+        <h4>Preparar</h4>
+        <p class="mini">¿Cómo convierto documentos en conocimiento? Ingesta → chunking → embeddings. Salida: <code class="inl">chunks.json</code> + <code class="inl">embeddings.json</code>.</p>
+      </div>
+      <div class="card">
+        <div class="ico">🔎</div>
+        <span class="pill t">Sprint 09</span>
+        <h4>Recuperar</h4>
+        <p class="mini">¿Cómo recupero ese conocimiento? Indexar en ChromaDB + retrieval de los top-K chunks más similares. Sin respuesta final aún.</p>
+      </div>
+      <div class="card">
+        <div class="ico">💬</div>
+        <span class="pill v">Sprint 10</span>
+        <h4>Generar</h4>
+        <p class="mini">¿Cómo uso ese conocimiento para responder? Prompt + LLM con contexto + robustez + aplicación. Se cierra el ciclo RAG.</p>
+      </div>
+    </div>
+
+    <div class="callout key">
+      <span class="lab">Idea que atraviesa el módulo</span>
+      Un sistema RAG <b>no es un prompt largo</b>: es un <b>pipeline por capas</b>. Se prepara (S8), se recupera bien (S9) y se genera con robustez (S10). Separar responsabilidades permite depurar por etapa, no culpar al LLM en genérico.
+    </div>
+  </div>
+</section>
+
+<!-- ================= QUÉ ES RAG ================= -->
+<section id="rag">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">1</div><h2>Qué es RAG y por qué</h2></div>
+    <p class="lead">Un LLM <b>no conoce por defecto</b> tus documentos privados y tiene una fecha de corte. RAG deja que el modelo responda <b>anclado a tus documentos</b>, sin reentrenarlo cada vez que cambia un PDF.</p>
+
+    <h3>Las limitaciones que RAG resuelve</h3>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Limitación del LLM solo</th><th>Qué significa en la práctica</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Conocimiento desactualizado</strong></td><td>No sabe precios, políticas o normas publicadas tras su entrenamiento</td></tr>
+          <tr><td><strong>Sin acceso a docs privados</strong></td><td>No ha leído tus contratos, manuales ni bases de datos propias</td></tr>
+          <tr><td><strong>Alucinaciones</strong></td><td>Inventa datos plausibles (fechas, cifras) si no tiene fuente</td></tr>
+          <tr><td><strong>Ventana finita</strong></td><td>No puedes pegar 500 PDFs enteros en un solo prompt</td></tr>
+          <tr><td><strong>Poca trazabilidad</strong></td><td>Difícil saber de qué documento salió una afirmación</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>RAG en tres palabras</h3>
+    <div class="grid g3">
+      <div class="card"><span class="pill t">R · Retrieval</span><h4>Recuperar</h4><p class="mini">Buscar los fragmentos de texto relevantes en tu base de conocimiento (índice vectorial).</p></div>
+      <div class="card"><span class="pill a">A · Augmented</span><h4>Aumentar</h4><p class="mini">Añadir esos fragmentos al prompt del LLM como contexto.</p></div>
+      <div class="card"><span class="pill v">G · Generation</span><h4>Generar</h4><p class="mini">El LLM redacta la respuesta usando ese contexto. No memoriza tus PDFs: los <b>consulta</b> en tiempo de inferencia.</p></div>
+    </div>
+
+    <h3>Tres formas de dar conocimiento al modelo</h3>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Enfoque</th><th>Idea</th><th>Ventaja</th><th>Límite</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Prompt engineering</strong></td><td>Metes los datos en el prompt (FAQ, extractos)</td><td>Rápido, barato, control total</td><td>No escala con corpus grande</td></tr>
+          <tr><td><strong>RAG</strong></td><td>Recuperas chunks relevantes y los inyectas</td><td>Escala, actualizable, trazable</td><td>Depende del chunking y el retrieval</td></tr>
+          <tr><td><strong>Fine-tuning</strong></td><td>Reentrenas los pesos con datos etiquetados</td><td>Comportamiento muy especializado</td><td>Caro, lento; no vale para docs que cambian</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout warn">
+      <span class="lab">Cuándo RAG NO es la primera opción</span>
+      5–10 FAQs fijas, cambiar solo el <b>tono</b>, o un corpus de 1 página → basta prompt manual o pegar el texto. <b>Regla:</b> si el corpus <b>crece, cambia a menudo o no cabe</b> en el prompt → evalúa RAG.
+    </div>
+  </div>
+</section>
+
+<!-- ================= ARQUITECTURA ================= -->
+<section id="arquitectura">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">2</div><h2>Arquitectura: offline vs online</h2></div>
+    <p class="lead">Parte del trabajo ocurre <b>antes</b> de que el usuario pregunte (offline, indexar) y parte <b>en cada consulta</b> (online, inferencia). <b>Recuperación ≠ generación</b>: primero buscas, después redactas.</p>
+
+    <h3>Fase OFFLINE — preparar conocimiento (esto es el Sprint 8)</h3>
+    <div class="pipe">
+      <div class="stage"><div class="st-ic">📥</div><div class="st-nm">LOAD</div><div class="st-ds">cargar y leer archivos</div></div>
+      <div class="sep">→</div>
+      <div class="stage"><div class="st-ic">🧹</div><div class="st-nm">CLEAN</div><div class="st-ds">normalizar texto</div></div>
+      <div class="sep">→</div>
+      <div class="stage"><div class="st-ic">✂️</div><div class="st-nm">CHUNK</div><div class="st-ds">trocear + metadatos</div></div>
+      <div class="sep">→</div>
+      <div class="stage"><div class="st-ic">🔢</div><div class="st-nm">EMBED</div><div class="st-ds">texto → vectores</div></div>
+      <div class="sep">→</div>
+      <div class="stage" style="opacity:.55; border-style:dashed"><div class="st-ic">🗄️</div><div class="st-nm">INDEX</div><div class="st-ds">base vectorial · S9</div></div>
+    </div>
+
+    <h3>Fase ONLINE — consultar y responder (Sprints 9–10)</h3>
+    <div class="pipe">
+      <div class="stage"><div class="st-ic">❓</div><div class="st-nm">Pregunta</div><div class="st-ds">del usuario</div></div>
+      <div class="sep">→</div>
+      <div class="stage"><div class="st-ic">🔢</div><div class="st-nm">EMBED</div><div class="st-ds">consulta → vector</div></div>
+      <div class="sep">→</div>
+      <div class="stage" style="opacity:.7"><div class="st-ic">🔎</div><div class="st-nm">RETRIEVE</div><div class="st-ds">top-K · S9</div></div>
+      <div class="sep">→</div>
+      <div class="stage" style="opacity:.7"><div class="st-ic">🧩</div><div class="st-nm">PROMPT</div><div class="st-ds">contexto · S10</div></div>
+      <div class="sep">→</div>
+      <div class="stage" style="opacity:.7"><div class="st-ic">💬</div><div class="st-nm">LLM</div><div class="st-ds">respuesta · S10</div></div>
+    </div>
+
+    <h3>Recuperación vs generación: dos responsabilidades</h3>
+    <div class="tbl">
+      <table>
+        <thead><tr><th></th><th>Recuperación (Retrieval)</th><th>Generación (Generation)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Entrada</strong></td><td>Pregunta del usuario</td><td>Pregunta + chunks recuperados</td></tr>
+          <tr><td><strong>Salida</strong></td><td>Lista de fragmentos relevantes</td><td>Texto de respuesta</td></tr>
+          <tr><td><strong>Modelo</strong></td><td>Embeddings + búsqueda vectorial</td><td>LLM (Gemini…)</td></tr>
+          <tr><td><strong>Responde a</strong></td><td><i>¿Qué documentos son relevantes?</i></td><td><i>¿Qué le digo al usuario?</i></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="antipattern"><b>Error frecuente de junior:</b> mezclar recuperación y generación en un solo bloque de código. En el bootcamp las separas <b>por sprint y por módulo</b> — código más legible y mantenible.</div>
+
+    <h3>El stack del módulo</h3>
+    <div class="grid g4">
+      <div class="card"><span class="pill a">google-genai</span><h4>Gemini</h4><p class="mini">Embeddings (S8) y LLM generativo (S10). API key en <code class="inl">.env</code>.</p></div>
+      <div class="card"><span class="pill t">LangChain</span><h4>Loaders + splitters</h4><p class="mini">Envuelve la lectura de PDFs y el troceado. <b>No</b> esconde tu arquitectura.</p></div>
+      <div class="card"><span class="pill v">ChromaDB</span><h4>Base vectorial</h4><p class="mini">Persistir y buscar vectores. Llega en el Sprint 9.</p></div>
+      <div class="card"><span class="pill am">Hugging Face</span><h4>Embeddings locales</h4><p class="mini">MiniLM, sin API. Solo para comparación didáctica.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= INGESTA ================= -->
+<section id="ingesta">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">3</div><h2>Ingesta: del documento al texto</h2></div>
+    <p class="lead">La ingesta lee cada archivo del corpus y lo convierte en <b>documentos unificados</b> (texto + metadata), sin importar si el origen fue PDF, Markdown, TXT o CSV.</p>
+
+    <div class="two-col">
+      <div class="card">
+        <h4>📥 Carga (load)</h4>
+        <p class="mini">Loaders de LangChain: <code class="inl">PyPDFLoader</code> para PDF, <code class="inl">TextLoader</code> para .txt/.md. Un CSV de eventos se convierte fila a fila: <b>una fila = un documento</b>. El loader <b>abstrae el formato</b>: el resto del pipeline no sabe de dónde vino el texto.</p>
+      </div>
+      <div class="card">
+        <h4>🧹 Limpieza (clean)</h4>
+        <p class="mini">Quita ruido antes de trocear: saltos de línea raros, espacios de más, líneas vacías repetidas. Un texto uniforme produce chunks más homogéneos. <b>Limpia antes de chunkear</b>, no después (si no, duplicas ruido en cada fragmento).</p>
+      </div>
+    </div>
+
+    <h3>Metadatos: viajan con cada chunk hasta el vector</h3>
+    <p>Cada fragmento lleva metadatos para saber <b>de dónde vino</b> cuando el retrieval lo devuelva (S9) o cuando cites fuentes (S10).</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Campo</th><th>Uso</th></tr></thead>
+        <tbody>
+          <tr><td><code class="inl">source</code></td><td>Ruta o nombre del archivo origen</td></tr>
+          <tr><td><code class="inl">page</code></td><td>Número de página (PDFs)</td></tr>
+          <tr><td><code class="inl">chunk_index</code></td><td>Orden del chunk en el pipeline (0, 1, 2…)</td></tr>
+          <tr><td><code class="inl">chunk_size</code></td><td>Caracteres del fragmento (debug)</td></tr>
+          <tr><td><code class="inl">distrito</code> · <code class="inl">tipo</code></td><td>Metadatos de dominio (eventos del CSV) para filtrar en retrieval</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout"><span class="lab">Por qué importa</span> La metadata <code class="inl">distrito</code>, <code class="inl">id_evento</code>, <code class="inl">tipo</code> sigue viva en <code class="inl">embeddings.json</code>: sirve para <b>filtrar</b> o <b>citar fuentes</b> más adelante.</div>
+  </div>
+</section>
+
+<!-- ================= CHUNKING ================= -->
+<section id="chunking">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">4</div><h2>Chunking: el factor que más pesa</h2></div>
+    <p class="lead"><b>Chunking</b> = dividir documentos largos en fragmentos pequeños antes de embeddear. Es uno de los factores que <b>más influye</b> en la calidad del RAG: un retrieval malo suele empezar por chunks mal dimensionados.</p>
+
+    <h3>Por qué no indexar el documento entero</h3>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Enfoque</th><th>Problema</th></tr></thead>
+        <tbody>
+          <tr><td>Documento completo en un embedding</td><td>Mezcla muchos temas → búsqueda imprecisa</td></tr>
+          <tr><td>Documento entero en el prompt</td><td>No cabe en contexto; caro</td></tr>
+          <tr><td><strong>Chunks pequeños y homogéneos</strong></td><td><strong>Recuperas el párrafo relevante</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>La herramienta por defecto: RecursiveCharacterTextSplitter</h3>
+    <p>Intenta cortar respetando la estructura, en este orden de separadores — primero párrafos, luego frases, y solo al final parte una palabra:</p>
+    <pre>"\n\n"  →  "\n"  →  ". "  →  " "  →  carácter</pre>
+    <pre><span class="k">from</span> langchain_text_splitters <span class="k">import</span> RecursiveCharacterTextSplitter
+
+splitter = RecursiveCharacterTextSplitter(
+    <span class="n">chunk_size</span>=<span class="s">800</span>,
+    <span class="n">chunk_overlap</span>=<span class="s">100</span>,
+    length_function=<span class="k">len</span>,
+)
+chunks = splitter.split_documents(documentos)</pre>
+
+    <h3>Los dos parámetros clave</h3>
+    <div class="two-col">
+      <div class="card">
+        <h4><code class="inl">chunk_size</code> — tamaño del fragmento</h4>
+        <ul class="clean">
+          <li><b>Pequeño (300–500):</b> preciso en preguntas concretas, pero pierde contexto de párrafo</li>
+          <li><b>Medio (700–1000):</b> buen equilibrio general ✅</li>
+          <li><b>Grande (2000+):</b> más contexto, pero mezcla temas → embedding difuso</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4><code class="inl">chunk_overlap</code> — solapamiento</h4>
+        <p class="mini">10–20% del <code class="inl">chunk_size</code>. Hace que fragmentos vecinos compartan texto para <b>no cortar una idea a la mitad</b>.</p>
+        <pre>Chunk 1: "...Lugar: Parque de Villa"
+Chunk 2: "Parque de Villa Rosa. Distrito..."
+         ^^^^^ overlap ^^^^^</pre>
+      </div>
+    </div>
+    <div class="antipattern"><b>Errores frecuentes:</b> <code class="inl">chunk_size</code> enorme (5000+) → un chunk = muchas páginas · <code class="inl">overlap = 0</code> → se pierde info en el límite · chunkear <b>antes</b> de limpiar → duplicas ruido · no revisar muestras → el problema aparece recién en S9.</div>
+    <div class="callout key"><span class="lab">Sin valor universal</span> No hay un <code class="inl">chunk_size</code> perfecto: depende del documento. Empieza en ~800 / overlap ~100, <b>inspecciona muestras a mano</b> y ajústalo evaluando el retrieval en el Sprint 9.</div>
+  </div>
+</section>
+
+<!-- ================= EMBEDDINGS ================= -->
+<section id="embeddings">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">5</div><h2>Embeddings y similitud semántica</h2></div>
+    <p class="lead">Un <b>embedding</b> transforma texto en una lista de números (vector). No se leen los números uno a uno: se usa la <b>distancia</b> entre vectores como proxy de <b>similitud de significado</b>.</p>
+
+    <div class="two-col">
+      <div class="card">
+        <h4>De palabras a números</h4>
+        <pre>"¿Eventos culturales gratis en Madrid?"
+        │
+        ▼
+[0.02, -0.15, 0.08, ..., 0.11]
+   ← 3072 dimensiones (gemini-embedding-2)</pre>
+        <p class="mini">Textos <b>semánticamente cercanos</b> → vectores <b>cercanos</b> en el espacio. Importa la posición relativa, no cada componente.</p>
+      </div>
+      <div class="card">
+        <h4>Similitud del coseno</h4>
+        <p class="mini">Mide el <b>ángulo</b> entre dos vectores (no su longitud). En texto suele estar entre 0 y 1:</p>
+        <pre>sim = 1.0  → mismo significado
+sim = 0.8  → muy parecido
+sim = 0.3  → poco relacionado
+sim ≈ 0    → temas distintos</pre>
+        <p class="mini">En RAG: comparas la pregunta con cada chunk y te quedas con los <b>top-K</b> más altos.</p>
+      </div>
+    </div>
+
+    <h3>Qué NO es un embedding</h3>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Confusión</th><th>Realidad</th></tr></thead>
+        <tbody>
+          <tr><td>"Es un hash del texto"</td><td>Textos distintos con el mismo significado → vectores similares</td></tr>
+          <tr><td>"Mayor valor = más importante"</td><td>Importa la <b>dirección</b> del vector, no un componente suelto</td></tr>
+          <tr><td>"Sirve para generar respuestas"</td><td>El embedding <b>busca</b>; el LLM <b>redacta</b> después</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warn">
+      <span class="lab">Regla de oro del RAG</span>
+      <b>Mismo modelo de embedding</b> para indexar los chunks y para embeddear la consulta del usuario. Mezclar Gemini al indexar y Hugging Face al consultar (o modelos distintos) <b>invalida</b> la comparación de distancias.
+    </div>
+
+    <h3>Comparar modelos de embedding (estilo Sprint 7)</h3>
+    <p>Igual que comparaste LLMs con latencia y calidad, aquí comparas embeddings con <b>pares de frases controlados</b>: sinónimos deben dar similitud alta; temas distintos, baja.</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Par de frases</th><th>Expectativa</th></tr></thead>
+        <tbody>
+          <tr><td>"Live Review del bootcamp" ↔ "Sesión en vivo del sprint"</td><td>Similitud <strong>alta</strong></td></tr>
+          <tr><td>"¿Cuándo entregar la práctica?" ↔ "Plazo de entrega antes de la Live Review"</td><td>Similitud <strong>alta</strong></td></tr>
+          <tr><td>"Live Review del bootcamp" ↔ "Receta de tortilla española"</td><td>Similitud <strong>baja</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout"><span class="lab">Criterio de elección</span> No elijas un embedding porque suena bien; elige el que <b>separa bien tus pares de prueba en tu dominio</b>. En el bootcamp: <b>Gemini como default</b> (coherencia con el stack), HF para experimento local.</div>
+  </div>
+</section>
+
+<!-- ================= PIPELINE MODULAR ★ ================= -->
+<section id="modular">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">6</div><h2>El pipeline modular <span class="pill g" style="vertical-align:middle">clave del sprint</span></h2></div>
+    <p class="lead">Aquí es donde cuesta ver el conjunto. La idea es la misma de siempre: en vez de un script gigante, el pipeline se parte en <b>archivos pequeños, cada uno con una sola responsabilidad</b>, que se pasan el resultado en cadena. Vamos despacio.</p>
+
+    <div class="callout key">
+      <span class="lab">La idea en una frase</span>
+      <b>Un archivo = una etapa del pipeline.</b> <code class="inl">load</code> lee, <code class="inl">clean</code> normaliza, <code class="inl">chunk</code> trocea, <code class="inl">embed</code> vectoriza. Cada uno recibe lo del anterior y entrega al siguiente. Nadie hace el trabajo de otro.
+    </div>
+
+    <h3>¿Por qué molestarse? (el problema que resuelve)</h3>
+    <div class="two-col">
+      <div class="antipattern">
+        <b>❌ Todo en un solo archivo</b><br>
+        Un <code class="inl">script.py</code> que lee PDFs, limpia texto, trocea, llama a la API de embeddings y guarda JSON, todo mezclado. Si el PDF sale ilegible, no sabes si falló la carga o la limpieza. Cambiar el <code class="inl">chunk_size</code> obliga a rebuscar. No puedes reusar la carga en el Sprint 9.
+      </div>
+      <div class="goodpattern">
+        <b>✅ Un archivo por etapa</b><br>
+        <code class="inl">load.py</code> lee, <code class="inl">clean.py</code> limpia, <code class="inl">chunk.py</code> trocea, <code class="inl">embed.py</code> vectoriza y <code class="inl">config.py</code> concentra los parámetros. Depuras <b>por etapa</b>, cambias el tamaño de chunk en una línea y <b>extiendes</b> el proyecto en S9/S10 sin reescribir la ingesta.
+      </div>
+    </div>
+
+    <h3>El pipeline por capas (de arriba a abajo)</h3>
+    <p>Léelo como un flujo: <b>arriba</b> lo que arranca y decide, <b>en medio</b> las etapas de datos, <b>abajo</b> lo que entra y sale. Cada capa solo habla con la siguiente.</p>
+
+    <div class="modmap">
+      <div class="layer entry">
+        <div class="lname">🚪 main.py <span class="pill" style="font-weight:600">punto de entrada</span></div>
+        <div class="ldesc">El director de orquesta. No hace el trabajo: <b>coordina</b>. Llama a <code class="inl">ejecutar_ingesta()</code> y luego a <code class="inl">ejecutar_embeddings()</code>, e imprime un resumen. Nada más.</div>
+      </div>
+      <div class="flowarrow">▼ usa</div>
+      <div class="layer cfg">
+        <div class="lname">⚙️ config.py <span class="pill" style="font-weight:600">configuración central</span></div>
+        <div class="ldesc">La "sala de mandos". Aquí y <b>solo aquí</b> viven <code class="inl">CHUNK_SIZE</code>, <code class="inl">CHUNK_OVERLAP</code>, <code class="inl">EMBEDDING_MODEL</code>, <code class="inl">MAX_CHUNKS_EMBED</code> y las rutas a <code class="inl">data/</code> y <code class="inl">output/</code>. Experimentar = editar una línea aquí, sin tocar la lógica.</div>
+      </div>
+      <div class="flowarrow">▼ alimenta la ingesta</div>
+      <div class="layer engine">
+        <div class="lname">🧠 pipeline.py <span class="pill" style="font-weight:600">orquesta la ingesta</span></div>
+        <div class="ldesc">Encadena las tres etapas de datos y guarda <code class="inl">chunks.json</code>: <code class="inl">load → clean → chunk → JSON</code>. También calcula estadísticas (documentos por fuente, chunks por fuente).</div>
+      </div>
+      <div class="flowarrow">▼ llama en orden a</div>
+      <div class="layer engine">
+        <div class="lname">📥 load.py → 🧹 clean.py → ✂️ chunk.py <span class="pill" style="font-weight:600">etapas de datos</span></div>
+        <div class="ldesc"><b>load</b>: lee .txt/.md/.pdf/.csv como Documents. <b>clean</b>: normaliza el texto. <b>chunk</b>: trocea con el splitter y añade <code class="inl">chunk_index</code> y <code class="inl">chunk_size</code>. Cada uno recibe una lista de Documents y devuelve otra.</div>
+      </div>
+      <div class="flowarrow">▼ luego</div>
+      <div class="layer io">
+        <div class="lname">🔢 embed.py + 🔑 gemini_auth.py <span class="pill" style="font-weight:600">vectorización</span></div>
+        <div class="ldesc"><b>auth</b>: carga la <code class="inl">GEMINI_API_KEY</code> una sola vez. <b>embed</b>: lee <code class="inl">chunks.json</code>, pide un vector por chunk a Gemini (en lotes) y guarda <code class="inl">embeddings.json</code> (texto + vector + metadata).</div>
+      </div>
+      <div class="flowarrow">▼ escribe en</div>
+      <div class="layer io">
+        <div class="lname">📂 data/ (entrada) · output/ (generado) <span class="pill" style="font-weight:600">disco</span></div>
+        <div class="ldesc"><code class="inl">data/</code> = corpus de entrada (versionado). <code class="inl">output/</code> = <code class="inl">chunks.json</code> y <code class="inl">embeddings.json</code> generados en cada run (<b>no</b> se versiona en Git).</div>
+      </div>
+    </div>
+
+    <h3>Qué hace exactamente cada archivo</h3>
+    <div class="card">
+      <div class="filecard"><div class="fn">config.py</div><div class="fd"><b>Parámetros y rutas.</b> <code class="inl">CHUNK_SIZE</code>, <code class="inl">CHUNK_OVERLAP</code>, <code class="inl">EMBEDDING_MODEL</code>, <code class="inl">MAX_CHUNKS_EMBED</code>, <code class="inl">DATA_DIR</code>, <code class="inl">OUTPUT_DIR</code>. Fuente única de verdad.</div></div>
+      <div class="filecard"><div class="fn">load.py</div><div class="fd"><b>Carga.</b> Lee .txt, .md, .pdf y .csv desde <code class="inl">data/</code> y devuelve Documents. Convierte cada fila del CSV de eventos en un documento legible.</div></div>
+      <div class="filecard"><div class="fn">clean.py</div><div class="fd"><b>Limpieza.</b> Normaliza el texto (espacios, saltos de línea) y descarta documentos vacíos. Conserva la metadata.</div></div>
+      <div class="filecard"><div class="fn">chunk.py</div><div class="fd"><b>Chunking.</b> Trocea con <code class="inl">RecursiveCharacterTextSplitter</code> y enriquece la metadata con <code class="inl">chunk_index</code> y <code class="inl">chunk_size</code>.</div></div>
+      <div class="filecard"><div class="fn">pipeline.py</div><div class="fd"><b>Orquesta la ingesta.</b> load → clean → chunk, calcula estadísticas y guarda <code class="inl">chunks.json</code>.</div></div>
+      <div class="filecard"><div class="fn">embed.py</div><div class="fd"><b>Embeddings.</b> Lee <code class="inl">chunks.json</code>, pide vectores a Gemini por lotes y guarda <code class="inl">embeddings.json</code> (texto + vector + metadata).</div></div>
+      <div class="filecard"><div class="fn">gemini_auth.py</div><div class="fd"><b>Autenticación.</b> Carga la API key desde <code class="inl">.env</code> (o la pide oculta), una sola vez por sesión.</div></div>
+      <div class="filecard"><div class="fn">main.py</div><div class="fd"><b>Orquestador.</b> Ejecuta ingesta + embeddings y muestra un resumen. No contiene lógica propia: solo llama a los demás.</div></div>
+    </div>
+
+    <h3>Cómo se hablan los módulos: los <code class="inl">import</code></h3>
+    <p><code class="inl">main.py</code> y <code class="inl">pipeline.py</code> son casi solo imports y llamadas — reparten el trabajo, no lo hacen:</p>
+    <pre><span class="c"># main.py — reparte el trabajo, no lo hace</span>
+<span class="k">from</span> pipeline <span class="k">import</span> ejecutar_ingesta
+<span class="k">from</span> embed <span class="k">import</span> ejecutar_embeddings
+
+ejecutar_ingesta()        <span class="c"># data/ → chunks.json   (load+clean+chunk)</span>
+ejecutar_embeddings()     <span class="c"># chunks.json → embeddings.json  (Gemini)</span>
+
+<span class="c"># pipeline.py — encadena las etapas de datos</span>
+<span class="k">from</span> load  <span class="k">import</span> cargar_documentos
+<span class="k">from</span> clean <span class="k">import</span> limpiar_documentos
+<span class="k">from</span> chunk <span class="k">import</span> fragmentar_documentos
+
+crudos  = cargar_documentos()        <span class="c"># load.py</span>
+limpios = limpiar_documentos(crudos) <span class="c"># clean.py</span>
+chunks  = fragmentar_documentos(limpios) <span class="c"># chunk.py</span></pre>
+
+    <p>Y las dependencias fluyen en <b>una sola dirección</b> (nadie forma un círculo):</p>
+    <pre>config.py          <span class="c"># no depende de nadie — solo parámetros</span>
+   ▲
+load → clean → chunk        <span class="c"># etapas de datos, en cadena</span>
+             ▲
+        pipeline.py         <span class="c"># orquesta la ingesta → chunks.json</span>
+             ▲
+gemini_auth → embed.py      <span class="c"># chunks.json → embeddings.json</span>
+             ▲
+          main.py           <span class="c"># arriba del todo: solo coordina</span></pre>
+
+    <div class="callout key">
+      <span class="lab">Cómo explicarlo con tus palabras</span>
+      Imagina una fábrica de conservas: <b>config</b> es la hoja de especificaciones (tamaño de lata, etiqueta), <b>load</b> recibe la materia prima (PDF, CSV), <b>clean</b> la lava, <b>chunk</b> la corta en porciones iguales, <b>embed</b> le pone el código de barras (el vector) y <b>main</b> es el capataz que pone en marcha la cadena. Cada máquina hace una cosa y pasa el producto a la siguiente.
+    </div>
+
+    <h3>Qué ganas al modularizar así</h3>
+    <div class="grid g3">
+      <div class="card"><h4>🔧 Experimentas fácil</h4><p class="mini">Cambiar <code class="inl">CHUNK_SIZE</code> o el modelo = una línea en <code class="inl">config.py</code>. No tocas load ni embed.</p></div>
+      <div class="card"><h4>🐛 Depuras por etapa</h4><p class="mini">¿PDF ilegible? Es <code class="inl">load</code>. ¿Chunks partidos? Es <code class="inl">chunk</code>. No culpas al pipeline entero.</p></div>
+      <div class="card"><h4>♻️ Reutilizas y extiendes</h4><p class="mini">En S9 añades <code class="inl">index.py</code> y <code class="inl">retriever.py</code>; en S10, <code class="inl">prompts</code> y <code class="inl">logic</code>. La ingesta no se reescribe.</p></div>
+      <div class="card"><h4>📄 Artefactos inspectables</h4><p class="mini"><code class="inl">chunks.json</code> se lee a mano: detectas errores <b>antes</b> de gastar API en embeddear.</p></div>
+      <div class="card"><h4>💾 Iteras sin recargar</h4><p class="mini"><code class="inl">embed</code> lee <code class="inl">chunks.json</code>: pruebas embeddings sin re-ejecutar load/chunk.</p></div>
+      <div class="card"><h4>👥 Trabajo en equipo</h4><p class="mini">Cada persona toca un archivo distinto sin pisarse.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROYECTO ================= -->
+<section id="proyecto">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">7</div><h2>El proyecto: ingesta + chunking + embedding</h2></div>
+    <p class="lead">Pipeline <b>offline</b> completo en un comando: <code class="inl">python main.py</code>. Corpus de ejemplo: agenda cultural de Madrid (FAQ .md, guía .txt, PDF oficial y CSV de eventos).</p>
+
+    <div class="two-col">
+      <div class="card">
+        <h4>Puesta en marcha</h4>
+        <pre>python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env   <span class="c"># GEMINI_API_KEY</span>
+python main.py</pre>
+        <p class="mini">Por defecto <code class="inl">MAX_CHUNKS_EMBED = 5</code> (demo rápida). Pon <code class="inl">None</code> para embeddear todo el corpus.</p>
+      </div>
+      <div class="card">
+        <h4>Qué genera</h4>
+        <ul class="clean">
+          <li><code class="inl">output/chunks.json</code> — fragmentos + metadata</li>
+          <li><code class="inl">output/embeddings.json</code> — texto + vector (3072 dims) + metadata</li>
+          <li>Un resumen en consola: documentos, chunks por fuente, muestra de vector</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Orden recomendado para explorar el código</h3>
+    <div class="step"><div class="num">1</div><div class="body"><b><code class="inl">data/</code></b> — qué documentos entran al pipeline.</div></div>
+    <div class="step"><div class="num">2</div><div class="body"><b><code class="inl">config.py</code></b> — <code class="inl">CHUNK_SIZE</code>, <code class="inl">CHUNK_OVERLAP</code>, <code class="inl">EMBEDDING_MODEL</code>, <code class="inl">MAX_CHUNKS_EMBED</code>.</div></div>
+    <div class="step"><div class="num">3</div><div class="body"><b>Ingesta:</b> <code class="inl">load.py</code> → <code class="inl">clean.py</code> → <code class="inl">chunk.py</code> → <code class="inl">pipeline.py</code>.</div></div>
+    <div class="step"><div class="num">4</div><div class="body"><b>Embeddings:</b> <code class="inl">embed.py</code> → <code class="inl">output/embeddings.json</code>.</div></div>
+    <div class="step"><div class="num">5</div><div class="body"><b>Tras ejecutar:</b> inspecciona <code class="inl">chunks.json</code> y <code class="inl">embeddings.json</code> — abre un item en ambos y comprueba que el texto y la metadata coinciden.</div></div>
+
+    <h3>Conclusiones que deberías poder explicar</h3>
+    <div class="grid g2">
+      <div class="card"><h4>Varias fuentes, un pipeline</h4><p class="mini">El mismo flujo trata Markdown, PDF y CSV de eventos.</p></div>
+      <div class="card"><h4>El chunk es la unidad de búsqueda</h4><p class="mini">En retrieval no se recuperan archivos enteros, sino fragmentos.</p></div>
+      <div class="card"><h4>La metadata viaja hasta el vector</h4><p class="mini"><code class="inl">distrito</code>, <code class="inl">id_evento</code>, <code class="inl">tipo</code> siguen en <code class="inl">embeddings.json</code>.</p></div>
+      <div class="card"><h4>Un modelo, un espacio vectorial</h4><p class="mini">La pregunta del usuario deberá embeddearse con el <b>mismo</b> modelo al buscar.</p></div>
+    </div>
+
+    <div class="callout key">
+      <span class="lab">Si al terminar echas en falta "hacer una pregunta y ver respuesta"…</span>
+      …es señal de que <b>entendiste el pipeline</b>: falta la capa de búsqueda (S9) y de generación (S10), no que algo esté roto. Con <code class="inl">embeddings.json</code> el corpus está <b>listo para indexar</b>.
+    </div>
+  </div>
+</section>
+
+<!-- ================= CHECKLIST ================= -->
+<section id="checklist">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">✓</div><h2>Checklist del sprint</h2></div>
+    <div class="two-col">
+      <div class="card">
+        <h4>Conceptos que debes dominar</h4>
+        <ul class="clean">
+          <li>Qué limita a un LLM solo y cuándo RAG aporta valor</li>
+          <li>Pipeline offline (indexar) vs online (consultar)</li>
+          <li>Recuperación ≠ generación</li>
+          <li><code class="inl">chunk_size</code> / <code class="inl">overlap</code> y su efecto en el retrieval</li>
+          <li>Embedding = texto→vector; similitud del coseno</li>
+          <li>Mismo modelo de embedding para indexar y consultar</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Práctica con el proyecto</h4>
+        <ul class="clean">
+          <li><code class="inl">python main.py</code> corre y genera ambos JSON</li>
+          <li>Inspeccionaste <code class="inl">chunks.json</code> a mano</li>
+          <li>Probaste a cambiar <code class="inl">CHUNK_SIZE</code> / <code class="inl">overlap</code></li>
+          <li><code class="inl">MAX_CHUNKS_EMBED = None</code> para todo el corpus</li>
+          <li>Sabes qué campos de metadata llegan al vector</li>
+          <li><code class="inl">.env</code> fuera de Git · <code class="inl">output/</code> no versionado</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout key">
+      <span class="lab">Si te quedas con una sola idea</span>
+      RAG es un <b>pipeline por capas</b> con responsabilidades separadas (load, clean, chunk, embed). En S8 conviertes documentos reales en <b>vectores listos para indexar</b>. Puente al Sprint 9: <b>ChromaDB + retrieval</b>.
+    </div>
+  </div>
+</section>
+
+<footer>
+  Guía visual del Sprint 08 · Bootcamp IA Generativa · Módulo 4 RAG · basada en la teoría del sprint y el proyecto <b>05_proyecto_ingesta_chunking_embedding</b>.
+</footer>
+
+<script>
+  const links = [...document.querySelectorAll('nav.toc a')];
+  const sections = links.map(a => document.querySelector(a.getAttribute('href')));
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const id = '#'+e.target.id;
+        links.forEach(a=>a.classList.toggle('active', a.getAttribute('href')===id));
+      }
+    });
+  }, {rootMargin:'-45% 0px -50% 0px', threshold:0});
+  sections.forEach(s=>s&&obs.observe(s));
+</script>
+</body>
+</html>

@@ -1,13 +1,11 @@
-"""gemini_client.py — Llamadas a la API de Gemini y métricas.
+"""gemini_client.py — Llamadas a Gemini (texto y JSON).
 
 Qué hace este módulo:
-  - `llamar_gemini_json(prompt)` — Fase 1: espera respuesta JSON del modelo.
-  - `safe_generate_texto(prompt)` — Fase 2: texto libre + tokens y tiempo.
-  - Comprueba que el prompt no supere `MAX_TOKENS_INPUT` antes de llamar.
+  - `safe_generate()` — texto libre o JSON según `json_mode`.
+  - Comprueba `MAX_TOKENS_INPUT` antes de llamar a la API.
 
 Para qué sirve:
-  - Centralizar la comunicación con Gemini (modelo, temperatura, errores de API).
-  - Separar «construir el prompt» (prompts.py) de «enviarlo al modelo» (aquí).
+  - Centralizar comunicación con Gemini; separado de prompts.py y logic.py.
 
 Qué NO debes hacer aquí:
   - No construyas prompts en este archivo → usa `prompts.py`.
@@ -20,10 +18,10 @@ from dataclasses import dataclass
 from google import genai
 from google.genai import types
 
-from config import MAX_TOKENS_INPUT, MODEL, TEMPERATURE_JSON, TEMPERATURE_TEXTO
+from config import MAX_TOKENS_INPUT, MODEL, TEMPERATURE, TEMPERATURE_VULNERABLE
 from gemini_auth import configurar_gemini_api_key
 
-_client: genai.Client | None = None
+configurar_gemini_api_key()
 
 
 @dataclass
@@ -34,54 +32,75 @@ class MetricasLlamada:
     total_tokens: int | None
 
 
-def _cliente() -> genai.Client:
-    global _client
-    if _client is None:
-        configurar_gemini_api_key()
-        _client = genai.Client()
-    return _client
+_client_instance: genai.Client | None = None
 
 
-def count_tokens(prompt: str) -> int:
-    r = _cliente().models.count_tokens(model=MODEL, contents=prompt)
+def _client() -> genai.Client:
+    global _client_instance
+    if _client_instance is None:
+        _client_instance = genai.Client()
+    return _client_instance
+
+
+def count_tokens(contents: str) -> int:
+    r = _client().models.count_tokens(model=MODEL, contents=contents)
     return int(r.total_tokens or 0)
 
 
-def llamar_gemini_json(prompt: str) -> str:
-    response = _cliente().models.generate_content(
-        model=MODEL,
-        contents=prompt,
-        config=types.GenerateContentConfig(
-            temperature=TEMPERATURE_JSON,
-            response_mime_type="application/json",
-        ),
-    )
-    return (response.text or "").strip()
-
-
-def llamar_gemini_texto(prompt: str) -> tuple[str, MetricasLlamada]:
-    t0 = time.time()
-    response = _cliente().models.generate_content(
-        model=MODEL,
-        contents=prompt,
-        config=types.GenerateContentConfig(temperature=TEMPERATURE_TEXTO),
-    )
-    ms = int((time.time() - t0) * 1000)
+def _metricas_from_response(response, started: float) -> MetricasLlamada:
+    elapsed_ms = int((time.time() - started) * 1000)
     um = response.usage_metadata
-    metricas = MetricasLlamada(
-        elapsed_ms=ms,
+    return MetricasLlamada(
+        elapsed_ms=elapsed_ms,
         prompt_tokens=getattr(um, "prompt_token_count", None),
         output_tokens=getattr(um, "candidates_token_count", None),
         total_tokens=getattr(um, "total_token_count", None),
     )
-    return (response.text or "").strip(), metricas
 
 
-def safe_generate_texto(prompt: str) -> tuple[str, MetricasLlamada]:
+def llamar_gemini(
+    prompt: str,
+    *,
+    temperature: float = TEMPERATURE_VULNERABLE,
+) -> tuple[str, MetricasLlamada]:
+    started = time.time()
+    response = _client().models.generate_content(
+        model=MODEL,
+        contents=prompt,
+        config=types.GenerateContentConfig(temperature=temperature),
+    )
+    return (response.text or "").strip(), _metricas_from_response(response, started)
+
+
+def llamar_gemini_json(
+    prompt: str,
+    *,
+    temperature: float = TEMPERATURE,
+) -> tuple[str, MetricasLlamada]:
+    started = time.time()
+    response = _client().models.generate_content(
+        model=MODEL,
+        contents=prompt,
+        config=types.GenerateContentConfig(
+            temperature=temperature,
+            response_mime_type="application/json",
+        ),
+    )
+    return (response.text or "").strip(), _metricas_from_response(response, started)
+
+
+def safe_generate(
+    prompt: str,
+    *,
+    temperature: float = TEMPERATURE_VULNERABLE,
+    json_mode: bool = False,
+) -> tuple[str, MetricasLlamada]:
     tokens = count_tokens(prompt)
     if tokens > MAX_TOKENS_INPUT:
         raise ValueError(
             f"Prompt demasiado grande: {tokens} tokens (máx {MAX_TOKENS_INPUT}). "
             "Recorta contexto en Python."
         )
-    return llamar_gemini_texto(prompt)
+    if json_mode:
+        return llamar_gemini_json(prompt, temperature=temperature)
+    return llamar_gemini(prompt, temperature=temperature)

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "soporte_bootcamp",
+    "prompt": "Eres soporte del bootcamp AI Engineering. Responde en 2 frases, tono cercano.\n\nUsuario: No encuentro la grabación de la clase de ayer en la plataforma."
+  },
+  {
+    "id": "clasificar_consulta",
+    "prompt": "Clasifica en una sola palabra: ACADEMICO, TECNICO, ADMINISTRATIVO u OTRO.\n\nMensaje: Mi GEMINI_API_KEY devuelve error 429 en el notebook del Sprint 7."
+  },
+  {
+    "id": "resumen_sprint",
+    "prompt": "Resume en 3 viñetas:\n\nEl Sprint 7 compara modelos con latencia y tokens. Hay tres bloques: arquitecturas, trade-offs y benchmarking con Python. La live review pide un mini-benchmark personal."
+  },
+  {
+    "id": "json_perfil",
+    "prompt": "Devuelve solo JSON válido, sin markdown: {\"nivel\": \"junior|senior\", \"tema\": \"texto corto\"}\n\nCaso: alumno que domina Python pero es nuevo en APIs de LLM."
+  },
+  {
+    "id": "limite_futbol",
+    "prompt": "Eres tutor solo de Python y del bootcamp. Si la pregunta no es de ese ámbito, dilo en una frase.\n\nUsuario: ¿Quién ganó el mundial de fútbol de 2022?"
+  }
+]

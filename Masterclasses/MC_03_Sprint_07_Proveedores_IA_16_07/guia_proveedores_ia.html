@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proveedores de IA · Guía de conceptos — Bootcamp AI Engineering</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+    :root {
+        --indigo:    #4F46E5;
+        --violet:    #7C3AED;
+        --sky:       #0EA5E9;
+        --lavender:  #C7D2FE;
+        --lilac:     #EDE9FE;
+        --amber:     #F59E0B;
+        --amber-lt:  #FEF3C7;
+        --green:     #10B981;
+        --green-lt:  #D1FAE5;
+        --rose:      #F43F5E;
+        --rose-lt:   #FFE4E6;
+        --cream:     #FAFAFA;
+        --white:     #FFFFFF;
+        --text-dark: #1E1B4B;
+        --text-mid:  #4C4A7A;
+        --text-lt:   #8B87B5;
+        --shadow:    rgba(79, 70, 229, 0.12);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Outfit', -apple-system, sans-serif;
+        background: var(--cream);
+        color: var(--text-dark);
+        line-height: 1.75;
+        overflow-x: hidden;
+    }
+
+    /* ── HEADER ─────────────────────────────────────── */
+    header {
+        background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 60%, #0EA5E9 100%);
+        padding: 5rem 2rem 4rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    header::before {
+        content: '';
+        position: absolute; top: -80px; right: -80px;
+        width: 320px; height: 320px;
+        background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+    header::after {
+        content: '';
+        position: absolute; bottom: -100px; left: -100px;
+        width: 360px; height: 360px;
+        background: radial-gradient(circle, rgba(14,165,233,0.2) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+    .header-badge {
+        display: inline-block;
+        background: rgba(255,255,255,0.2);
+        border: 2px solid rgba(255,255,255,0.4);
+        color: #fff;
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 0.4rem 1.2rem;
+        border-radius: 50px;
+        margin-bottom: 1.5rem;
+        position: relative; z-index: 1;
+    }
+    h1 {
+        font-size: 3rem; font-weight: 800;
+        color: #fff;
+        line-height: 1.15;
+        position: relative; z-index: 1;
+        text-shadow: 0 2px 16px rgba(0,0,0,0.2);
+        margin-bottom: 1rem;
+    }
+    .header-sub {
+        color: rgba(255,255,255,0.85);
+        font-size: 1.2rem; font-weight: 500;
+        position: relative; z-index: 1;
+    }
+    .header-pills {
+        display: flex; flex-wrap: wrap; gap: 0.75rem;
+        justify-content: center;
+        margin-top: 2rem;
+        position: relative; z-index: 1;
+    }
+    .pill {
+        background: rgba(255,255,255,0.18);
+        border: 1.5px solid rgba(255,255,255,0.35);
+        color: #fff;
+        font-size: 0.9rem; font-weight: 600;
+        padding: 0.4rem 1rem;
+        border-radius: 50px;
+    }
+
+    /* ── NAV ─────────────────────────────────────────── */
+    nav {
+        background: var(--white);
+        padding: 1.2rem 2rem;
+        border-bottom: 3px solid var(--lavender);
+        position: sticky; top: 0; z-index: 100;
+        box-shadow: 0 4px 16px var(--shadow);
+    }
+    nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: 2.5rem; justify-content: center; }
+    nav a {
+        color: var(--text-mid); text-decoration: none;
+        font-weight: 600; font-size: 1rem;
+        padding: 0.4rem 0;
+        position: relative; transition: color 0.3s;
+    }
+    nav a:hover { color: var(--indigo); }
+    nav a::after {
+        content: ''; position: absolute; bottom: -2px; left: 0;
+        width: 0; height: 3px;
+        background: linear-gradient(90deg, var(--indigo), var(--violet));
+        border-radius: 2px; transition: width 0.3s;
+    }
+    nav a:hover::after { width: 100%; }
+
+    /* ── CONTAINER & SECTIONS ────────────────────────── */
+    .container { max-width: 1160px; margin: 0 auto; padding: 2rem; }
+
+    section {
+        margin: 2.5rem 0;
+        padding: 2.5rem;
+        background: var(--white);
+        border-radius: 20px;
+        border: 2.5px solid var(--lavender);
+        box-shadow: 0 8px 28px var(--shadow);
+        scroll-margin-top: 90px;
+    }
+
+    h2 {
+        font-size: 2.1rem; font-weight: 800;
+        color: var(--indigo);
+        margin-bottom: 2rem;
+        display: flex; align-items: center; gap: 0.9rem;
+    }
+    h2::before {
+        content: '';
+        width: 8px; height: 2.2rem;
+        background: linear-gradient(to bottom, var(--indigo), var(--sky));
+        border-radius: 4px; flex-shrink: 0;
+    }
+    h3 {
+        font-size: 1.55rem; font-weight: 700;
+        color: var(--violet);
+        margin: 2.5rem 0 1rem;
+    }
+    h3:first-of-type { margin-top: 0; }
+    h4 {
+        font-size: 1.2rem; font-weight: 700;
+        color: var(--indigo);
+        margin: 1.75rem 0 0.75rem;
+    }
+    p { margin-bottom: 1.25rem; color: var(--text-mid); }
+    strong { color: var(--text-dark); font-weight: 700; }
+
+    ul, ol { margin: 1rem 0 1.25rem 2rem; color: var(--text-mid); }
+    li { margin: 0.6rem 0; }
+
+    /* ── CODE ────────────────────────────────────────── */
+    code {
+        font-family: 'JetBrains Mono', monospace;
+        background: var(--lilac);
+        color: var(--violet);
+        padding: 0.25rem 0.6rem;
+        border-radius: 6px;
+        font-size: 0.88em;
+        border: 1.5px solid var(--lavender);
+    }
+
+    /* ── CALLOUTS ────────────────────────────────────── */
+    .warning {
+        background: var(--rose-lt);
+        border-left: 5px solid var(--rose);
+        padding: 1.25rem 1.5rem;
+        border-radius: 12px; margin: 1.5rem 0;
+    }
+    .warning::before {
+        content: '⚠️  Importante';
+        display: block; font-weight: 700;
+        color: var(--rose); margin-bottom: 0.5rem;
+    }
+    .tip {
+        background: var(--green-lt);
+        border-left: 5px solid var(--green);
+        padding: 1.25rem 1.5rem;
+        border-radius: 12px; margin: 1.5rem 0;
+    }
+    .tip::before {
+        content: '💡 Consejo';
+        display: block; font-weight: 700;
+        color: var(--green); margin-bottom: 0.5rem;
+    }
+    .info {
+        background: var(--lavender);
+        border-left: 5px solid var(--indigo);
+        padding: 1.25rem 1.5rem;
+        border-radius: 12px; margin: 1.5rem 0;
+        color: var(--text-dark);
+    }
+    .info::before {
+        content: 'ℹ️  Nota';
+        display: block; font-weight: 700;
+        color: var(--indigo); margin-bottom: 0.5rem;
+    }
+    .analogy {
+        background: var(--amber-lt);
+        border-left: 5px solid var(--amber);
+        padding: 1.25rem 1.5rem;
+        border-radius: 12px; margin: 1.5rem 0;
+        color: #78350F;
+    }
+    .analogy::before {
+        content: '🧩 Analogía';
+        display: block; font-weight: 700;
+        color: #92400E; margin-bottom: 0.5rem;
+    }
+
+    /* ── GRID & CARDS ────────────────────────────────── */
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.5rem; margin: 1.5rem 0;
+    }
+    .grid-2 { grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+    .card {
+        background: linear-gradient(135deg, #FAFAFE 0%, var(--lilac) 100%);
+        border: 2px solid var(--lavender);
+        border-radius: 16px; padding: 1.75rem;
+        transition: all 0.3s;
+        box-shadow: 0 4px 12px var(--shadow);
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        border-color: var(--indigo);
+        box-shadow: 0 12px 28px rgba(79,70,229,0.18);
+    }
+    .card h4 { margin-top: 0; }
+    .card p:last-child { margin-bottom: 0; }
+
+    /* ── PARTE HEADER CARDS ──────────────────────────── */
+    .parte-header {
+        display: flex; align-items: center; gap: 1rem;
+        padding: 1.5rem 2rem;
+        border-radius: 16px; margin-bottom: 2rem;
+        border: 2px solid;
+    }
+    .parte-num {
+        font-size: 2.5rem; font-weight: 800;
+        line-height: 1; flex-shrink: 0;
+    }
+    .parte-1 { background: #EEF2FF; border-color: var(--indigo); }
+    .parte-1 .parte-num { color: var(--indigo); }
+    .parte-2 { background: #FEF3E7; border-color: var(--amber); }
+    .parte-2 .parte-num { color: #92400E; }
+    .parte-3 { background: var(--lilac); border-color: var(--violet); }
+    .parte-3 .parte-num { color: var(--violet); }
+    .parte-header-text h3 { margin: 0; font-size: 1.3rem; }
+    .parte-header-text p { margin: 0.25rem 0 0; font-size: 0.95rem; }
+
+    /* ── TASK LIST (checklist interactiva) ──────────── */
+    .task-list { list-style: none; margin-left: 0; }
+    .task-list li {
+        padding: 0.7rem 0.75rem 0.7rem 2.75rem;
+        position: relative;
+        border-bottom: 1.5px solid var(--lavender);
+        cursor: pointer;
+        user-select: none;
+        transition: color 0.2s;
+    }
+    .task-list li:last-child { border-bottom: none; }
+    .task-list li::before {
+        content: '';
+        position: absolute; left: 0.6rem; top: 50%;
+        transform: translateY(-50%);
+        width: 20px; height: 20px;
+        border: 2.5px solid var(--lavender);
+        border-radius: 5px;
+        background: var(--white);
+        transition: all 0.2s;
+    }
+    .task-list li.done { color: var(--text-lt); text-decoration: line-through; }
+    .task-list li.done::before {
+        background: var(--green);
+        border-color: var(--green);
+    }
+    .task-list li.done::after {
+        content: '✓';
+        position: absolute; left: 0.85rem; top: 50%;
+        transform: translateY(-50%);
+        color: #fff; font-size: 0.8rem; font-weight: 900;
+    }
+
+    /* ── FLOW DIAGRAM ─────────────────────────────────── */
+    .flow-diagram {
+        font-family: 'JetBrains Mono', monospace;
+        background: #1E1B4B;
+        color: #C7D2FE;
+        padding: 1.75rem 2rem;
+        border-radius: 16px;
+        font-size: 0.95rem;
+        line-height: 2.1;
+        margin: 1.5rem 0;
+        overflow-x: auto;
+        border: 2px solid #312E8D;
+    }
+    .flow-diagram .f-node { color: #FCD34D; font-weight: 700; }
+    .flow-diagram .f-arrow { color: #818CF8; }
+    .flow-diagram .f-you { color: #34D399; font-weight: 700; }
+    .flow-diagram .f-out { color: #F9A8D4; font-weight: 700; }
+
+    /* box flow (boxes with arrows) */
+    .box-flow {
+        display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+        gap: 0.75rem; margin: 1.75rem 0;
+    }
+    .box-flow .fbox {
+        background: linear-gradient(135deg, #EEF2FF, var(--lilac));
+        border: 2px solid var(--indigo);
+        border-radius: 14px;
+        padding: 1rem 1.5rem;
+        font-weight: 700; color: var(--indigo);
+        text-align: center; font-size: 0.95rem;
+        min-width: 140px;
+    }
+    .box-flow .fbox.alt { border-color: var(--sky); color: #0369A1; background: #F0F9FF; }
+    .box-flow .fbox.out { border-color: var(--green); color: #047857; background: var(--green-lt); }
+    .box-flow .farrow { color: var(--text-lt); font-size: 1.5rem; font-weight: 700; }
+
+    /* ── STEP FLOW ───────────────────────────────────── */
+    .steps { display: flex; flex-direction: column; gap: 0; margin: 1.5rem 0; }
+    .step {
+        display: flex; gap: 1.25rem; align-items: flex-start;
+        padding: 1.25rem 0;
+        border-bottom: 1.5px dashed var(--lavender);
+    }
+    .step:last-child { border-bottom: none; }
+    .step-num {
+        flex-shrink: 0;
+        width: 36px; height: 36px;
+        background: linear-gradient(135deg, var(--indigo), var(--violet));
+        color: #fff; font-weight: 800; font-size: 0.9rem;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        margin-top: 0.1rem;
+    }
+    .step-content h4 { margin: 0 0 0.4rem; }
+    .step-content p { margin: 0; }
+
+    /* ── TABLE ───────────────────────────────────────── */
+    table {
+        width: 100%; border-collapse: collapse;
+        margin: 1.5rem 0; border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 4px 16px var(--shadow);
+        border: 2px solid var(--lavender);
+    }
+    th {
+        background: linear-gradient(135deg, var(--indigo), var(--violet));
+        color: #fff; padding: 1rem 1.25rem;
+        text-align: left; font-weight: 700;
+    }
+    td { padding: 1rem 1.25rem; border-top: 1.5px solid var(--lavender); color: var(--text-mid); }
+    tr:hover { background: #F5F3FF; }
+
+    /* ── ACCORDION (glosario) ─────────────────────────── */
+    .accordion { margin: 1.5rem 0; }
+    .acc-item {
+        border: 2px solid var(--lavender);
+        border-radius: 14px;
+        margin-bottom: 0.85rem;
+        overflow: hidden;
+    }
+    .acc-head {
+        background: #FAFAFE;
+        padding: 1.1rem 1.5rem;
+        font-weight: 700; color: var(--text-dark);
+        cursor: pointer;
+        display: flex; justify-content: space-between; align-items: center;
+        transition: background 0.2s;
+    }
+    .acc-head:hover { background: var(--lilac); }
+    .acc-head .acc-icon {
+        color: var(--indigo); font-size: 1.3rem; font-weight: 800;
+        transition: transform 0.25s;
+        flex-shrink: 0; margin-left: 1rem;
+    }
+    .acc-item.open .acc-icon { transform: rotate(45deg); }
+    .acc-body {
+        max-height: 0; overflow: hidden;
+        transition: max-height 0.3s ease, padding 0.3s ease;
+        padding: 0 1.5rem;
+        color: var(--text-mid);
+        background: var(--white);
+    }
+    .acc-item.open .acc-body { max-height: 300px; padding: 0 1.5rem 1.25rem; }
+
+    /* ── SLIDER DEMO (temperature) ───────────────────── */
+    .slider-demo {
+        background: linear-gradient(135deg, #EEF2FF, var(--lilac));
+        border: 2.5px solid var(--indigo);
+        border-radius: 16px; padding: 2rem;
+        margin: 1.5rem 0;
+    }
+    .slider-demo input[type="range"] {
+        width: 100%; margin: 1.25rem 0; accent-color: var(--indigo);
+        height: 6px;
+    }
+    .slider-labels { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-lt); font-weight: 600; }
+    .slider-readout {
+        background: var(--white); border: 2px solid var(--lavender);
+        border-radius: 12px; padding: 1.1rem 1.4rem; margin-top: 1rem;
+        font-weight: 600; color: var(--text-dark);
+    }
+    .slider-readout .t-val { color: var(--indigo); font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+
+    /* ── DECISION HELPER ─────────────────────────────── */
+    .decide-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1rem; margin: 1.5rem 0;
+    }
+    .decide-btn {
+        background: var(--white);
+        border: 2.5px solid var(--lavender);
+        border-radius: 14px; padding: 1.25rem;
+        font-family: inherit; font-weight: 700; color: var(--text-dark);
+        font-size: 0.98rem; text-align: left; cursor: pointer;
+        transition: all 0.2s;
+    }
+    .decide-btn:hover { border-color: var(--indigo); transform: translateY(-3px); box-shadow: 0 8px 20px var(--shadow); }
+    .decide-btn.active { border-color: var(--indigo); background: var(--lilac); }
+    .decide-result {
+        margin-top: 1.5rem; padding: 1.75rem;
+        border-radius: 16px;
+        border: 2.5px dashed var(--indigo);
+        background: #F8FAFF;
+        display: none;
+    }
+    .decide-result.show { display: block; }
+    .decide-result h4 { margin-top: 0; color: var(--indigo); }
+
+    /* ── FOOTER ──────────────────────────────────────── */
+    footer {
+        text-align: center; padding: 3rem 2rem;
+        color: var(--text-lt);
+        border-top: 3px solid var(--lavender);
+        background: var(--white); margin-top: 3rem;
+    }
+    footer p { color: var(--text-lt); margin-bottom: 0.25rem; }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 2rem; }
+        nav ul { flex-direction: column; gap: 1rem; align-items: center; }
+        section { padding: 1.5rem; }
+        .grid { grid-template-columns: 1fr; }
+        .box-flow { flex-direction: column; }
+        .box-flow .farrow { transform: rotate(90deg); }
+    }
+</style>
+</head>
+<body>
+
+<!-- ══════════ HEADER ══════════ -->
+<header>
+    <div class="header-badge">Bootcamp AI Engineering · Clase en directo</div>
+    <h1>Proveedores de IA</h1>
+    <p class="header-sub">Cómo acceder a distintos modelos LLM — guía de conceptos</p>
+    <div class="header-pills">
+        <span class="pill">🔑 APIs de modelos</span>
+        <span class="pill">💬 Cohere</span>
+        <span class="pill">🤗 Hugging Face</span>
+        <span class="pill">💻 Modelos en local</span>
+        <span class="pill">🧭 Cómo elegir</span>
+    </div>
+</header>
+
+<!-- ══════════ NAV ══════════ -->
+<nav>
+    <ul>
+        <li><a href="#panorama">Panorama</a></li>
+        <li><a href="#cohere">Cohere</a></li>
+        <li><a href="#hf-tour">Tour Hugging Face</a></li>
+        <li><a href="#hf-local">HF en local</a></li>
+        <li><a href="#comparativa">Comparativa</a></li>
+        <li><a href="#leer-benchmarks">Leer benchmarks</a></li>
+        <li><a href="#decide">¿Cuál elijo?</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+
+    <!-- ══════════ 0. PANORAMA ══════════ -->
+    <section id="panorama" style="background: linear-gradient(135deg,#EEF2FF,var(--lilac)); border-color: var(--indigo);">
+        <h2>¿Qué es un "proveedor de IA"?</h2>
+        <p>Cuando construís un asistente con un LLM, <strong>no programáis el modelo desde cero</strong>. Contratáis o accedéis a un servicio que expone ese modelo a través de una <strong>API</strong>: le mandáis texto, os devuelve texto.</p>
+
+        <div class="box-flow">
+            <div class="fbox">Tu código</div>
+            <div class="farrow">→</div>
+            <div class="fbox alt">Petición a la API<br><span style="font-weight:400; font-size:0.8rem;">(mensajes + parámetros)</span></div>
+            <div class="farrow">→</div>
+            <div class="fbox alt">Servidor del proveedor<br><span style="font-weight:400; font-size:0.8rem;">(el LLM vive ahí)</span></div>
+            <div class="farrow">→</div>
+            <div class="fbox out">Respuesta<br><span style="font-weight:400; font-size:0.8rem;">(texto generado)</span></div>
+        </div>
+
+        <p>En el mercado coexisten muchos actores, cada uno con modelos, precios, límites y políticas de privacidad distintos:</p>
+
+        <table>
+            <tr><th>Tipo</th><th>Qué es</th><th>Ejemplo</th></tr>
+            <tr><td><strong>Proveedor de modelo + API</strong></td><td>Empresa que entrena o distribuye LLMs y los sirve en la nube</td><td>Google Gemini, OpenAI, Cohere, Anthropic</td></tr>
+            <tr><td><strong>Hub + inferencia</strong></td><td>Catálogo de modelos open source y APIs para ejecutarlos</td><td>Hugging Face</td></tr>
+            <tr><td><strong>Cloud hyperscaler</strong></td><td>IA integrada en la nube de AWS, Azure o Google Cloud</td><td>Amazon Bedrock, Azure OpenAI, Vertex AI</td></tr>
+            <tr><td><strong>Hosting de modelos abiertos</strong></td><td>Infraestructura que ejecuta Llama, Mistral, etc.</td><td>Groq, Together AI, Fireworks</td></tr>
+        </table>
+
+        <div class="tip">No hay un único "mejor" proveedor: depende de <strong>coste</strong>, <strong>latencia</strong>, <strong>calidad en vuestro dominio</strong>, <strong>cumplimiento</strong> (dónde viven los datos) y de si ya usáis un ecosistema concreto.</div>
+
+        <p>Hoy vamos a mirar de cerca <strong>dos caminos muy distintos</strong> para acceder a un LLM: una <strong>API de pago/capa gratuita en la nube</strong> (Cohere) y la <strong>ejecución en tu propia máquina</strong> (Hugging Face local) — con una parada intermedia para entender bien la plataforma de Hugging Face.</p>
+    </section>
+
+    <!-- ══════════ 1. COHERE ══════════ -->
+    <section id="cohere">
+        <div class="parte-header parte-1">
+            <div class="parte-num">1</div>
+            <div class="parte-header-text">
+                <h3>Cohere — Chat API en la nube</h3>
+                <p>Un proveedor "clásico": te registras, pides una clave, llamas a un endpoint.</p>
+            </div>
+        </div>
+
+        <h4>¿Qué es Cohere?</h4>
+        <p><a href="https://cohere.com/" target="_blank">Cohere</a> es un proveedor de modelos de lenguaje orientado a <strong>aplicaciones empresariales</strong>: chat, clasificación, extracción y embeddings. Ofrece API en la nube con una capa gratuita de prueba — ideal para aprender y prototipar, como hoy.</p>
+
+        <h4>Cómo funciona una llamada de chat</h4>
+        <div class="flow-diagram">
+<span class="f-you">messages = [</span>
+  <span class="f-node">{"role": "system",</span>    "content": "..."}   <span class="f-arrow">← instrucciones fijas del asistente</span>
+  <span class="f-node">{"role": "user",</span>      "content": "..."}   <span class="f-arrow">← lo que pregunta la persona</span>
+  <span class="f-node">{"role": "assistant",</span> "content": "..."}   <span class="f-arrow">← turnos anteriores del modelo</span>
+<span class="f-you">]</span>
+
+client.chat(model=<span class="f-out">"command-r-plus"</span>, messages=messages, temperature=<span class="f-out">0.2</span>)
+        </div>
+
+        <div class="grid grid-2">
+            <div class="card">
+                <h4>🎭 Los tres roles</h4>
+                <p><strong>system:</strong> quién es el asistente y sus límites (se manda una vez, fijo).<br>
+                <strong>user:</strong> lo que escribe la persona.<br>
+                <strong>assistant:</strong> respuestas previas del modelo, para dar memoria a la conversación.</p>
+            </div>
+            <div class="card">
+                <h4>🌡️ El parámetro <code>temperature</code></h4>
+                <p>Controla cuánto "se arriesga" el modelo al elegir palabras. Valores bajos → respuestas más predecibles y repetibles. Valores altos → más variadas y creativas (y más impredecibles).</p>
+            </div>
+        </div>
+
+        <div class="slider-demo">
+            <h4 style="margin-top:0;">Prueba tú mismo — ¿qué significa la temperature?</h4>
+            <p style="margin-bottom:0.25rem;">Mueve el control y observa cómo cambiaría el comportamiento del modelo (esto es una simulación visual, no llama a ninguna API):</p>
+            <input type="range" id="tempSlider" min="0" max="10" value="2" step="1">
+            <div class="slider-labels"><span>0.0 — Predecible</span><span>0.5</span><span>1.0 — Creativo</span></div>
+            <div class="slider-readout">temperature = <span class="t-val" id="tempVal">0.2</span> → <span id="tempDesc">Ideal para asistentes que deben ser consistentes y fiables (onboarding, soporte, datos).</span></div>
+        </div>
+
+        <h4>Cómo obtener la API key</h4>
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content"><h4>Regístrate</h4><p>En <a href="https://dashboard.cohere.com/" target="_blank">dashboard.cohere.com</a> — cuenta gratuita.</p></div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content"><h4>Ve a "API Keys"</h4><p>En el menú del dashboard, crea una clave de prueba (<em>Trial key</em>).</p></div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content"><h4>Cópiala y guárdala</h4><p>La pegaréis en el notebook cuando os la pida (input oculto, no se ve al escribir).</p></div>
+            </div>
+        </div>
+
+        <div class="warning">Nunca subáis una API key a un repositorio. Se pide con <code>getpass</code> en el notebook y no se guarda en el código.</div>
+    </section>
+
+    <!-- ══════════ 2. TOUR HUGGING FACE ══════════ -->
+    <section id="hf-tour">
+        <div class="parte-header parte-2">
+            <div class="parte-num">2</div>
+            <div class="parte-header-text">
+                <h3>Tour por Hugging Face</h3>
+                <p>Antes de tocar código: entender la plataforma. Es la pieza que más confunde, así que vamos despacio.</p>
+            </div>
+        </div>
+
+        <p><a href="https://huggingface.co" target="_blank">Hugging Face</a> no es "un modelo": es un <strong>hub</strong>, un catálogo enorme de modelos open source, más un conjunto de servicios para ejecutarlos.</p>
+
+        <div class="analogy">
+            <strong>Inference Providers</strong> es el aeropuerto entero: todas las puertas, todas las aerolíneas. <code>provider="hf-inference"</code> es una única terminal, pequeña, con pocos vuelos. Si no indicáis <code>provider=</code>, el <strong>router</strong> os lleva a la puerta correcta automáticamente — eso es lo que queremos para chat.
+        </div>
+
+        <div class="flow-diagram">
+<span class="f-you">Tu notebook</span>  <span class="f-arrow">→</span>  <span class="f-node">InferenceClient (router)</span>  <span class="f-arrow">→</span>  proveedor serverless<br>
+             <span class="f-arrow">(Groq, Together, Cerebras...)</span>  <span class="f-arrow">→</span>  <span class="f-out">texto generado</span>
+        </div>
+
+        <h4>Glosario exprés</h4>
+        <p>Haz clic en cada término para ver la explicación:</p>
+        <div class="accordion" id="glosario">
+            <div class="acc-item">
+                <div class="acc-head">Hub <span class="acc-icon">+</span></div>
+                <div class="acc-body"><p>El catálogo de modelos de HF (<code>huggingface.co/models</code>). No es un proveedor en sí — es como el "GitHub de los modelos".</p></div>
+            </div>
+            <div class="acc-item">
+                <div class="acc-head">Inference Providers <span class="acc-icon">+</span></div>
+                <div class="acc-body"><p>El sistema de HF que reenvía tu petición a un proveedor externo (Groq, Together, Cerebras...) que ejecuta el modelo por ti.</p></div>
+            </div>
+            <div class="acc-item">
+                <div class="acc-head">Router automático <span class="acc-icon">+</span></div>
+                <div class="acc-body"><p>Lo que usaremos en el notebook: <code>InferenceClient(api_key=...)</code> sin más. HF elige el proveedor por vosotros.</p></div>
+            </div>
+            <div class="acc-item">
+                <div class="acc-head"><code>provider="hf-inference"</code> <span class="acc-icon">+</span></div>
+                <div class="acc-body"><p>Un backend concreto y limitado de HF (no el router). Catálogo pequeño, sin chat con Llama. En este bootcamp: solo para embeddings.</p></div>
+            </div>
+            <div class="acc-item">
+                <div class="acc-head">Modelo gated <span class="acc-icon">+</span></div>
+                <div class="acc-body"><p>Modelo que exige aceptar una licencia en la web de HF antes de poder descargarlo o usarlo.</p></div>
+            </div>
+            <div class="acc-item">
+                <div class="acc-head">Caché local <span class="acc-icon">+</span></div>
+                <div class="acc-body"><p>Carpeta (<code>~/.cache/huggingface/hub/</code>) donde se guardan los pesos ya descargados, para no volver a descargarlos cada vez.</p></div>
+            </div>
+        </div>
+
+        <h4>¿Dónde encontrar un modelo?</h4>
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content"><h4>Catálogo oficial de Inference Providers</h4><p><a href="https://huggingface.co/inference/models" target="_blank">huggingface.co/inference/models</a> — solo aparecen modelos llamables por API. Copiad el <strong>id</strong> (p. ej. <code>openai/gpt-oss-20b</code>).</p></div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content"><h4>La ficha del modelo</h4><p>En cualquier repo del Hub, pestaña <strong>Deploy → Inference Providers</strong>: comprueba si hay proveedor disponible.</p></div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content"><h4>Ojo con lo que no está en el catálogo</h4><p>Si un modelo no está en el catálogo de inferencia, la llamada de chat puede fallar directamente.</p></div>
+            </div>
+        </div>
+
+        <h4>🎯 Misión de exploración (5 min, en clase)</h4>
+        <p>Es individual: abre el navegador y marca lo que vayas completando:</p>
+        <ul class="task-list" id="mision">
+            <li>Entra en <a href="https://huggingface.co/inference/models" target="_blank">huggingface.co/inference/models</a> y elige un modelo de chat</li>
+            <li>Abre su ficha y localiza la pestaña <strong>Deploy</strong></li>
+            <li>Comprueba si el modelo es <strong>gated</strong> o de acceso libre</li>
+            <li>Entra en <a href="https://huggingface.co/settings/tokens" target="_blank">huggingface.co/settings/tokens</a> y localiza dónde se crea un token</li>
+            <li>Busca en <a href="https://huggingface.co/models" target="_blank">huggingface.co/models</a> con el filtro <strong>Task → Text Generation</strong></li>
+        </ul>
+    </section>
+
+    <!-- ══════════ 3. HF LOCAL ══════════ -->
+    <section id="hf-local">
+        <div class="parte-header parte-3">
+            <div class="parte-num">3</div>
+            <div class="parte-header-text">
+                <h3>Hugging Face — modelos en local</h3>
+                <p>Sin API, sin cuota: el modelo se ejecuta en tu propia máquina.</p>
+            </div>
+        </div>
+
+        <p>Aquí no llamamos a ningún servidor externo: <strong>descargamos</strong> un modelo open source del Hub y lo ejecutamos con la librería <code>transformers</code> en tu CPU (o GPU, si tienes).</p>
+
+        <div class="flow-diagram">
+<span class="f-you">Tu notebook</span>  <span class="f-arrow">→</span>  <span class="f-node">transformers + PyTorch</span>  <span class="f-arrow">→</span>  modelo en RAM/VRAM  <span class="f-arrow">→</span>  <span class="f-out">texto generado</span>
+        </div>
+
+        <table>
+            <tr><th></th><th>HF nube</th><th>HF local (hoy)</th></tr>
+            <tr><td><strong>Librería</strong></td><td><code>huggingface_hub</code></td><td><code>transformers</code> + <code>torch</code></td></tr>
+            <tr><td><strong>Token</strong></td><td>Sí (<code>HF_TOKEN</code>)</td><td>No (modelo público)</td></tr>
+            <tr><td><strong>Descarga</strong></td><td>No, solo API</td><td>Sí (~1 GB la primera vez)</td></tr>
+            <tr><td><strong>Velocidad</strong></td><td>Depende del proveedor</td><td>CPU: lenta · GPU: más rápida</td></tr>
+            <tr><td><strong>Cuándo usarlo</strong></td><td>Producción, demos rápidas</td><td>Prototipar sin API ni cuota</td></tr>
+        </table>
+
+        <div class="analogy">
+            <strong>Cuantización</strong> (si veis modelos "4-bit" o "GGUF"): es como comprimir una foto. El archivo ocupa mucho menos espacio y sigue viéndose bien, pero pierde algo de detalle. Un modelo cuantizado ocupa menos RAM a cambio de algo de precisión. No la usamos hoy, pero la veréis en modelos más grandes.
+        </div>
+
+        <div class="tip">¿Por qué no usar siempre local? Un modelo grande puede tardar minutos en descargarse y ocupar mucha RAM al cargarlo; en CPU la generación también es más lenta. Por eso hoy usamos un modelo pequeño (0,5B parámetros).</div>
+
+        <h4>¿Dónde encontrar modelos para local?</h4>
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content"><h4>Buscador del Hub</h4><p><a href="https://huggingface.co/models" target="_blank">huggingface.co/models</a> — filtro <strong>Task: Text Generation</strong>, busca <code>Instruct</code>, <code>Chat</code> o <code>it</code> en el nombre.</p></div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content"><h4>Revisa el tamaño</h4><p>Pestaña <strong>Files and versions</strong> de la ficha del modelo → cuánto vais a descargar.</p></div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content"><h4>El id que usaréis en código</h4><p>Formato <code>autor/nombre-repo</code>, p. ej. <code>Qwen/Qwen2.5-0.5B-Instruct</code>.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════ 4. COMPARATIVA ══════════ -->
+    <section id="comparativa" style="background: linear-gradient(135deg,#EEF2FF,var(--lilac)); border-color: var(--indigo);">
+        <h2>Comparativa rápida</h2>
+        <table>
+            <tr><th>&nbsp;</th><th>Cohere (nube)</th><th>HF nube</th><th>HF local</th></tr>
+            <tr><td><strong>Necesitas API key</strong></td><td>Sí</td><td>Sí</td><td>No</td></tr>
+            <tr><td><strong>Coste</strong></td><td>Capa gratuita limitada</td><td>Créditos según cuenta</td><td>Gratis (tu hardware)</td></tr>
+            <tr><td><strong>Velocidad</strong></td><td>Rápida (nube optimizada)</td><td>Depende del proveedor</td><td>Lenta en CPU</td></tr>
+            <tr><td><strong>Privacidad</strong></td><td>Datos viajan al proveedor</td><td>Datos viajan al proveedor</td><td>Todo en tu máquina</td></tr>
+            <tr><td><strong>Ideal para</strong></td><td>Prototipo empresarial rápido</td><td>Explorar catálogo open source</td><td>Prototipar sin cuota ni conexión</td></tr>
+        </table>
+    </section>
+
+    <!-- ══════════ 4.5 CÓMO LEER UN BENCHMARK ══════════ -->
+    <section id="leer-benchmarks">
+        <h2>Cómo leer una tabla de comparación de modelos</h2>
+        <p>Cuando comparéis modelos en herramientas como <strong>OpenRouter</strong>, <strong>Artificial Analysis</strong> o cualquier leaderboard, os vais a encontrar tablas con columnas como estas. Saber leerlas es justo lo que necesitáis para la <strong>Parte 4 (Benchmark)</strong> del Team Challenge.</p>
+
+        <div class="grid grid-4">
+            <div class="card">
+                <h4>🏷️ Model</h4>
+                <p>Identificador del modelo, normalmente <code>autor/nombre</code>. El mismo modelo puede aparecer servido por varios proveedores distintos.</p>
+            </div>
+            <div class="card">
+                <h4>🏢 Provider</h4>
+                <p>Quién sirve ese modelo en concreto. Ojo: el mismo modelo en dos proveedores puede tener precio y velocidad muy distintos.</p>
+            </div>
+            <div class="card">
+                <h4>💵 Input $/1M</h4>
+                <p>Coste por cada <strong>millón de tokens que vosotros mandáis</strong> (prompt + contexto + historial). Suele ser más barato que el output.</p>
+            </div>
+            <div class="card">
+                <h4>💰 Output $/1M</h4>
+                <p>Coste por cada <strong>millón de tokens que el modelo genera</strong>. Casi siempre más caro que el input — pesa más en respuestas largas.</p>
+            </div>
+            <div class="card">
+                <h4>📏 Context</h4>
+                <p>Ventana de contexto máxima, en tokens: cuánto prompt + historial + respuesta cabe en una sola llamada.</p>
+            </div>
+            <div class="card">
+                <h4>⏱️ Latency(s)</h4>
+                <p>Tiempo hasta que <strong>empieza</strong> a llegar respuesta (time-to-first-token). Importa mucho en chat en tiempo real.</p>
+            </div>
+            <div class="card">
+                <h4>⚡ Throughput(t/s)</h4>
+                <p>Velocidad de generación <strong>una vez ha empezado</strong> a responder, en tokens por segundo. Importa en respuestas largas.</p>
+            </div>
+            <div class="card">
+                <h4>🛠️ Tools</h4>
+                <p>Si soporta <em>function/tool calling</em> — el modelo puede pedir ejecutar una función vuestra. Imprescindible para agentes.</p>
+            </div>
+            <div class="card">
+                <h4>📐 Structured</h4>
+                <p>Si soporta forzar el formato de salida (JSON/schema). Clave para integrar la respuesta directamente en vuestro código sin parsear texto libre.</p>
+            </div>
+        </div>
+
+        <h3>Según tu prioridad, mira primero...</h3>
+        <table>
+            <tr><th>Si tu prioridad es...</th><th>Mira primero</th></tr>
+            <tr><td>Coste en producción a gran escala</td><td><code>Input $/1M</code> y <code>Output $/1M</code></td></tr>
+            <tr><td>Chat en tiempo real, sensación de rapidez</td><td><code>Latency(s)</code></td></tr>
+            <tr><td>Generar documentos largos rápido</td><td><code>Throughput(t/s)</code></td></tr>
+            <tr><td>Construir un agente que ejecuta acciones</td><td><code>Tools</code></td></tr>
+            <tr><td>Integrar la respuesta directamente en tu código</td><td><code>Structured</code></td></tr>
+        </table>
+
+        <div class="tip">Ningún modelo gana en todo. El benchmark del TC va justo de esto: medir varios modelos con vuestras propias preguntas y decidir con datos, no por intuición.</div>
+    </section>
+
+    <!-- ══════════ 5. DECIDE ══════════ -->
+    <section id="decide">
+        <h2>¿Cuál elijo para mi proyecto?</h2>
+        <p>Haz clic en tu prioridad principal:</p>
+        <div class="decide-grid" id="decideButtons">
+            <button class="decide-btn" data-r="rapido">⚡ Quiero probar algo ya, sin instalar nada</button>
+            <button class="decide-btn" data-r="privado">🔒 Me preocupa la privacidad de los datos</button>
+            <button class="decide-btn" data-r="calidad">🎯 Necesito la mejor calidad posible en español</button>
+            <button class="decide-btn" data-r="sinkey">🔓 No quiero depender de ninguna API key</button>
+        </div>
+        <div class="decide-result" id="decideResult">
+            <h4 id="decideTitle"></h4>
+            <p id="decideText"></p>
+        </div>
+    </section>
+
+</div>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer>
+    <p><strong>Bootcamp AI Engineering</strong> · The Bridge</p>
+    <p>Guía de conceptos — acompaña al notebook práctico de la sesión</p>
+</footer>
+
+<script>
+    // Accordion glosario
+    document.querySelectorAll('#glosario .acc-head').forEach(function (head) {
+        head.addEventListener('click', function () {
+            head.parentElement.classList.toggle('open');
+        });
+    });
+
+    // Checklist misión
+    document.querySelectorAll('#mision li').forEach(function (li) {
+        li.addEventListener('click', function (e) {
+            if (e.target.tagName === 'A') return;
+            li.classList.toggle('done');
+        });
+    });
+
+    // Slider temperature
+    var tempSlider = document.getElementById('tempSlider');
+    var tempVal = document.getElementById('tempVal');
+    var tempDesc = document.getElementById('tempDesc');
+    var tempSteps = [
+        [0.0, "Siempre responde casi lo mismo. Perfecto para datos, clasificación o respuestas muy controladas."],
+        [0.1, "Muy predecible, casi sin variación entre ejecuciones."],
+        [0.2, "Ideal para asistentes que deben ser consistentes y fiables (onboarding, soporte, datos)."],
+        [0.3, "Un poco más de variación, sigue siendo fiable."],
+        [0.4, "Empieza a notarse variación en la redacción."],
+        [0.5, "Punto intermedio: variado pero todavía controlado."],
+        [0.6, "Respuestas más originales, algo menos predecibles."],
+        [0.7, "Bueno para brainstorming o redacción creativa."],
+        [0.8, "Alta variación — cada ejecución puede sonar distinta."],
+        [0.9, "Muy creativo, puede desviarse del tema."],
+        [1.0, "Máxima aleatoriedad. Útil para ideas o poesía, arriesgado para un asistente serio."]
+    ];
+    function updateTemp() {
+        var i = parseInt(tempSlider.value, 10);
+        var step = tempSteps[i];
+        tempVal.textContent = step[0].toFixed(1);
+        tempDesc.textContent = step[1];
+    }
+    tempSlider.addEventListener('input', updateTemp);
+    updateTemp();
+
+    // Decision helper
+    var decideData = {
+        rapido: {
+            title: "⚡ Tu mejor opción: Cohere (o cualquier API en la nube)",
+            text: "Con una API en la nube tenéis modelo funcionando en minutos: registro, API key, primera llamada. No hay descargas ni configuración de hardware."
+        },
+        privado: {
+            title: "🔒 Tu mejor opción: Hugging Face en local",
+            text: "Si los datos no pueden salir de tu máquina, la única opción real de las tres es ejecutar el modelo en local. Nada viaja a un servidor externo."
+        },
+        calidad: {
+            title: "🎯 Tu mejor opción: API en la nube (Cohere o similar)",
+            text: "Los modelos grandes servidos en la nube suelen superar en calidad a lo que podéis ejecutar en un portátil normal (los modelos locales pequeños, 0,5B–2B, priorizan velocidad sobre calidad)."
+        },
+        sinkey: {
+            title: "🔓 Tu mejor opción: Hugging Face en local",
+            text: "Los modelos públicos de HF se pueden descargar y ejecutar sin ningún token ni API key — solo hardware y paciencia en la primera descarga."
+        }
+    };
+    var decideResult = document.getElementById('decideResult');
+    var decideTitle = document.getElementById('decideTitle');
+    var decideText = document.getElementById('decideText');
+    document.querySelectorAll('.decide-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            document.querySelectorAll('.decide-btn').forEach(function (b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            var d = decideData[btn.dataset.r];
+            decideTitle.textContent = d.title;
+            decideText.textContent = d.text;
+            decideResult.classList.add('show');
+        });
+    });
+</script>
+
+</body>
+</html>

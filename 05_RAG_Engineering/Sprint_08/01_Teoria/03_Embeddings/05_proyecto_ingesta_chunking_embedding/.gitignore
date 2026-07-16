@@ -1,0 +1,10 @@
+# Entorno virtual
+.venv/
+
+# Artefactos Python
+__pycache__/
+*.pyc
+
+# Salida generada por main.py
+output/chunks.json
+output/embeddings.json

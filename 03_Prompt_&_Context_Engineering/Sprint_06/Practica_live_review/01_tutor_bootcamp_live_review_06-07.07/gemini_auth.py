@@ -4,10 +4,6 @@ Qué hace este módulo:
   - Lee `GEMINI_API_KEY` desde `.env` (python-dotenv).
   - Si no hay clave, la pide por consola con `getpass` (no se ve al escribir).
 
-Para qué sirve:
-  - No hardcodear secretos en el código.
-  - Preparar el cliente antes de la primera llamada a Gemini.
-
 Qué NO debes hacer aquí:
   - Este archivo ya está completo; no necesitas modificarlo en la práctica.
 """
