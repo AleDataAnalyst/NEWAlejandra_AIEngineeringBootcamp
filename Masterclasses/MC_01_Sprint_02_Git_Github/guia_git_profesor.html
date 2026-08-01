@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Panel del Profesor — Git & Equipos · The Bridge AIE</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --dark:#0d1117;--surface:#fff;--surface2:#f6f8fa;--border:#d0d7de;
+  --text:#1f2328;--muted:#57606a;
+  --bm:#0969da;--bf:#1a7f37;--bd:#8250df;--bh:#cf222e;--br:#9a6700;
+  --accent:#0969da;--g:#1a7f37;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);background:var(--surface2);font-size:14px;line-height:1.6;}
+
+/* HEADER */
+.header{background:var(--dark);color:#fff;padding:0 24px;height:54px;display:flex;align-items:center;justify-content:space-between;}
+.header-brand{font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px;}
+.header-dot{width:8px;height:8px;border-radius:50%;background:var(--bm);}
+.header-sub{font-size:12px;color:rgba(255,255,255,.5);}
+
+/* TABS */
+.tabs-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:0;position:sticky;top:0;z-index:50;}
+.tab-btn{padding:12px 18px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:none;color:var(--muted);border-bottom:2px solid transparent;transition:all .15s;font-family:inherit;display:flex;align-items:center;gap:6px;}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{color:var(--bm);border-bottom-color:var(--bm);}
+
+/* TABS CONTENT */
+.tab-content{display:none;padding:24px;max-width:1000px;margin:0 auto;}
+.tab-content.active{display:block;}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:14px;}
+.card-title{font-size:14px;font-weight:600;margin-bottom:4px;}
+.card-sub{font-size:12px;color:var(--muted);margin-bottom:14px;}
+
+/* INPUTS */
+label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px;font-weight:500;}
+input[type=text],input[type=number],select,textarea{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-family:inherit;background:var(--surface);color:var(--text);}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px;}
+
+/* BUTTONS */
+.btn{padding:7px 14px;font-size:13px;cursor:pointer;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;transition:background .1s;}
+.btn:hover{background:var(--surface2);}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-primary:hover{opacity:.9;}
+.btn-sm{padding:5px 10px;font-size:12px;}
+.btn-green{background:var(--g);color:#fff;border-color:var(--g);}
+.btn-green:hover{opacity:.9;}
+
+/* ROWS */
+.row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:12px;}
+.col{flex:1;min-width:120px;}
+
+/* GROUP CARDS */
+.groups-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:14px;}
+.group-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+.group-header{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.group-dot{width:7px;height:7px;border-radius:50%;}
+.member-row{font-size:13px;padding:4px 0;border-bottom:1px solid var(--surface2);display:flex;justify-content:space-between;align-items:center;}
+.member-row:last-child{border-bottom:none;}
+.role-tag{font-size:11px;color:var(--muted);}
+.badge-m{background:#ddf4ff;color:#0550ae;font-size:11px;padding:1px 6px;border-radius:4px;}
+.badge-t{background:#dafbe1;color:#1a5c3a;font-size:11px;padding:1px 6px;border-radius:4px;}
+
+/* ACCORDION (Guía Git) */
+.acc-block{border:1px solid var(--border);border-radius:8px;margin-bottom:7px;overflow:hidden;}
+.acc-header{padding:11px 15px;font-size:13px;font-weight:500;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:var(--surface2);border:none;width:100%;text-align:left;font-family:inherit;color:var(--text);}
+.acc-header:hover{background:#eef1f4;}
+.acc-body{padding:14px 16px;font-size:13px;line-height:1.7;color:var(--text);display:none;background:var(--surface);}
+.acc-body.open{display:block;}
+.acc-body pre{font-family:'JetBrains Mono','Courier New',monospace;font-size:12px;background:var(--dark);color:#e6edf3;padding:10px 12px;border-radius:7px;overflow-x:auto;margin:8px 0;line-height:1.6;}
+.acc-body code{font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--surface2);padding:1px 5px;border-radius:4px;border:1px solid var(--border);}
+.acc-body ul{padding-left:16px;}
+.acc-body li{margin-bottom:4px;}
+.acc-body p{margin-bottom:8px;}
+.acc-body table{width:100%;border-collapse:collapse;margin:8px 0;font-size:12px;}
+.acc-body th{background:var(--surface2);padding:6px 10px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);border-bottom:1px solid var(--border);}
+.acc-body td{padding:7px 10px;border-bottom:1px solid var(--surface2);}
+.acc-body tr:last-child td{border-bottom:none;}
+.note-sm{padding:9px 12px;border-radius:6px;margin:8px 0;font-size:13px;}
+.note-tip{background:#dafbe1;border-left:3px solid var(--g);}
+.note-warn{background:#fff8c5;border-left:3px solid var(--br);}
+.note-danger{background:#ffebe9;border-left:3px solid var(--bh);}
+
+/* BRANCH DIAGRAM in accordion */
+.bd-mini{background:var(--dark);border-radius:8px;padding:12px 14px;margin:8px 0;overflow-x:auto;font-family:'JetBrains Mono','Courier New',monospace;font-size:12px;line-height:1.9;color:#e6edf3;}
+.bm{color:#79c0ff;font-weight:700;}.bf{color:#7ee787;font-weight:700;}.bdv{color:#d2a8ff;font-weight:700;}.bh2{color:#ffa198;font-weight:700;}.brr{color:#e3b341;font-weight:700;}
+
+/* TAGS */
+.tag{display:inline-block;font-size:11px;padding:2px 7px;border-radius:6px;font-weight:500;margin:2px;}
+.tag-main{background:#ddf4ff;color:var(--bm);border:1px solid #b6e3ff;}
+.tag-feature{background:#dafbe1;color:var(--g);border:1px solid #b6f0c4;}
+.tag-develop{background:#fbefff;color:var(--bd);border:1px solid #e2c5ff;}
+.tag-hotfix{background:#ffebe9;color:var(--bh);border:1px solid #ffc1ba;}
+.tag-release{background:#fff8c5;color:var(--br);border:1px solid #f1e05a;}
+
+/* TIMER */
+.timer-display{font-size:56px;font-weight:500;text-align:center;font-family:'JetBrains Mono',monospace;letter-spacing:3px;padding:24px 0 16px;}
+.timer-display.warn{color:var(--br);}
+.timer-display.danger{color:var(--bh);}
+.timer-controls{display:flex;justify-content:center;gap:8px;margin-bottom:18px;}
+.group-queue{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.gq-btn{padding:5px 12px;font-size:12px;cursor:pointer;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-family:inherit;}
+.gq-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.timer-label{text-align:center;font-size:13px;color:var(--muted);margin-bottom:14px;min-height:18px;}
+.timer-history{margin-top:16px;padding-top:12px;border-top:1px solid var(--border);}
+.timer-history-row{font-size:12px;color:var(--muted);padding:4px 0;border-bottom:1px solid var(--surface2);}
+
+/* CHECKLIST */
+.cl-list{list-style:none;margin:0;}
+.cl-item{display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px solid var(--surface2);font-size:13px;}
+.cl-item:last-child{border-bottom:none;}
+.cl-item input[type=checkbox]{width:15px;height:15px;flex-shrink:0;margin-top:2px;cursor:pointer;}
+.cl-item.done span{text-decoration:line-through;color:var(--muted);}
+.progress-bar{height:4px;background:var(--surface2);border-radius:2px;margin:10px 0;}
+.progress-fill{height:100%;background:var(--g);border-radius:2px;transition:width .3s;}
+
+/* TEMPLATES */
+.tpl-block{border:1px solid var(--border);border-radius:8px;margin-bottom:10px;overflow:hidden;}
+.tpl-header{padding:10px 14px;font-size:13px;font-weight:500;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:var(--surface2);border:none;width:100%;text-align:left;font-family:inherit;color:var(--text);}
+.tpl-header:hover{background:#eef1f4;}
+.tpl-body{padding:12px 14px;font-size:13px;color:var(--text);display:none;background:var(--surface);}
+.tpl-body.open{display:block;}
+.tpl-body pre{font-family:'JetBrains Mono','Courier New',monospace;font-size:12px;background:var(--surface2);padding:10px 12px;border-radius:7px;border:1px solid var(--border);white-space:pre-wrap;margin-top:6px;color:var(--text);}
+.copy-btn{float:right;font-size:11px;padding:3px 8px;}
+
+/* SESSION SELECTOR */
+.sess-btns{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.sess-btn{padding:6px 14px;font-size:13px;cursor:pointer;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--muted);transition:all .15s;font-family:inherit;}
+.sess-btn.active{background:var(--dark);color:#fff;border-color:var(--dark);font-weight:500;}
+
+/* NAME GRID */
+.name-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:7px;margin-bottom:14px;}
+
+/* INFO BOX */
+.info-box{background:var(--surface2);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--muted);margin-bottom:12px;}
+.info-box strong{color:var(--text);}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:36px;color:var(--muted);font-size:13px;}
+
+@media(max-width:600px){
+  .tab-btn{padding:10px 10px;font-size:12px;}
+  .tab-content{padding:16px;}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-brand"><span class="header-dot"></span>Panel del Profesor · Git & Equipos</div>
+  <div class="header-sub">The Bridge · Data Science</div>
+</header>
+
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="showTab('equipos',this)">Equipos</button>
+  <button class="tab-btn" onclick="showTab('guia',this)">Guía Git</button>
+  <button class="tab-btn" onclick="showTab('checklist',this)">Checklist</button>
+  <button class="tab-btn" onclick="showTab('timer',this)">Timer</button>
+  <button class="tab-btn" onclick="showTab('plantillas',this)">Plantillas</button>
+</div>
+
+<!-- ====== EQUIPOS ====== -->
+<div class="tab-content active" id="tab-equipos">
+  <div class="card">
+    <div class="card-title">Configuración del challenge</div>
+    <div class="card-sub">Define el nombre, el turno y los alumnos antes de generar grupos.</div>
+    <div class="row">
+      <div class="col" style="max-width:260px;">
+        <label>Nombre del challenge</label>
+        <input type="text" id="challenge-name" placeholder="ej. Team Challenge — Hundir la Flota" value="Team Challenge"/>
+      </div>
+      <div class="col" style="max-width:140px;">
+        <label>Tamaño de grupo</label>
+        <select id="group-size">
+          <option value="3">3 personas</option>
+          <option value="4" selected>4 personas</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="sess-btns">
+    <button class="sess-btn active" onclick="selectSess('manana',this)">Grupo Mañana</button>
+    <button class="sess-btn" onclick="selectSess('tarde',this)">Grupo Tarde</button>
+  </div>
+
+  <div class="card" id="setup-card">
+    <div class="info-box"><strong>Paso 1:</strong> Indica el número de alumnos. Los grupos se forman automáticamente con el tamaño seleccionado, de 3 o 4 personas.</div>
+    <div class="row">
+      <div class="col" style="max-width:170px;">
+        <label>Número de alumnos</label>
+        <input type="number" id="num-alumnos" min="3" max="60" placeholder="ej. 15"/>
+      </div>
+      <button class="btn" onclick="generateInputs()">Generar campos ↓</button>
+    </div>
+    <div id="name-inputs"></div>
+    <div id="gen-btn" style="display:none;margin-top:6px;">
+      <button class="btn btn-primary" onclick="generateGroups()">Asignar grupos aleatoriamente</button>
+    </div>
+  </div>
+
+  <div id="groups-result" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+      <div id="groups-summary" style="font-size:13px;color:var(--muted);"></div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;">
+        <button class="btn btn-sm" onclick="reshuffleGroups()">Remezclar</button>
+        <button class="btn btn-sm" onclick="exportCSV()">Exportar CSV</button>
+        <button class="btn btn-sm" onclick="resetSetup()">Reiniciar</button>
+      </div>
+    </div>
+    <div class="groups-grid" id="groups-display"></div>
+  </div>
+</div>
+
+<!-- ====== GUÍA GIT ====== -->
+<div class="tab-content" id="tab-guia">
+  <div class="card" style="margin-bottom:14px;">
+    <div class="card-title">Referencia rápida para clase</div>
+    <div class="card-sub">Despliega cada sección conforme avanzas. Los bloques azules indican la rama <span class="tag tag-main">main</span>, verde <span class="tag tag-feature">feature</span>, morado <span class="tag tag-develop">develop</span>.</div>
+  </div>
+
+  <div class="acc-block"><button class="acc-header" onclick="tog(this)">01 · ¿Qué es Git? <span>+</span></button><div class="acc-body">
+    <p>Git = <strong>sistema de control de versiones distribuido</strong>. Registra el historial completo de cambios, permite trabajar en paralelo y volver a cualquier punto anterior.</p>
+    <p><strong>Git ≠ GitHub.</strong> Git corre en tu máquina. GitHub es la plataforma en la nube que aloja repos y añade herramientas de colaboración (también GitLab, Bitbucket).</p>
+    <div class="bd-mini"><span class="bm">Directorio de trabajo</span> → <span class="bf">Staging Area</span> → <span class="bdv">Repositorio (.git)</span>
+<span style="color:#8b949e">  (tus archivos)       </span>  git add          git commit</div>
+  </div></div>
+
+  <div class="acc-block"><button class="acc-header" onclick="tog(this)">02 · Primeros comandos <span>+</span></button><div class="acc-body">
+    <pre>git config --global user.name "Nombre"
+git config --global user.email "email@..."
+git init                    # inicia repo
+git status                  # ver estado
+git add .                   # staging
+git commit -m "mensaje"     # commit</pre>
+    <p style="margin-top:8px;"><strong>.gitignore</strong> — indica qué no rastrear nunca. Usar <a href="https://gitignore.io" target="_blank">gitignore.io</a>.</p>
+  </div></div>
+
+  <div class="acc-block"><button class="acc-header" onclick="tog(this)">03 · Historial y deshacer <span>+</span></button><div class="acc-body">
+    <pre>git log --oneline --graph --all   # árbol visual
+git diff --staged                 # cambios en staging
+git restore archivo.txt           # descartar cambios (!)
+git restore --staged archivo.txt  # sacar del staging
+git revert &lt;hash&gt;                 # deshacer commit (seguro)
+git reset --soft HEAD~1           # deshacer commit, guardar staging</pre>
+    <div class="note-sm note-danger">⚠ <code>git reset --hard</code> borra cambios permanentemente.</div>
+  </div></div>
+
+  <div class="acc-block"><button class="acc-header" onclick="tog(this)">04 · Ramas <span>+</span></button><div class="acc-body">
+    <div class="bd-mini"><span class="bm">main:</span>    A ── B ── C ──────────── F
+                 \            /
+<span class="bf">feature:</span>        C ── D ── E</div>
+    <pre>git switch -c feature/nombre  # crear y cambiar
+git switch nombre             # cambiar
+git branch -d rama            # eliminar (si fusionada)
+git merge feature/x           # desde main: fusionar</pre>
+    <table>
+      <tr><th>Tipo</th><th>Ejemplo</th></tr>
+      <tr><td>Funcionalidad</td><td><code>feature/user-login</code></td></tr>
+      <tr><td>Bug</td><td><code>fix/navbar-overflow</code></td></tr>
+      <tr><td>Urgente producción</td><td><code>hotfix/payment-crash</code></td></tr>
+      <tr><td>Versión</td><td><code>release/v2.1.0</code></td></tr>
+    </table>
+  </div></div>
+
+  <div class="acc-block"><button class="acc-header" onclick="tog(this)">05 · Merge y conflictos <span>+</span></button><div class="acc-body">
+    <p><strong>Fast-forward:</strong> destino sin commits nuevos → solo mueve puntero.<br/><strong>Merge commit:</strong> ambas ramas tienen commits → crea commit nuevo.</p>
+    <pre>git merge --no-ff feature/x   # fuerza merge commit (recomendado)
+git merge --squash feature/x  # aplasta todos en uno</pre>
+    <p style="margin-top:8px;"><strong>Conflicto:</strong> edita el archivo manualmente, elimina los marcadores <code>&lt;&lt;&lt;</code>, luego:</p>
+    <pre>git add archivo_resuelto.py
+git commit</pre>
+    <p><strong>Stash:</strong> guardar trabajo sin commit → <code>git stash</code> / <code>git stash pop</code></p>
+  </div></div>
+
+  <div class="acc-block"><button class="acc-header" onclick="tog(this)">06 · Trabajo remoto y GitHub <span>+</span></button><div class="acc-body">
+    <pre>git remote add origin &lt;url&gt;
+git push -u origin main       # primera vez
+git pull                      # fetch + merge
+git fetch                     # descarga sin aplicar</pre>
+    <p style="margin-top:8px;"><strong>Pull Request:</strong> propuesta de cambio. Rama feature → main. Un compañero revisa → aprueba → merge.</p>
+    <p><strong>Fork:</strong> copia del repo en tu cuenta para contribuir sin permisos directos.</p>
+  </div></div>
+
+  <div class="acc-block"><button class="acc-header" onclick="tog(this)">07 · GitHub Flow — simplificado ✓ recomendado para el bootcamp <span>+</span></button><div class="acc-body">
+    <div class="bd-mini"><span class="bm">main:</span>    ●──────────────────────●─────────●
+          \              ↗   \        ↗
+<span class="bf">feature:</span>  ●──●──●(PR)     ●──●──●(PR)</div>
+    <p style="margin-top:8px;">Solo <span class="tag tag-main">main</span> como rama permanente. Todo trabajo en <span class="tag tag-feature">feature/*</span>. PRs directamente a main. Sin develop, sin hotfix, sin release.</p>
+    <div class="note-sm note-tip">Ideal para: proyectos de bootcamp, equipos pequeños, CI/CD, cuando cada merge a main es un despliegue.</div>
+    <pre>git switch main && git pull
+git switch -c feature/nueva-func
+# ... commits ...
+git push -u origin feature/nueva-func
+# → abrir PR en GitHub: feature/nueva-func → main</pre>
+  </div></div>
+
+  <div class="acc-block"><button class="acc-header" onclick="tog(this)">08 · Git Flow — completo (para empresas/versiones) <span>+</span></button><div class="acc-body">
+    <div class="bd-mini"><span class="bm">main:</span>    ●────────────────────────────────●
+          \                            ↗ ↗
+<span class="bdv">develop:</span>  ●──●──────────────────●──●──●  |
+               \    \              ↗  |  |
+<span class="bf">feature:</span>        ●──●  ●──●──●──●  | release<span class="brr">●──●</span>
+<span class="bh2">hotfix:</span>                    (desde main) ●──●────/</div>
+    <table style="margin-top:8px;">
+      <tr><th>Rama</th><th>Desde</th><th>Fusionar a</th></tr>
+      <tr><td><span class="tag tag-feature">feature/*</span></td><td>develop</td><td>develop</td></tr>
+      <tr><td><span class="tag tag-release">release/*</span></td><td>develop</td><td>main + develop + tag</td></tr>
+      <tr><td><span class="tag tag-hotfix">hotfix/*</span></td><td>main</td><td>main + develop + tag</td></tr>
+    </table>
+    <pre style="margin-top:8px;"># hotfix urgente
+git switch main && git pull
+git switch -c hotfix/login-crash
+git commit -m "fix: resolve crash"
+git switch main && git merge hotfix/login-crash
+git tag -a v1.0.1 -m "hotfix"
+git switch develop && git merge hotfix/login-crash</pre>
+  </div></div>
+
+  <div class="acc-block"><button class="acc-header" onclick="tog(this)">09 · Conventional Commits + buenas prácticas <span>+</span></button><div class="acc-body">
+    <pre>feat(auth): add OAuth2 login with Google
+fix(cart): prevent negative item quantity
+chore: upgrade dependencies to latest
+docs: update README with setup instructions
+refactor: extract validation to helper function
+feat!: redesign user profile API   # ! = breaking change</pre>
+    <table style="margin-top:8px;">
+      <tr><th>Tipo</th><th>Cuándo</th></tr>
+      <tr><td><code>feat</code></td><td>Nueva funcionalidad</td></tr>
+      <tr><td><code>fix</code></td><td>Corrección de bug</td></tr>
+      <tr><td><code>chore</code></td><td>Build, dependencias, configuración</td></tr>
+      <tr><td><code>docs</code></td><td>Solo documentación / docstrings</td></tr>
+      <tr><td><code>refactor</code></td><td>Reorganización sin cambio de comportamiento</td></tr>
+      <tr><td><code>test</code></td><td>Añadir o modificar tests</td></tr>
+    </table>
+    <div class="note-sm note-tip" style="margin-top:8px;">Commits atómicos: un solo cambio lógico por commit. El código debe funcionar antes y después.</div>
+  </div></div>
+
+</div>
+
+<!-- ====== CHECKLIST ====== -->
+<div class="tab-content" id="tab-checklist">
+  <div class="card" style="margin-bottom:14px;">
+    <div class="card-title">Checklist de entrega por grupo</div>
+    <div class="card-sub">Revisa el estado de cada equipo antes de la presentación. Genera los grupos primero en la pestaña Equipos.</div>
+  </div>
+  <div id="cl-group-select" class="sess-btns"></div>
+  <div class="card" id="cl-body">
+    <div class="empty-state">Genera los grupos primero en la pestaña Equipos.</div>
+  </div>
+</div>
+
+<!-- ====== TIMER ====== -->
+<div class="tab-content" id="tab-timer">
+  <div class="card" style="max-width:500px;margin:0 auto;">
+    <div class="card-title" style="margin-bottom:4px;">Timer de presentaciones</div>
+    <div class="card-sub">Selecciona el grupo y el tiempo. El timer cambia de color a amarillo en los últimos 2 min y a rojo en el último minuto.</div>
+
+    <div style="margin-bottom:12px;">
+      <div id="timer-queue" class="group-queue"><div style="font-size:12px;color:var(--muted);">Genera los grupos para ver la cola de presentaciones.</div></div>
+    </div>
+    <div class="timer-label" id="timer-label">—</div>
+    <div class="timer-display" id="timer-display">10:00</div>
+
+    <div class="row" style="margin-bottom:12px;">
+      <div class="col" style="max-width:130px;">
+        <label>Minutos</label>
+        <input type="number" id="timer-mins" value="10" min="1" max="60" style="font-size:16px;text-align:center;"/>
+      </div>
+    </div>
+    <div class="timer-controls">
+      <button class="btn btn-primary" id="timer-start-btn" onclick="timerToggle()">Iniciar</button>
+      <button class="btn" onclick="timerReset()">Reiniciar</button>
+    </div>
+
+    <div id="timer-history" style="display:none;" class="timer-history">
+      <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px;">Historial</div>
+      <div id="timer-history-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== PLANTILLAS ====== -->
+<div class="tab-content" id="tab-plantillas">
+  <div class="card" style="margin-bottom:14px;">
+    <div class="card-title">Plantillas de comunicación</div>
+    <div class="card-sub">Copia y adapta. Se rellenan automáticamente con el nombre del challenge cuando lo configures.</div>
+  </div>
+
+  <div class="tpl-block"><button class="tpl-header" onclick="togTpl(this)">Slack — Arranque del Team Challenge <span>+</span></button><div class="tpl-body">
+    <button class="btn btn-sm copy-btn" onclick="copyTpl(this)">Copiar</button>
+    <pre id="tpl-1">¡Arrancamos el <span class="challenge-name-tpl">Team Challenge</span>! 🚀
+
+**Antes de empezar, cada grupo debe hacer estos pasos:**
+
+1️⃣ El Scrum Master crea el repo en GitHub y añade a todos como colaboradores (Write)
+2️⃣ Protegéis la rama `main` en Settings → Branches (Require PR + 1 approval)
+3️⃣ Cada uno clona el repo y crea su rama de trabajo
+4️⃣ Cread los Issues en GitHub ANTES de escribir código
+
+**Recordad:** nadie pushea directamente a `main`. Todo por PR.
+
+Cualquier duda, preguntad 👋</pre>
+  </div></div>
+
+  <div class="tpl-block"><button class="tpl-header" onclick="togTpl(this)">Slack — Recordatorio Conventional Commits <span>+</span></button><div class="tpl-body">
+    <button class="btn btn-sm copy-btn" onclick="copyTpl(this)">Copiar</button>
+    <pre id="tpl-2">Recordatorio rápido de mensajes de commit 👇
+
+✅ Bien:
+  feat: implementar método place_ships
+  fix: corregir índice fuera de rango
+  docs: añadir docstrings a clase Tablero
+  refactor: extraer validación a función auxiliar
+
+❌ Mal:
+  arreglado
+  cambios
+  wip
+  commit final v2
+
+El historial de commits es parte de la nota. Cuídadlo.</pre>
+  </div></div>
+
+  <div class="tpl-block"><button class="tpl-header" onclick="togTpl(this)">GitHub — Plantilla de Pull Request <span>+</span></button><div class="tpl-body">
+    <button class="btn btn-sm copy-btn" onclick="copyTpl(this)">Copiar</button>
+    <pre id="tpl-3">## ¿Qué hace este PR?
+Breve descripción de los cambios.
+
+## Cambios incluidos
+- archivo.py: descripción
+- otro_archivo.py: descripción
+
+## Cómo probarlo
+```
+python -c "from modulo import Clase; ..."
+```
+
+## Checklist
+- [ ] El código funciona sin errores
+- [ ] Docstrings en todas las funciones y clases
+- [ ] Sin print() de debug
+- [ ] Sin valores hardcoded
+- [ ] He hecho rebase/merge de main antes del PR
+
+Closes #N</pre>
+  </div></div>
+
+  <div class="tpl-block"><button class="tpl-header" onclick="togTpl(this)">Slack — Feedback Code Review (para alumnos reviewers) <span>+</span></button><div class="tpl-body">
+    <button class="btn btn-sm copy-btn" onclick="copyTpl(this)">Copiar</button>
+    <pre id="tpl-4">Al revisar el PR de tu compañero, busca:
+
+🔍 ¿El código hace lo que dice el PR?
+🔍 ¿Hay valores hardcoded que deberían estar en variables.py?
+🔍 ¿Hay print() de debug olvidados?
+🔍 ¿Las funciones tienen docstrings?
+🔍 ¿Hay casos edge sin manejar?
+🔍 ¿Los nombres de variables son descriptivos?
+
+Al comentar, sé específico:
+❌ "Esto no me gusta"
+✅ "Este 10 debería ser BOARD_SIZE de variables.py"
+✅ "¿Qué pasa si x < 0? Falta validar el rango"</pre>
+  </div></div>
+
+  <div class="tpl-block"><button class="tpl-header" onclick="togTpl(this)">Distribución de trabajo por grupo (generada) <span>+</span></button><div class="tpl-body">
+    <div id="task-group-select" class="sess-btns" style="margin-bottom:12px;"></div>
+    <div id="task-output"><div class="empty-state">Genera los grupos primero en la pestaña Equipos.</div></div>
+  </div></div>
+</div>
+
+<script>
+const COLORS=['#0969da','#1a7f37','#8250df','#cf222e','#9a6700','#b08800','#0550ae'];
+const ROLES=['Scrum Master','Dev 1','Dev 2 / QA','Dev 3'];
+const CHECKLIST=[
+  'README.md presente con instrucciones de ejecución',
+  'Todos los archivos .py tienen docstrings en funciones y clases',
+  'Sin print() de debug en el código final',
+  'Sin valores hardcoded: todo en variables o constantes',
+  'Al menos 1 PR mergeado por integrante en el historial',
+  'Issues cerrados o vinculados a sus PRs',
+  'GitHub Project Board actualizado (todos en Done)',
+  'El programa funciona desde cero en una máquina limpia',
+  'Ensayada la demo: timing y división de roles claro',
+];
+let groups={manana:[],tarde:[]};
+let currentSess='manana';
+let checklistState={};
+let timerInterval=null,timerRunning=false,timerSecs=600;
+let timerHistory=[],selectedTimerGroup=null;
+
+function showTab(id,btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='checklist')refreshChecklist();
+  if(id==='timer')refreshTimerQueue();
+  if(id==='plantillas')refreshTaskTemplates();
+}
+
+function selectSess(s,btn){
+  currentSess=s;
+  document.querySelectorAll('.sess-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const hasGroups=groups[s].length>0;
+  document.getElementById('setup-card').style.display=hasGroups?'none':'block';
+  document.getElementById('groups-result').style.display=hasGroups?'block':'none';
+  if(hasGroups)renderGroups(s);
+}
+
+function generateInputs(){
+  const n=parseInt(document.getElementById('num-alumnos').value)||0;
+  if(n<2)return;
+  const c=document.getElementById('name-inputs');
+  c.innerHTML='<div class="name-grid">'+Array.from({length:n},(_,i)=>`<div><label>Alumno ${i+1}</label><input type="text" class="alumno-name" placeholder="Nombre"/></div>`).join('')+'</div>';
+  document.getElementById('gen-btn').style.display='block';
+}
+
+function generateGroups(){
+  const names=[...document.querySelectorAll('.alumno-name')].map(i=>i.value.trim()||`Alumno ${i.dataset.idx||'?'}`);
+  const size=parseInt(document.getElementById('group-size').value);
+  const shuffled=[...names].sort(()=>Math.random()-.5);
+  const gs=[];
+  for(let i=0;i<shuffled.length;i+=size){
+    const grp=shuffled.slice(i,i+size);
+    if(grp.length<2&&gs.length>0){gs[gs.length-1].push(...grp);}
+    else gs.push(grp);
+  }
+  groups[currentSess]=gs.map((members,idx)=>({members,idx,session:currentSess}));
+  document.getElementById('setup-card').style.display='none';
+  document.getElementById('groups-result').style.display='block';
+  renderGroups(currentSess);
+}
+
+function renderGroups(sess){
+  const gs=groups[sess];
+  document.getElementById('groups-summary').textContent=`${gs.length} grupo${gs.length!==1?'s':''} · ${gs.reduce((a,g)=>a+g.members.length,0)} alumnos`;
+  document.getElementById('groups-display').innerHTML=gs.map((g,i)=>`
+    <div class="group-card">
+      <div class="group-header">
+        <span class="group-dot" style="background:${COLORS[i%COLORS.length]}"></span>
+        Grupo ${i+1} · <span class="${sess==='manana'?'badge-m':'badge-t'}">${sess==='manana'?'M':'T'}</span>
+      </div>
+      ${g.members.map((m,j)=>`<div class="member-row"><span>${m}</span><span class="role-tag">${ROLES[j]||'Dev'}</span></div>`).join('')}
+    </div>`).join('');
+}
+
+function reshuffleGroups(){
+  const names=groups[currentSess].flatMap(g=>g.members).sort(()=>Math.random()-.5);
+  const size=parseInt(document.getElementById('group-size').value);
+  const gs=[];
+  for(let i=0;i<names.length;i+=size){
+    const grp=names.slice(i,i+size);
+    if(grp.length<2&&gs.length>0)gs[gs.length-1].push(...grp);
+    else gs.push(grp);
+  }
+  groups[currentSess]=gs.map((members,idx)=>({members,idx,session:currentSess}));
+  renderGroups(currentSess);
+}
+
+function resetSetup(){
+  groups[currentSess]=[];
+  document.getElementById('num-alumnos').value='';
+  document.getElementById('name-inputs').innerHTML='';
+  document.getElementById('gen-btn').style.display='none';
+  document.getElementById('setup-card').style.display='block';
+  document.getElementById('groups-result').style.display='none';
+}
+
+function exportCSV(){
+  const chName=document.getElementById('challenge-name').value||'Challenge';
+  const rows=[['Challenge','Sesión','Grupo','Alumno','Rol']];
+  Object.values(groups).forEach(gs=>gs.forEach(g=>g.members.forEach((m,j)=>rows.push([chName,g.session==='manana'?'Mañana':'Tarde',`Grupo ${g.idx+1}`,m,ROLES[j]||'Dev']))));
+  const csv=rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download='grupos.csv';a.click();
+}
+
+function getAllGroups(){return[...groups.manana,...groups.tarde];}
+
+function refreshChecklist(){
+  const all=getAllGroups();
+  const sel=document.getElementById('cl-group-select');
+  if(!all.length){
+    sel.innerHTML='';
+    document.getElementById('cl-body').innerHTML='<div class="empty-state">Genera los grupos primero en la pestaña Equipos.</div>';
+    return;
+  }
+  sel.innerHTML=all.map((g,i)=>`<button class="sess-btn${i===0?' active':''}" onclick="showChecklist(${i},this)">${g.session==='manana'?'M':'T'} G${g.idx+1}</button>`).join('');
+  showChecklist(0,sel.children[0]);
+}
+
+function showChecklist(gi,btn){
+  document.querySelectorAll('#cl-group-select .sess-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const g=getAllGroups()[gi];
+  const key=`${g.session}-${g.idx}`;
+  if(!checklistState[key])checklistState[key]={};
+  const done=CHECKLIST.filter((_,i)=>checklistState[key][i]).length;
+  document.getElementById('cl-body').innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <div style="font-size:13px;font-weight:500;">Grupo ${g.idx+1} — ${g.session==='manana'?'Mañana':'Tarde'}</div>
+      <div style="font-size:12px;color:var(--muted);">${done}/${CHECKLIST.length} items</div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">${g.members.join(' · ')}</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${Math.round(done/CHECKLIST.length*100)}%"></div></div>
+    <ul class="cl-list">${CHECKLIST.map((item,i)=>`<li class="cl-item${checklistState[key][i]?' done':''}"><input type="checkbox" ${checklistState[key][i]?'checked':''} onchange="toggleCheck('${key}',${i},${gi})"/><span>${item}</span></li>`).join('')}</ul>`;
+}
+
+function toggleCheck(key,idx,gi){
+  checklistState[key][idx]=!checklistState[key][idx];
+  showChecklist(gi,document.querySelectorAll('#cl-group-select .sess-btn')[gi]);
+}
+
+function refreshTimerQueue(){
+  const all=getAllGroups();
+  const q=document.getElementById('timer-queue');
+  if(!all.length){q.innerHTML='<div style="font-size:12px;color:var(--muted);">Genera los grupos para ver la cola.</div>';return;}
+  q.innerHTML=all.map((g,i)=>`<button class="gq-btn${i===0?' active':''}" onclick="selectTimerGroup(${i},this)">${g.session==='manana'?'M':'T'} G${g.idx+1}</button>`).join('');
+  window._allTG=all;
+  selectTimerGroup(0,q.children[0]);
+}
+
+function selectTimerGroup(i,btn){
+  clearInterval(timerInterval);timerRunning=false;
+  const mins=parseInt(document.getElementById('timer-mins').value)||10;
+  timerSecs=mins*60;
+  document.getElementById('timer-start-btn').textContent='Iniciar';
+  updateTimerDisplay();
+  document.querySelectorAll('.gq-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedTimerGroup=i;
+  const g=window._allTG?window._allTG[i]:null;
+  document.getElementById('timer-label').textContent=g?`Grupo ${g.idx+1} (${g.session==='manana'?'Mañana':'Tarde'}) · ${g.members.join(', ')}`:'';
+}
+
+function timerToggle(){
+  if(timerRunning){
+    clearInterval(timerInterval);timerRunning=false;
+    document.getElementById('timer-start-btn').textContent='Reanudar';
+  } else {
+    const mins=parseInt(document.getElementById('timer-mins').value)||10;
+    if(timerSecs===0)timerSecs=mins*60;
+    timerRunning=true;
+    document.getElementById('timer-start-btn').textContent='Pausar';
+    timerInterval=setInterval(()=>{
+      timerSecs--;updateTimerDisplay();
+      if(timerSecs<=0){
+        clearInterval(timerInterval);timerRunning=false;
+        document.getElementById('timer-start-btn').textContent='Iniciar';
+        const g=window._allTG&&selectedTimerGroup!==null?window._allTG[selectedTimerGroup]:null;
+        if(g){timerHistory.unshift(`Grupo ${g.idx+1} (${g.session==='manana'?'M':'T'}) — ${new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'})}`);renderTimerHistory();}
+      }
+    },1000);
+  }
+}
+
+function timerReset(){
+  clearInterval(timerInterval);timerRunning=false;
+  const mins=parseInt(document.getElementById('timer-mins').value)||10;
+  timerSecs=mins*60;
+  document.getElementById('timer-start-btn').textContent='Iniciar';
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay(){
+  const m=Math.floor(timerSecs/60),s=timerSecs%60;
+  const d=document.getElementById('timer-display');
+  d.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  d.className='timer-display'+(timerSecs<=60?' danger':timerSecs<=120?' warn':'');
+}
+
+function renderTimerHistory(){
+  const h=document.getElementById('timer-history');h.style.display='block';
+  document.getElementById('timer-history-list').innerHTML=timerHistory.slice(0,8).map(t=>`<div class="timer-history-row">✓ ${t}</div>`).join('');
+}
+
+function refreshTaskTemplates(){
+  const all=getAllGroups();
+  const sel=document.getElementById('task-group-select');
+  const out=document.getElementById('task-output');
+  if(!all.length){sel.innerHTML='';out.innerHTML='<div class="empty-state">Genera los grupos primero en la pestaña Equipos.</div>';return;}
+  window._allTPG=all;
+  sel.innerHTML=all.map((g,i)=>`<button class="sess-btn${i===0?' active':''}" onclick="showTaskTpl(${i},this)">${g.session==='manana'?'M':'T'} G${g.idx+1}</button>`).join('');
+  showTaskTpl(0,sel.children[0]);
+}
+
+function showTaskTpl(i,btn){
+  document.querySelectorAll('#task-group-select .sess-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const g=window._allTPG[i];
+  const chName=document.getElementById('challenge-name').value||'Team Challenge';
+  const mods=['variables.py','clases.py','funciones.py','main.py'];
+  const issues=['Definir constantes y estructura base','Implementar clase principal','Implementar funciones auxiliares','Implementar bucle principal / integración'];
+  const rows=g.members.map((m,j)=>`| ${m} | ${ROLES[j]||'Dev'} | ${mods[j]||'apoyo'} | feature/${(mods[j]||'apoyo').replace('.py','')}-${m.split(' ')[0].toLowerCase()} | Closes #${j+1} |`).join('\n');
+  const tpl=`## ${chName} — Grupo ${g.idx+1} (${g.session==='manana'?'Mañana':'Tarde'})
+
+| Alumno | Rol | Módulo | Rama | Issue |
+|--------|-----|--------|------|-------|
+${rows}
+
+## Issues a crear en GitHub
+${g.members.map((_,j)=>`#${j+1} — ${issues[j]||'Módulo adicional'}`).join('\n')}
+
+## Orden recomendado de desarrollo
+1. variables.py → base para todos
+2. clases.py → depende de variables.py
+3. funciones.py → puede ir en paralelo
+4. main.py → integra todo lo anterior
+
+## Reglas del equipo
+- Nadie pushea directamente a main
+- Todo cambio pasa por PR con mínimo 1 reviewer
+- Commits en formato Conventional Commits
+- Daily sync de 5 min al inicio de cada sesión`;
+  const id=`tpl-task-${i}`;
+  document.getElementById('task-output').innerHTML=`<button class="btn btn-sm copy-btn" onclick="copyTpl(this)">Copiar</button><pre id="${id}">${tpl}</pre>`;
+}
+
+function tog(btn){
+  const body=btn.nextElementSibling;
+  const open=body.classList.toggle('open');
+  btn.querySelector('span').textContent=open?'−':'+';
+}
+
+function togTpl(btn){
+  const body=btn.nextElementSibling;
+  const open=body.classList.toggle('open');
+  btn.querySelector('span').textContent=open?'−':'+';
+}
+
+function copyTpl(btn){
+  const pre=btn.nextElementSibling||btn.parentElement.querySelector('pre');
+  if(!pre)return;
+  navigator.clipboard.writeText(pre.textContent).then(()=>{
+    const orig=btn.textContent;btn.textContent='¡Copiado!';
+    setTimeout(()=>btn.textContent=orig,1800);
+  });
+}
+
+document.querySelectorAll('.challenge-name-tpl').forEach(el=>{
+  const input=document.getElementById('challenge-name');
+  if(input)el.textContent=input.value;
+});
+</script>
+</body>
+</html>

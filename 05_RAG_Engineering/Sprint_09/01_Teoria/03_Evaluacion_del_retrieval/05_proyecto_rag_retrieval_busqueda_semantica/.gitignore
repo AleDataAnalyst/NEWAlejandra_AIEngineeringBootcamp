@@ -1,0 +1,14 @@
+# Entorno virtual
+.venv/
+
+# Artefactos Python
+__pycache__/
+*.pyc
+
+# Salida generada
+output/chunks.json
+output/embeddings.json
+output/chroma_db/
+
+# Secretos
+.env

@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+output/chunks.json
+output/embeddings.json
+output/chroma_db/

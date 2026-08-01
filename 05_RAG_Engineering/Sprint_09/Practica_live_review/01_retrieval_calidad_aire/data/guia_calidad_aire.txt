@@ -1,0 +1,36 @@
+# Guía — Datos meteorológicos Madrid (open data)
+
+## Origen
+
+Red meteorológica municipal del Ayuntamiento de Madrid (Sistema Integral de Calidad del Aire).
+
+## Ficheros en data/
+
+| Archivo | Contenido |
+|---------|-----------|
+| faq_calidad_aire.md | Preguntas frecuentes sobre el CSV |
+| guia_calidad_aire.txt | Este resumen |
+| descripcion-fichero-open-data-meteorologico-v2.pdf | Documentación oficial de columnas y códigos |
+| calidad_aire_datos_meteo_mes.csv | Mediciones horarias del mes (formato principal) |
+
+## Campos principales del CSV
+
+provincia — código de provincia (28 = Madrid)
+municipio — código de municipio
+estacion — código de estación de medición
+magnitud — parámetro medido (81=viento, 83=temperatura, …)
+punto_muestreo — identificador del sensor
+ano / mes / dia — fecha de la medición
+h01-h24 — valor medido cada hora del día
+v01-v24 — código de validación horaria (V / N / T)
+
+## Ejemplos de consultas habituales
+
+- ¿Qué mide la magnitud 83?
+- ¿Qué significa V en v14?
+- ¿Cómo se interpreta h12?
+- Temperaturas horarias de una estación en un día concreto
+
+## Fuente
+
+Ayuntamiento de Madrid — datos.madrid.es
