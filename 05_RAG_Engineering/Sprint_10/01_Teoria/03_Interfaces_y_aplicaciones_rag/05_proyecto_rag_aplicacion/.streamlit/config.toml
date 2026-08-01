@@ -1,0 +1,12 @@
+# Tema alineado con 06_miniproyecto_streamlit
+# Docs: https://docs.streamlit.io/develop/concepts/configuration
+
+[theme]
+primaryColor = "#0F766E"
+backgroundColor = "#F8FAF9"
+secondaryBackgroundColor = "#E7EFEC"
+textColor = "#1A2E2A"
+font = "sans serif"
+
+[client]
+toolbarMode = "minimal"

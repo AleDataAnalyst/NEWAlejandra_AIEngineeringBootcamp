@@ -1,0 +1,41 @@
+{
+  "descripcion": "Preguntas fijas para evaluar retrieval — calidad del aire Madrid (Live Review S9).",
+  "preguntas": [
+    {
+      "id": "q1",
+      "texto": "¿Qué mide la magnitud 83?",
+      "fuente_esperada": "faq_calidad_aire.md",
+      "notas": "FAQ: código 83 = Temperatura (°C)"
+    },
+    {
+      "id": "q2",
+      "texto": "¿Qué significa la validación V en las columnas v01 a v24?",
+      "fuente_esperada": "faq_calidad_aire.md",
+      "notas": "FAQ: V = medición validada"
+    },
+    {
+      "id": "q3",
+      "texto": "¿Cómo se interpretan las columnas h01 y h12 del CSV?",
+      "fuente_esperada": "faq_calidad_aire.md",
+      "notas": "FAQ / guía: horas locales de Madrid"
+    },
+    {
+      "id": "q4",
+      "texto": "Temperatura medida en una estación un día concreto",
+      "fuente_esperada": "calidad_aire_datos_meteo_mes.csv",
+      "notas": "Debería acercarse a chunks tipo meteo_medicion (CSV)"
+    },
+    {
+      "id": "q5",
+      "texto": "¿Para qué sirve el PDF del dataset meteorológico?",
+      "fuente_esperada": "faq_calidad_aire.md",
+      "notas": "FAQ: documenta estructura oficial, no las mediciones"
+    },
+    {
+      "id": "q6",
+      "texto": "¿Cuál es la capital de Francia?",
+      "fuente_esperada": null,
+      "notas": "Fuera de corpus — hits irrelevantes o genéricos"
+    }
+  ]
+}
