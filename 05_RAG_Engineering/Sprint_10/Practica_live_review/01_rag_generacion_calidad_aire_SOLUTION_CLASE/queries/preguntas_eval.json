@@ -1,0 +1,41 @@
+{
+  "descripcion": "Preguntas para evaluar respuestas generadas — calidad del aire (Live Review S10).",
+  "preguntas": [
+    {
+      "id": "q1",
+      "texto": "¿Qué mide la magnitud 83?",
+      "deberia_abstenerse": false,
+      "notas": "In-corpus FAQ: temperatura"
+    },
+    {
+      "id": "q2",
+      "texto": "¿Qué significa la validación V en las columnas v01 a v24?",
+      "deberia_abstenerse": false,
+      "notas": "In-corpus FAQ"
+    },
+    {
+      "id": "q3",
+      "texto": "¿Cómo se interpretan las columnas h01 y h12 del CSV?",
+      "deberia_abstenerse": false,
+      "notas": "In-corpus FAQ / guía"
+    },
+    {
+      "id": "q4",
+      "texto": "¿Para qué sirve el PDF del dataset meteorológico?",
+      "deberia_abstenerse": false,
+      "notas": "In-corpus FAQ"
+    },
+    {
+      "id": "q5",
+      "texto": "Resume qué información aportan las mediciones del CSV meteorológico.",
+      "deberia_abstenerse": false,
+      "notas": "In-corpus; respuesta apoyada en chunks meteo"
+    },
+    {
+      "id": "q6",
+      "texto": "¿Cuál es la capital de Francia?",
+      "deberia_abstenerse": true,
+      "notas": "Fuera de corpus — debe abstenerse, no inventar"
+    }
+  ]
+}
