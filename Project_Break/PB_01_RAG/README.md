@@ -60,6 +60,8 @@ Tendréis que elegir una temática para el corpus y curarlo vosotros: buscar la 
 
 Gestión del proyecto con **GitHub desde el primer día**. La **organización interna del equipo** (quién hace qué y en qué orden) la decidís vosotros.
 
+#### [Formulario para formar equipos](https://docs.google.com/spreadsheets/d/1CtZzV-_gIJM6zHYnUvYQhDij2tlB0Wmb/edit?gid=310427911#gid=310427911)
+
 ### Reglas mínimas
 
 - Crear el **repositorio en GitHub** al inicio del proyecto.
