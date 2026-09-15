@@ -4,6 +4,8 @@
 
 Vamos a entender la arquitectura software mínima de un **agente de IA** sin entrar en frameworks: **cinco piezas** y un **bucle**. Luego contrastamos ese ciclo multi-paso con una sola pasada (one-shot).
 
+
+![Arquitectura y ciclo de ejecución](../../assets/AI_agent.png)
 ---
 
 ## Arquitectura software mínima
@@ -65,6 +67,8 @@ def run_agent(pedido):
     return estado
 ```
 
+En el código del sprint (Bloque 3 / Live Review) esa idea se concreta en **`procesar_turno(estado, mensaje)`** (un turno) y, en la demo CLI, **`run_demo`** con `max_turns`. El nombre `run_agent` aquí es solo el esquema mental.
+
 ---
 
 ## One-shot vs multi-paso
@@ -120,7 +124,7 @@ for paso in range(1, N + 1):
 
 **No**, si basta una consulta al corpus, un solo turno de chat sin tarea, o el loop no aporta nada (solo coste).
 
-Cada iteración consume tokens y tiempo. Más adelante verás límites (`max_steps`), condiciones de parada y traza: sin eso, el agente “funciona en la demo” y falla cuando el modelo se enrolla.
+Cada iteración consume tokens y tiempo. Más adelante verás límites (`max_turns`), condiciones de parada y traza: sin eso, el agente “funciona en la demo” y falla cuando el modelo se enrolla.
 
 ---
 

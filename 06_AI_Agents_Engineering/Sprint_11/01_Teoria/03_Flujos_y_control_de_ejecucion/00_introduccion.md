@@ -31,3 +31,7 @@ Al terminar, deberías poder:
 - Función **`procesar_turno(estado, mensaje) → dict`** (+ `run_demo()` para la demo CLI)
 - App `streamlit run app.py`
 - Proyecto en `05_proyecto_agentes_tarde_cultural_streamlit/`
+
+## Puente a la Live Review
+
+El dominio de este bloque (y del workout) es **tarde cultural**. En la Live Review repetís el **mismo contrato** (`procesar_turno`, `calcular_done`, `max_turns`, Streamlit como cliente) con otro dominio: **calidad del aire** (cambian los campos de `preferencias`; el loop no).

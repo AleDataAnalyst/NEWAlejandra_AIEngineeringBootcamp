@@ -39,7 +39,7 @@ Puedes usar `@dataclass` si te resulta más claro; en workouts usamos dict por s
 
 1. **Campos con nombre estable** — el prompt y el código deben hablar el mismo idioma.
 2. **El LLM no “es” la memoria** — si no lo escribes en el estado, en el siguiente turno se pierde (salvo que lo reinyectes entero en el prompt).
-3. **`done` (y en Bloque 3, `error` / `max_steps`) lo controla el código** — el LLM rellena preferencias, plan y respuesta; Python calcula `done`.
+3. **`done` (y en Bloque 3, `error` / `max_turns`) lo controla el código** — el LLM rellena preferencias, plan y respuesta; Python calcula `done`.
 
 ---
 

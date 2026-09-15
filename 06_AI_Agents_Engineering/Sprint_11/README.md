@@ -104,8 +104,9 @@ Este bloque es **solo teoría** (sin workout propio). La práctica empieza en el
 
 | Recurso | Cubre teoría |
 |---------|--------------|
-| [01_proyecto_agentes_tarde_cultural_streamlit/](./02_Workout/03_Flujos_y_control_de_ejecucion/01_proyecto_agentes_tarde_cultural_streamlit/) | 1 + 2 + 4 |
-| [02_proyecto_agentes_tarde_cultural_streamlit.md](./02_Workout/03_Flujos_y_control_de_ejecucion/02_proyecto_agentes_tarde_cultural_streamlit.md) | Proyecto (repo) |
+| [05_proyecto_agentes_tarde_cultural_streamlit/](./01_Teoria/03_Flujos_y_control_de_ejecucion/05_proyecto_agentes_tarde_cultural_streamlit/) | 1 + 2 + 4 (proyecto en teoría) |
+| Guion vídeo | [guiones_video/…](./02_Workout/03_Flujos_y_control_de_ejecucion/guiones_video/01_proyecto_agentes_tarde_cultural_streamlit.md) |
+| [02_proyecto_agentes_tarde_cultural_streamlit.md](./02_Workout/03_Flujos_y_control_de_ejecucion/02_proyecto_agentes_tarde_cultural_streamlit.md) | Enlace al repo externo (opcional) |
 
 Índice: [`01_Teoria/03_Flujos_y_control_de_ejecucion/readme.md`](./01_Teoria/03_Flujos_y_control_de_ejecucion/readme.md)
 
@@ -113,19 +114,20 @@ Este bloque es **solo teoría** (sin workout propio). La práctica empieza en el
 
 ## 🎯 Practica live review
 
-📁 [`Practica_live_review/01_agente_tarde_cultural/`](./Practica_live_review/01_agente_tarde_cultural/)
+📁 [`Practica_live_review/`](./Practica_live_review/) — [`01_agente_calidad_aire/`](./Practica_live_review/01_agente_calidad_aire/) (+ [`_SOLUTION`](./Practica_live_review/01_agente_calidad_aire_SOLUTION/))
 
-Plantilla con TODOs sobre el mismo dominio. Se revisa en la sesión live (lun–mar): claridad de estado, parada, contrato UI/lógica. **Sin** tools ni RAG.
+**Mismo patrón** que el proyecto de tarde cultural (`procesar_turno`, `calcular_done`, `max_turns`, Streamlit cliente). **Otro dominio:** calidad del aire (preferencias `zona` / `contaminante` / `tipo_consulta`; sin RAG). El alumno completa **`procesar_turno`** y **`run_demo`** en `src/agent.py`.
 
 ---
 
 ## ⚙️ Convenciones del sprint
 
 - Teoría en `01_Teoria/` (markdown + proyecto ejemplo).
-- Workouts en `02_Workout/` — notebooks / apps autocontenidos; guiones en `guiones_video/`.
+- Workouts en `02_Workout/` — notebooks / apps autocontenidos; guiones en `guiones_video/`. El proyecto Streamlit del Bloque 3 vive en `01_Teoria/.../05_proyecto_…`.
 - **Gemini** para el razonamiento del agente (misma API key que S10).
 - **Streamlit** solo al final (Bloque 3), reutilizando el patrón del miniproyecto de S10.
-- Dominio: **agenda cultural** (sin Chroma todavía).
+- Dominio workouts / proyecto B3: **agenda cultural**. Live Review: **calidad del aire** (sin RAG) — mismos contratos, otros campos de estado.
+- En S11 el tope se llama **`max_turns`** (no `max_steps`).
 - **No** LangGraph en código, **no** function calling, **no** Bedrock.
 
 **Consejo:** al terminar S11 deberías poder explicar en voz alta la diferencia entre `responder()` (S10) y `procesar_turno()` (S11), mostrar un `AgentState` que evoluciona turno a turno y exponerlo en Streamlit.

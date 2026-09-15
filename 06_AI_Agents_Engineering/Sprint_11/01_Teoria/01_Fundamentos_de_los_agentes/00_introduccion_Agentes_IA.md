@@ -8,6 +8,8 @@ En este módulo aparece el patrón **agente**.
 
 Sirve para tareas que no se resuelven bien con una sola llamada al modelo: hay que descomponer, recordar lo ya decidido y decidir el siguiente paso.
 
+![what is an ai agent](../../assets/what_is_ai_agent.png)
+
 Para situarnos con lo visto hasta ahora:
 
 - El **RAG** encaja cuando basta recuperar evidencia y generar **una** respuesta desde la base vectorial.
@@ -46,6 +48,7 @@ Si la tarea se descompone en subtareas, necesita recordar decisiones intermedias
 
 En resumen: **agente ≠ LLM con personalidad**, **≠ chatbot con historial**, **≠ RAG** (el RAG puede ser *una tool* del agente más adelante).
 
+![AI agents vs AI assistants](../../assets/AI_agents_vs_AI_assistants.webp)
 ---
 
 ## Objetivos del bloque

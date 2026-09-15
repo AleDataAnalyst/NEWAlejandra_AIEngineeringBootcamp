@@ -10,6 +10,8 @@ Ya tienes conversación + `AgentState` (Bloque 2). Falta que el agente sea **lim
 
 Salida: **`procesar_turno`** + app Streamlit + proyecto `05_proyecto_agentes_tarde_cultural_streamlit/`.
 
+La **Live Review** usa el mismo patrón con dominio **calidad del aire** (otros campos en `preferencias`).
+
 ---
 
 ## 📂 Contenido de la teoría (orden de lectura)
@@ -52,6 +54,6 @@ Salida: **`procesar_turno`** + app Streamlit + proyecto `05_proyecto_agentes_tar
 
 | Recurso | Cubre |
 |---------|--------|
-| [01_proyecto_agentes_tarde_cultural_streamlit/](../../02_Workout/03_Flujos_y_control_de_ejecucion/01_proyecto_agentes_tarde_cultural_streamlit/) | `max_turns` + Streamlit multi-turno |
+| [05_proyecto… (en teoría)](./05_proyecto_agentes_tarde_cultural_streamlit/) | Proyecto ejecutable: `max_turns` + Streamlit multi-turno |
 | Guion vídeo | [01_proyecto_agentes_tarde_cultural_streamlit.md](../../02_Workout/03_Flujos_y_control_de_ejecucion/guiones_video/01_proyecto_agentes_tarde_cultural_streamlit.md) |
-| [02_proyecto_agentes_tarde_cultural_streamlit.md](../../02_Workout/03_Flujos_y_control_de_ejecucion/02_proyecto_agentes_tarde_cultural_streamlit.md) | Proyecto (repo) |
+| [02_proyecto_agentes_tarde_cultural_streamlit.md](../../02_Workout/03_Flujos_y_control_de_ejecucion/02_proyecto_agentes_tarde_cultural_streamlit.md) | Enlace al repo externo (si lo usáis clonado) |

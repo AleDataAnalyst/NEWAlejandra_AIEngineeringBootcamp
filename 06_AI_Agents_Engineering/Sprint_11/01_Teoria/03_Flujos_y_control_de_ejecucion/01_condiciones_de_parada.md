@@ -45,6 +45,8 @@ def run_demo(mensajes: list[str], max_turns: int = 8) -> dict:
 
 Nunca confíes solo en que el modelo “cierre” la conversación con palabras.
 
+**Éxito temprano ≠ tope:** un guion (`DEMO_MENSAJES`) puede tener 5 mensajes y el bucle parar en el 4 si `done=true`. Eso es el guardrail de objetivo cumplido, no un `max_turns` oculto. Contrasta con cortar por `max_turns` (tope sin `done`). Lo veréis en el proyecto y en la Live Review.
+
 ---
 
 ## Eco de Sprint 10

@@ -17,7 +17,7 @@ Eso **no** es el estado del agente. Son tres ideas distintas:
 | Capa | Qué es | Dónde vive en S11 | ¿Persiste entre días? |
 |------|--------|-------------------|------------------------|
 | **A. Historial de chat (UI)** | Mensajes para pintar la conversación | `st.session_state.messages` | No (salvo que lo guardes tú) |
-| **B. Estado de ejecución** | Dónde va la **tarea** actual | `AgentState` en el loop | Solo durante `run_agent` (RAM) |
+| **B. Estado de ejecución** | Dónde va la **tarea** actual | `AgentState` (`agent_state` en sesión) | Solo durante la conversación / corrida (RAM) |
 | **C. Long-term memory** | Preferencias / hechos entre sesiones | Extra opcional: JSON en disco | Sí, si lo implementas |
 
 ```text
@@ -27,14 +27,16 @@ Usuario escribe en Streamlit
   messages (A)  ←── solo presentación / hilo
         │
         ▼
-  run_agent(pedido)
+  procesar_turno(agent_state, mensaje)   ← Bloque 3 / proyecto
         │
         ▼
-  AgentState (B)  ←── dirige pasos
+  AgentState (B)  ←── dirige la tarea (preferencias, plan, done, traza)
         │
         ▼  (opcional, preview)
   preferencias.json (C)
 ```
+
+En el workout del Bloque 2 aún verás un bucle inline en el notebook; el contrato público del sprint (CLI + Streamlit) es **`procesar_turno`**.
 
 ---
 
