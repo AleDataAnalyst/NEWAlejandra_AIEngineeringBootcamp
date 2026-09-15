@@ -1,4 +1,4 @@
-![Cabecera](../../assets/cabecera_thebridge.png)
+![Cabecera](../../assets/cabecera_agentes.png)
 
 # Historial UI vs estado vs long-term
 

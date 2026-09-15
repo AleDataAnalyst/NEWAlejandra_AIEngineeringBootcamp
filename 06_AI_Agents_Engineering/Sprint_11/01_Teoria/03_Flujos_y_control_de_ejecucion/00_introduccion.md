@@ -1,4 +1,4 @@
-![Cabecera](../../assets/cabecera_thebridge.png)
+![Cabecera](../../assets/cabecera_agentes.png)
 
 # Introducción: flujos y control de ejecución
 

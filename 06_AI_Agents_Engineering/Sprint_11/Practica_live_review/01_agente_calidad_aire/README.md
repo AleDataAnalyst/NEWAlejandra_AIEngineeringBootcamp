@@ -1,4 +1,4 @@
-![Cabecera](../../assets/cabecera_thebridge.png)
+![Cabecera](../../assets/cabecera_agentes.png)
 
 # Práctica Sprint 11 — Agente calidad del aire
 

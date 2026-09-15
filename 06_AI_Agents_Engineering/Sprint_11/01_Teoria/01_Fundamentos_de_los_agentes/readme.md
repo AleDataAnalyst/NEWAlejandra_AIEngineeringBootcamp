@@ -1,4 +1,4 @@
-![Cabecera](../../assets/cabecera_thebridge.png)
+![Cabecera](../../assets/cabecera_agentes.png)
 
 # 📘 Sprint 11 · Bloque 01
 

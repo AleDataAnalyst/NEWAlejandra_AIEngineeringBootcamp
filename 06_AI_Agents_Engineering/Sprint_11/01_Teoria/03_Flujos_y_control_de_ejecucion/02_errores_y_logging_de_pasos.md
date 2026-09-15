@@ -1,4 +1,4 @@
-![Cabecera](../../assets/cabecera_thebridge.png)
+![Cabecera](../../assets/cabecera_agentes.png)
 
 # Errores y logging de pasos
 

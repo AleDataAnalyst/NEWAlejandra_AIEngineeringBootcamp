@@ -1,4 +1,4 @@
-![Cabecera](../../../assets/cabecera_thebridge.png)
+![Cabecera](../../../assets/cabecera_agentes.png)
 
 # Proyecto ejemplo: Agente tarde cultural
 

@@ -1,4 +1,4 @@
-![Cabecera](./assets/cabecera_thebridge.png)
+![Cabecera](./Sprint_11/assets/cabecera_agentes.png)
 
 # Módulo 5 · AI Agents Engineering
 
