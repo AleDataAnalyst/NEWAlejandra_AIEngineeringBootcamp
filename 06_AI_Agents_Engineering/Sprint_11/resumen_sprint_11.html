@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<title>Guía visual · Sprint 11 — Agent Foundations</title>
+<style>
+  :root{
+    --bg:#ffffff; --bg2:#f4f4f5; --card:#ffffff; --card2:#fafafa;
+    --border:#e6e4e5; --text:#141416; --muted:#54545a; --dim:#8a8a8f;
+    --accent:#e4002b; --accent2:#18181b; --amber:#6b7280; --rose:#e4002b;
+    --green:#18181b; --violet:#3f3f46; --code:#161618;
+    --shadow:0 10px 30px rgba(0,0,0,.08);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:linear-gradient(180deg,#faf7fd,#ffffff 260px);
+    color:var(--text); font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.65; font-size:16px;
+  }
+  h1,h2,h3,h4,.sec-num,.hero .kicker,.pipe .st-nm{font-family:'Sora','Inter',sans-serif}
+  a{color:var(--accent); text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* Layout */
+  .wrap{max-width:1180px; margin:0 auto; padding:0 22px}
+  header.hero{
+    padding:56px 22px 30px; text-align:center;
+    border-bottom:1px solid var(--border);
+    background:radial-gradient(1200px 420px at 50% -120px, rgba(228,0,43,.10), transparent);
+  }
+  .kicker{
+    display:inline-block; font-size:12.5px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--accent); background:rgba(228,0,43,.07); border:1px solid rgba(228,0,43,.25);
+    padding:5px 12px; border-radius:999px; margin-bottom:16px; font-weight:600;
+  }
+  h1{font-size:clamp(28px,4.4vw,44px); margin:.1em 0 .2em; line-height:1.12; letter-spacing:-.02em}
+  .hero p{color:var(--muted); max-width:760px; margin:10px auto 0; font-size:17px}
+  .hero .tag{color:var(--dim); font-size:13.5px; margin-top:18px}
+
+  /* Sticky nav */
+  nav.toc{
+    position:sticky; top:0; z-index:20; background:rgba(255,255,255,.88);
+    backdrop-filter:blur(10px); border-bottom:1px solid var(--border);
+  }
+  nav.toc .wrap{display:flex; gap:6px; overflow-x:auto; padding:10px 22px; scrollbar-width:thin}
+  nav.toc a{
+    white-space:nowrap; color:var(--muted); font-size:13.5px; font-weight:600;
+    padding:7px 13px; border-radius:9px; border:1px solid transparent;
+  }
+  nav.toc a:hover{color:var(--text); background:var(--card); text-decoration:none}
+  nav.toc a.active{color:var(--text); background:var(--card2); border-color:var(--border)}
+
+  section{padding:44px 0 8px}
+  section > .wrap > .sec-head{display:flex; align-items:center; gap:14px; margin-bottom:6px}
+  .sec-num{
+    flex:0 0 auto; width:38px; height:38px; border-radius:11px; display:grid; place-items:center;
+    font-weight:700; font-size:16px; color:#fff; background:linear-gradient(135deg,var(--accent),var(--accent2));
+  }
+  h2{font-size:clamp(22px,3vw,30px); margin:0; letter-spacing:-.01em}
+  .lead{color:var(--muted); font-size:16.5px; margin:6px 0 26px; max-width:840px}
+  h3{font-size:19px; margin:30px 0 10px; letter-spacing:-.01em}
+  h4{font-size:15.5px; margin:20px 0 8px; color:var(--text)}
+  p{margin:10px 0}
+
+  /* Cards & grids */
+  .grid{display:grid; gap:16px}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:960px){.g4{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 20px; box-shadow:var(--shadow);
+  }
+  .card h4{margin-top:0}
+  .card .ico{font-size:22px}
+  .pill{
+    display:inline-block; font-size:12px; font-weight:600; padding:3px 10px; border-radius:999px;
+    border:1px solid var(--border); color:var(--muted); background:var(--bg2);
+  }
+  .pill.a{color:var(--accent); border-color:rgba(228,0,43,.35); background:rgba(228,0,43,.08)}
+  .pill.t{color:var(--accent2); border-color:rgba(24,24,27,.3); background:rgba(24,24,27,.06)}
+  .pill.v{color:var(--violet); border-color:rgba(63,63,70,.3); background:rgba(63,63,70,.06)}
+  .pill.g{color:var(--green); border-color:rgba(24,24,27,.3); background:rgba(24,24,27,.06)}
+  .pill.am{color:var(--amber); border-color:rgba(107,114,128,.3); background:rgba(107,114,128,.08)}
+
+  /* Tables */
+  .tbl{overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); margin:16px 0}
+  table{border-collapse:collapse; width:100%; font-size:14.5px; min-width:520px}
+  th,td{padding:11px 14px; text-align:left; border-bottom:1px solid var(--border); vertical-align:top}
+  th{background:var(--bg2); color:var(--muted); font-weight:600; font-size:12.5px; text-transform:uppercase; letter-spacing:.04em}
+  tr:last-child td{border-bottom:none}
+  td strong{color:var(--text)}
+
+  /* Code / diagrams */
+  pre{
+    background:var(--code); border:1px solid var(--border); border-radius:12px;
+    padding:16px 18px; overflow-x:auto; font-size:13.5px; line-height:1.5;
+    font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace; color:#d5dde6; margin:14px 0;
+  }
+  pre .c{color:#8a8a90}
+  pre .k{color:#ff5c6c}
+  pre .s{color:#e8e8ea}
+  pre .f{color:#ff8f9a}
+  pre .n{color:#ffffff}
+  code.inl{background:var(--bg2); border:1px solid var(--border); border-radius:6px; padding:1px 6px; font-size:13px; font-family:Consolas,monospace; color:var(--accent)}
+
+  .callout{
+    border-left:3px solid var(--accent); background:rgba(228,0,43,.05);
+    padding:14px 18px; border-radius:0 12px 12px 0; margin:18px 0;
+  }
+  .callout.warn{border-color:var(--amber); background:rgba(107,114,128,.07)}
+  .callout.key{border-color:var(--accent2); background:rgba(24,24,27,.05)}
+  .callout .lab{font-weight:700; font-size:12.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:3px}
+
+  ul.clean{list-style:none; padding-left:0; margin:12px 0}
+  ul.clean li{padding:7px 0 7px 28px; position:relative; border-bottom:1px dashed var(--border)}
+  ul.clean li:last-child{border-bottom:none}
+  ul.clean li:before{content:"▹"; position:absolute; left:6px; color:var(--accent)}
+
+  /* Module / loop diagram */
+  .modmap{display:grid; grid-template-columns:1fr; gap:0; margin:20px 0}
+  .layer{
+    border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin:8px 0; background:var(--card);
+    position:relative;
+  }
+  .layer .lname{font-weight:700; font-size:14px; color:var(--text)}
+  .layer .ldesc{color:var(--muted); font-size:13.5px; margin-top:2px}
+  .layer.entry{border-color:rgba(228,0,43,.4)}
+  .layer.cfg{border-color:rgba(107,114,128,.45)}
+  .layer.engine{border-color:rgba(24,24,27,.35)}
+  .layer.io{border-color:rgba(63,63,70,.4)}
+  .flowarrow{text-align:center; color:var(--dim); font-size:20px; margin:-2px 0}
+
+  .filecard{display:flex; gap:12px; align-items:flex-start; padding:12px 0; border-bottom:1px dashed var(--border)}
+  .filecard:last-child{border-bottom:none}
+  .filecard .fn{
+    flex:0 0 auto; font-family:Consolas,monospace; font-size:13px; color:#ff6b6b;
+    background:var(--code); border:1px solid var(--border); border-radius:7px; padding:4px 9px; min-width:118px; text-align:center;
+  }
+  .filecard .fd{color:var(--muted); font-size:14px}
+  .filecard .fd b{color:var(--text)}
+
+  .step{display:flex; gap:14px; margin:14px 0}
+  .step .num{flex:0 0 auto; width:30px; height:30px; border-radius:50%; background:var(--card2); border:1px solid var(--border); display:grid; place-items:center; font-weight:700; font-size:14px; color:var(--accent)}
+  .step .body{flex:1}
+  .step .body b{color:var(--text)}
+
+  /* pipeline horizontal strip */
+  .pipe{display:flex; align-items:stretch; gap:0; flex-wrap:wrap; margin:18px 0}
+  .pipe .stage{flex:1 1 140px; min-width:130px; border:1px solid var(--border); border-radius:12px; background:var(--card); padding:12px 12px; text-align:center; position:relative}
+  .pipe .stage .st-ic{font-size:20px}
+  .pipe .stage .st-nm{font-weight:700; font-size:13.5px; margin-top:4px; color:var(--text)}
+  .pipe .stage .st-ds{font-size:11.5px; color:var(--dim); margin-top:2px; line-height:1.35}
+  .pipe .sep{flex:0 0 26px; display:grid; place-items:center; color:var(--dim); font-size:20px}
+  @media(max-width:820px){.pipe .sep{width:100%; flex-basis:100%; transform:rotate(90deg); height:22px}}
+
+  footer{margin-top:50px; padding:30px 22px 60px; border-top:1px solid var(--border); text-align:center; color:var(--dim); font-size:13.5px}
+
+  .antipattern{border-left:3px solid var(--rose); background:rgba(228,0,43,.05); padding:12px 16px; border-radius:0 10px 10px 0; margin:10px 0; font-size:14.5px}
+  .goodpattern{border-left:3px solid var(--green); background:rgba(24,24,27,.05); padding:12px 16px; border-radius:0 10px 10px 0; margin:10px 0; font-size:14.5px}
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  @media(max-width:820px){.two-col{grid-template-columns:1fr}}
+  .mini{font-size:13px; color:var(--dim)}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="kicker">Bootcamp IA Generativa · Guía del alumno · Módulo 5 AI Agents</span>
+  <h1>Sprint 11 — Agent Foundations</h1>
+  <p>Cerraste el ciclo RAG en el Sprint 10 (<code class="inl">responder(pregunta) → dict</code>). Ahora das el salto a <b>agentes</b>: un sistema que planifica en <b>varios pasos</b>, mantiene <b>estado de ejecución</b> y sabe <b>cuándo parar</b>. Todavía sin tools ni RAG: eso llega más adelante en el módulo.</p>
+  <div class="tag">Guía visual y sintetizada · orientada a la práctica Live Review: <b>agente de calidad del aire</b></div>
+</header>
+
+<nav class="toc" id="toc">
+  <div class="wrap">
+    <a href="#mapa">Mapa del módulo</a>
+    <a href="#fundamentos">1 · Qué es un agente</a>
+    <a href="#ciclo">2 · Arquitectura y ciclo</a>
+    <a href="#estado">3 · Estado y memoria</a>
+    <a href="#control">4 · Control de ejecución</a>
+    <a href="#streamlit">5 · De CLI a Streamlit</a>
+    <a href="#modular">6 · Pipeline modular ★</a>
+    <a href="#proyecto">7 · El proyecto</a>
+    <a href="#checklist">Checklist</a>
+  </div>
+</nav>
+
+<!-- ================= MAPA ================= -->
+<section id="mapa">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">◎</div><h2>Arranca el módulo de Agentes</h2></div>
+    <p class="lead">El módulo de agentes se desarrolla a lo largo de <b>tres sprints (S11–13)</b>. La pregunta central de este primero: <b>si ya sé responder con RAG en una llamada, ¿cómo planifico en varios pasos con estado y control?</b> Aquí ves los <b>fundamentos</b>: el ciclo, el estado y la parada.</p>
+
+    <h3>Del RAG de S10 al agente de S11</h3>
+    <pre>S10  pregunta → <span class="f">responder()</span>       → una respuesta (+ fuentes)
+ ↓
+S11  mensaje  → <span class="f">procesar_turno()</span> → conversación + AgentState → resultado
+ ↓
+S12+ el agente pasa a actuar con herramientas (en preparación)</pre>
+
+    <div class="callout key">
+      <span class="lab">Idea que atraviesa el sprint</span>
+      Un agente, en lo esencial, es <b>loop + estado + parada + LLM</b>. El LLM <b>propone</b> datos estructurados; <b>Python decide</b> <code class="inl">done</code> y los límites. El resto (tools, RAG, LangGraph) son capas que llegan después.
+    </div>
+  </div>
+</section>
+
+<!-- ================= FUNDAMENTOS ================= -->
+<section id="fundamentos">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">1</div><h2>Qué es un agente</h2></div>
+    <p class="lead"><b>Agente</b> = sistema que, ante un pedido, ejecuta <b>varios pasos</b> de razonamiento, <b>actualiza un estado</b> y <b>para</b> cuando cumple el objetivo o un límite. Sirve para tareas que no se resuelven bien con una sola llamada al modelo.</p>
+
+    <h3>LLM, chatbot, asistente, RAG y agente</h3>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Concepto</th><th>Qué hace</th><th>¿Estado de tarea?</th><th>¿Varios pasos?</th></tr></thead>
+        <tbody>
+          <tr><td><strong>LLM</strong></td><td>Genera o completa texto</td><td>Solo lo del prompt</td><td>No por sí solo</td></tr>
+          <tr><td><strong>Chatbot</strong></td><td>Conversación turno a turno</td><td>Historial de mensajes</td><td>No planifica una tarea</td></tr>
+          <tr><td><strong>Asistente</strong></td><td>Ayuda con un rol fijo</td><td>A veces (perfil)</td><td>Suele ser 1 respuesta/turno</td></tr>
+          <tr><td><strong>Pipeline RAG</strong></td><td>Recupera y genera <b>una</b> respuesta</td><td>No multi-paso</td><td>Flujo fijo (recuperar→generar)</td></tr>
+          <tr><td><strong>Agente</strong></td><td>Razona, actualiza estado, decide seguir/parar</td><td><strong>Sí</strong></td><td><strong>Sí</strong> (loop + parada)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout"><span class="lab">Un chat con historial NO es un agente</span> Si cada mensaje dispara una sola pasada fija (p. ej. un RAG), no hay un objeto "dónde voy en la tarea" que el sistema actualice paso a paso. Eso no es un defecto: el RAG de una pasada es el diseño <b>correcto</b> cuando solo hace falta consultar el corpus.</div>
+
+    <h3>¿Cuándo aporta un agente?</h3>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Pedido</th><th>Mejor enfoque</th></tr></thead>
+        <tbody>
+          <tr><td>"Según la documentación, ¿qué significa este campo?"</td><td>RAG</td></tr>
+          <tr><td>Pregunta fuera del corpus / sin evidencia</td><td>RAG + abstenerse (no inventar)</td></tr>
+          <tr><td>"Arma un plan de tarde: cine o música, 3 h, zona centro"</td><td><strong>Agente</strong></td></tr>
+          <tr><td>"Hola, ¿qué tal?"</td><td>Chatbot / saludo</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout key"><span class="lab">En resumen</span> <b>agente ≠ LLM con personalidad</b>, <b>≠ chatbot con historial</b>, <b>≠ RAG</b>. Aporta cuando la tarea se descompone en subtareas, necesita recordar decisiones intermedias o (más adelante) coordinar varias tools. El RAG puede ser <i>una tool</i> del agente más adelante.</div>
+  </div>
+</section>
+
+<!-- ================= ARQUITECTURA Y CICLO ================= -->
+<section id="ciclo">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">2</div><h2>Arquitectura y ciclo de ejecución</h2></div>
+    <p class="lead">La arquitectura mínima de un agente son <b>cinco piezas</b> y un <b>bucle</b>. Nada de frameworks todavía.</p>
+
+    <h3>Las cinco piezas</h3>
+    <div class="pipe">
+      <div class="stage"><div class="st-ic">📥</div><div class="st-nm">Entrada</div><div class="st-ds">pedido del usuario</div></div>
+      <div class="sep">→</div>
+      <div class="stage"><div class="st-ic">🧠</div><div class="st-nm">LLM</div><div class="st-ds">propone el siguiente paso</div></div>
+      <div class="sep">→</div>
+      <div class="stage"><div class="st-ic">🗂️</div><div class="st-nm">Estado</div><div class="st-ds">"dónde vamos"</div></div>
+      <div class="sep">→</div>
+      <div class="stage"><div class="st-ic">🔀</div><div class="st-nm">Decisión</div><div class="st-ds">¿seguir o parar?</div></div>
+      <div class="sep">→</div>
+      <div class="stage"><div class="st-ic">📤</div><div class="st-nm">Salida</div><div class="st-ds">plan / mensaje / error</div></div>
+    </div>
+
+    <h3>El bucle en Python</h3>
+    <pre><span class="k">def</span> <span class="f">run_agent</span>(pedido):
+    estado = inicial(pedido)
+    <span class="k">while not</span> parado:
+        propuesta = <span class="f">LLM</span>(estado)
+        estado = <span class="f">actualizar</span>(estado, propuesta)
+        <span class="k">if</span> objetivo_cumplido <span class="k">or</span> límite:
+            parado = <span class="k">True</span>
+    <span class="k">return</span> estado</pre>
+
+    <h3>One-shot (RAG) vs multi-paso (agente)</h3>
+    <div class="two-col">
+      <div class="card">
+        <h4>🎯 One-shot</h4>
+        <pre>entrada → [pipeline fijo] → salida
+          recuperar→prompt→generar</pre>
+        <p class="mini">Una ejecución por pregunta. Ideal cuando basta consultar el corpus y responder.</p>
+      </div>
+      <div class="card">
+        <h4>🔁 Multi-paso</h4>
+        <pre>entrada → paso 1 → paso 2 → … → parada → salida
+              └─ LLM actualiza el estado</pre>
+        <p class="mini">Cada paso <b>usa</b> lo anterior. Por eso hace falta estado.</p>
+      </div>
+    </div>
+
+    <div class="callout"><span class="lab">Ejemplo de tarea multi-paso</span> "Quiero una tarde cultural de ~3 h: gratis o barato, cine y si no música en vivo, zona centro." El agente: (1) extrae preferencias → (2) propone 2–3 ideas → (3) ordena un mini-itinerario → (4) redacta el plan y marca que terminó. <b>Cada paso consume tokens</b>: sin límites, "funciona en la demo" y falla cuando el modelo se enrolla.</div>
+  </div>
+</section>
+
+<!-- ================= ESTADO Y MEMORIA ================= -->
+<section id="estado">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">3</div><h2>Estado y memoria del agente</h2></div>
+    <p class="lead">El <code class="inl">AgentState</code> es la <b>fuente de verdad</b> del agente durante la corrida. El LLM sugiere cambios; tu código los valida y escribe. Es un <b>contrato interno</b>, igual que <code class="inl">responder() → dict</code> era el contrato externo en S10.</p>
+
+    <h3>La forma del estado (dominio tarde cultural)</h3>
+    <pre>{
+    <span class="s">"objetivo"</span>: <span class="s">"Planificar una tarde cultural"</span>,
+    <span class="s">"pedido_original"</span>: <span class="s">"Quiero una tarde cultural."</span>,
+    <span class="s">"preferencias"</span>: {<span class="s">"intereses"</span>: [...], <span class="s">"presupuesto"</span>: ..., <span class="s">"zona"</span>: ..., <span class="s">"duracion_horas"</span>: ...},
+    <span class="s">"plan"</span>: [],          <span class="c"># ítems del plan (vacío hasta poder cerrar)</span>
+    <span class="s">"respuesta"</span>: <span class="s">""</span>,     <span class="c"># último texto para el usuario</span>
+    <span class="s">"done"</span>: <span class="k">False</span>,       <span class="c"># lo calcula PYTHON, no el LLM</span>
+}</pre>
+
+    <h3>Tres reglas de diseño</h3>
+    <div class="grid g3">
+      <div class="card"><h4>Nombres estables</h4><p class="mini">El prompt y el código deben hablar el mismo idioma.</p></div>
+      <div class="card"><h4>El LLM no "es" la memoria</h4><p class="mini">Si no lo escribes en el estado, en el siguiente turno se pierde.</p></div>
+      <div class="card"><h4><code class="inl">done</code> lo decide el código</h4><p class="mini">El LLM rellena preferencias, plan y respuesta; Python calcula <code class="inl">done</code>.</p></div>
+    </div>
+
+    <h3>Tres capas de memoria (no confundir)</h3>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Capa</th><th>Qué es</th><th>Dónde vive</th><th>¿Persiste entre días?</th></tr></thead>
+        <tbody>
+          <tr><td><strong>A · Historial de chat (UI)</strong></td><td>Mensajes para pintar la conversación</td><td><code class="inl">st.session_state.messages</code></td><td>No</td></tr>
+          <tr><td><strong>B · Estado de ejecución</strong></td><td>Dónde va la <b>tarea</b> actual</td><td><code class="inl">AgentState</code> en el loop</td><td>Solo durante la corrida (RAM)</td></tr>
+          <tr><td><strong>C · Long-term memory</strong></td><td>Preferencias / hechos entre sesiones</td><td>Extra opcional: JSON en disco</td><td>Sí, si lo implementas</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout key"><span class="lab">Frase del sprint</span> <b><code class="inl">messages</code> pinta el chat; <code class="inl">AgentState</code> dirige la tarea.</b></div>
+
+    <h3>Actualizar con estructura (JSON), no con prosa</h3>
+    <p>Igual que en S10 pedías un JSON de respuesta, aquí pides un JSON de <b>cambios de estado</b>. Parsear lenguaje natural es frágil; el modelo devuelve datos y tu código los escribe.</p>
+    <pre>{
+  <span class="s">"preferencias"</span>: {<span class="s">"intereses"</span>: [<span class="s">"cine"</span>], <span class="s">"presupuesto"</span>: <span class="s">"gratis_o_barato"</span>, <span class="s">"zona"</span>: <span class="k">null</span>},
+  <span class="s">"plan"</span>: [],
+  <span class="s">"respuesta"</span>: <span class="s">"¿En qué zona te viene mejor?"</span>
+}
+<span class="c"># El campo "done" NO viene del LLM: lo calcula Python.</span></pre>
+    <div class="goodpattern"><b>El agente junior sólido:</b> el LLM propone estructura; <b>Python escribe el estado y decide <code class="inl">done</code></b>.</div>
+  </div>
+</section>
+
+<!-- ================= CONTROL DE EJECUCIÓN ================= -->
+<section id="control">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">4</div><h2>Flujos y control de ejecución</h2></div>
+    <p class="lead">Un agente sin límites es un bucle caro. El agente debe <b>dejar de aceptar mensajes</b> por una razón explícita, dejar <b>traza</b> de lo que hizo y no tragarse los errores en silencio.</p>
+
+    <h3>Condiciones de parada</h3>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Condición</th><th>Quién la decide</th><th>Ejemplo</th></tr></thead>
+        <tbody>
+          <tr><td>Objetivo cumplido</td><td><strong>Solo código</strong></td><td><code class="inl">calcular_done</code>: datos mínimos y <code class="inl">len(plan) >= 2</code></td></tr>
+          <tr><td><code class="inl">max_turns</code></td><td><strong>Solo código</strong></td><td>Tope de mensajes; parar aunque <code class="inl">done</code> sea False</td></tr>
+          <tr><td>Error irrecuperable</td><td>Código</td><td>JSON inválido; API key ausente</td></tr>
+          <tr><td>Sin progreso (opcional)</td><td>Código</td><td>Estado idéntico dos turnos seguidos</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout warn"><span class="lab">max_turns es obligatorio</span> Nunca confíes solo en que el modelo "cierre" la conversación con palabras. Quien llama a <code class="inl">procesar_turno</code> (CLI o Streamlit) controla el tope. <b>Parar es una feature, no un fallo</b>: un agente que se detiene con un plan parcial y un mensaje claro es mejor que uno que gasta 30 llamadas.</div>
+
+    <h3>Errores y traza (una entrada por turno)</h3>
+    <pre>traza = [
+  {<span class="s">"turno"</span>: 1, <span class="s">"mensaje"</span>: <span class="s">"Quiero una tarde cultural."</span>, <span class="s">"status"</span>: <span class="s">"ok"</span>, <span class="s">"done"</span>: <span class="k">False</span>},
+  {<span class="s">"turno"</span>: 2, <span class="s">"mensaje"</span>: <span class="s">"Cine o música, barato."</span>, <span class="s">"status"</span>: <span class="s">"ok"</span>, <span class="s">"done"</span>: <span class="k">False</span>},
+  {<span class="s">"turno"</span>: 3, <span class="s">"mensaje"</span>: <span class="s">"Zona centro."</span>, <span class="s">"status"</span>: <span class="s">"error"</span>, <span class="s">"detail"</span>: <span class="s">"..."</span>},
+]</pre>
+    <div class="two-col">
+      <div class="card">
+        <h4>Abortar vs reintentar</h4>
+        <pre>error de parseo → reintentar 1 vez ("SOLO JSON")
+sigue fallando  → state["error"] + traza "error"
+error de auth   → no reintentar; mensaje claro</pre>
+      </div>
+      <div class="card">
+        <h4>Regla de oro</h4>
+        <p class="mini">Si en la live review no puedes enseñar <b>qué turnos dio</b> el agente, el diseño aún no es demostrable. HITL ("¿apruebas esta acción?") llega más adelante en el módulo.</p>
+      </div>
+    </div>
+
+    <h3>Panorama LangGraph (sin código todavía)</h3>
+    <p>En la industria muchos equipos orquestan agentes con <b>grafos de estado</b>. En S11 no lo implementas: solo necesitas el mapa mental para lo que viene después en el módulo.</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Concepto LangGraph</th><th>Analogía con lo que ya haces</th></tr></thead>
+        <tbody>
+          <tr><td><strong>State</strong></td><td>Tu <code class="inl">AgentState</code></td></tr>
+          <tr><td><strong>Node</strong></td><td>Una función: "extraer preferencias", "proponer plan", "cerrar"</td></tr>
+          <tr><td><strong>Edge</strong></td><td>La decisión de ir al siguiente nodo o al END</td></tr>
+          <tr><td><strong>Graph</strong></td><td>El <code class="inl">while</code> + condiciones de parada, dibujado como diagrama</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout"><span class="lab">Ojo</span> LangGraph <b>no reemplaza</b> la necesidad de diseñar buen estado y buenas paradas: las exige de forma más explícita.</div>
+  </div>
+</section>
+
+<!-- ================= DE CLI A STREAMLIT ================= -->
+<section id="streamlit">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">5</div><h2>De CLI a Streamlit</h2></div>
+    <p class="lead">Mismo mensaje que en S10: la UI es un <b>cliente</b>. El contrato del agente es una función pública; consola y web solo la llaman.</p>
+
+    <h3>El contrato: <code class="inl">procesar_turno</code></h3>
+    <pre><span class="k">def</span> <span class="f">procesar_turno</span>(estado: <span class="k">dict</span>, mensaje: <span class="k">str</span>) -> <span class="k">dict</span>:
+    <span class="c"># un mensaje → LLM → actualizar_estado → calcular_done → traza</span>
+    <span class="c"># devuelve: objetivo, preferencias, plan, respuesta, done, error, traza</span></pre>
+
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Cliente</th><th>Cómo llama</th></tr></thead>
+        <tbody>
+          <tr><td>CLI demo</td><td><code class="inl">run_demo(max_turns=…)</code> — guion de varios turnos</td></tr>
+          <tr><td>CLI interactivo</td><td><code class="inl">procesar_turno(estado, input())</code> en bucle</td></tr>
+          <tr><td>Streamlit <code class="inl">app.py</code></td><td>Tras cada <code class="inl">chat_input</code>: <code class="inl">procesar_turno(agent_state, prompt)</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="two-col">
+      <div class="antipattern">
+        <b>❌ Anti-patrón</b><br>
+        Copiar la llamada a Gemini dentro de <code class="inl">app.py</code>. Duplicas lógica, te saltas la traza y los límites, y rompes el contrato único.
+      </div>
+      <div class="goodpattern">
+        <b>✅ Correcto</b><br>
+        <code class="inl">estado = procesar_turno(st.session_state.agent_state, prompt)</code> → guardas el estado y pintas <code class="inl">estado["respuesta"]</code>.
+      </div>
+    </div>
+
+    <div class="callout key">
+      <span class="lab">La diferencia clave con S10</span>
+      Además de <code class="inl">messages</code>, guardas <b><code class="inl">agent_state</code></b> en <code class="inl">st.session_state</code> para que el estado de la tarea persista entre mensajes. Si mañana cambias Streamlit por una API, <b><code class="inl">procesar_turno</code> no se toca</b>: solo cambias el cliente.
+    </div>
+  </div>
+</section>
+
+<!-- ================= PIPELINE MODULAR ★ ================= -->
+<section id="modular">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">6</div><h2>El pipeline modular <span class="pill a" style="vertical-align:middle">clave del sprint</span></h2></div>
+    <p class="lead">La lógica del agente vive en un paquete <code class="inl">src/</code> con tres módulos de una sola responsabilidad; arriba, dos <b>clientes</b> (CLI y app) que solo llaman al contrato <code class="inl">procesar_turno</code>. Vamos despacio.</p>
+
+    <div class="callout key">
+      <span class="lab">La idea en una frase</span>
+      <b>El LLM propone; Python decide; los clientes solo consumen.</b> <code class="inl">llm.py</code> pide datos al modelo, <code class="inl">state.py</code> escribe el estado y calcula <code class="inl">done</code>, <code class="inl">agent.py</code> orquesta el turno con su traza. <code class="inl">main.py</code> y <code class="inl">app.py</code> no saben cómo funciona el agente: solo llaman a <code class="inl">procesar_turno</code>.
+    </div>
+
+    <h3>¿Por qué molestarse? (el problema que resuelve)</h3>
+    <div class="two-col">
+      <div class="antipattern">
+        <b>❌ Todo mezclado</b><br>
+        Un script que llama a Gemini, parsea el JSON, decide si parar y pinta el chat, todo junto. El <code class="inl">done</code> lo "decide" el modelo, no controlas los turnos, y la web y la consola hacen cosas distintas. Imposible testear sin abrir el navegador.
+      </div>
+      <div class="goodpattern">
+        <b>✅ Una responsabilidad por archivo</b><br>
+        <code class="inl">llm</code> habla con el modelo, <code class="inl">state</code> es la fuente de verdad, <code class="inl">agent</code> orquesta. Cambias el prompt o la regla de <code class="inl">done</code> en un sitio y ambos clientes se benefician. Pruebas el loop sin UI.
+      </div>
+    </div>
+
+    <h3>El proyecto por capas</h3>
+    <div class="modmap">
+      <div class="layer entry">
+        <div class="lname">🖥️ app.py &nbsp;·&nbsp; 🚪 main.py <span class="pill" style="font-weight:600">clientes (UI + CLI)</span></div>
+        <div class="ldesc">Dos caras del mismo agente. <b>app</b>: chat Streamlit con expander de debug. <b>main</b>: CLI con demo, <code class="inl">--max-turns</code>, <code class="inl">--interactivo</code>. Ninguno contiene lógica de agente: solo llaman a <code class="inl">procesar_turno</code>.</div>
+      </div>
+      <div class="flowarrow">▼ ambos llaman a</div>
+      <div class="layer engine">
+        <div class="lname">🧠 src/agent.py <span class="pill" style="font-weight:600">orquestador · contrato</span></div>
+        <div class="ldesc"><code class="inl">procesar_turno(estado, mensaje)</code>: llama al LLM → actualiza estado → calcula <code class="inl">done</code> → añade a la traza. Captura errores sin tumbar la app. <code class="inl">run_demo()</code> corre la demo con <code class="inl">max_turns</code>.</div>
+      </div>
+      <div class="flowarrow">▼ usa dos piezas separadas</div>
+      <div class="layer engine">
+        <div class="lname">💬 src/llm.py <span class="pill" style="font-weight:600">habla con el modelo</span></div>
+        <div class="ldesc">Ensambla el prompt (instrucciones + estado + mensaje) y llama a Gemini. Devuelve un <b>JSON de cambios</b> (preferencias, plan, respuesta) — <b>sin</b> <code class="inl">done</code>.</div>
+      </div>
+      <div class="flowarrow">▼ y</div>
+      <div class="layer io">
+        <div class="lname">🗂️ src/state.py <span class="pill" style="font-weight:600">fuente de verdad</span></div>
+        <div class="ldesc"><code class="inl">crear_estado</code>, <code class="inl">actualizar_estado</code> (aplica el patch), <code class="inl">calcular_done</code> (Python decide) y <code class="inl">leer_json</code>. El estado nunca lo escribe el LLM directamente.</div>
+      </div>
+      <div class="flowarrow">▼ parámetros</div>
+      <div class="layer cfg">
+        <div class="lname">⚙️ config.py &nbsp;·&nbsp; 🔑 gemini_auth.py <span class="pill" style="font-weight:600">configuración</span></div>
+        <div class="ldesc"><code class="inl">GEMINI_MODEL</code>, <code class="inl">MAX_TURNS_DEFAULT</code>, <code class="inl">TEMPERATURE</code>, <code class="inl">DEMO_MENSAJES</code>. <code class="inl">gemini_auth</code> carga la API key una sola vez.</div>
+      </div>
+    </div>
+
+    <h3>Qué hace exactamente cada archivo</h3>
+    <div class="card">
+      <div class="filecard"><div class="fn">src/state.py</div><div class="fd"><b>Estado.</b> Contrato del <code class="inl">AgentState</code>: <code class="inl">crear_estado</code>, <code class="inl">actualizar_estado</code>, <code class="inl">tenemos_datos_minimos</code>, <code class="inl">calcular_done</code>, <code class="inl">leer_json</code>.</div></div>
+      <div class="filecard"><div class="fn">src/llm.py</div><div class="fd"><b>LLM.</b> Prompt + llamada a Gemini → JSON de preferencias/plan/respuesta. No incluye <code class="inl">done</code>.</div></div>
+      <div class="filecard"><div class="fn">src/agent.py</div><div class="fd"><b>Orquestación.</b> <code class="inl">procesar_turno</code> (une LLM + estado + traza, captura errores) y <code class="inl">run_demo</code> (tope <code class="inl">max_turns</code>).</div></div>
+      <div class="filecard"><div class="fn">config.py</div><div class="fd"><b>Configuración.</b> Modelo, <code class="inl">max_turns</code>, temperatura y el guion <code class="inl">DEMO_MENSAJES</code> (5 turnos).</div></div>
+      <div class="filecard"><div class="fn">gemini_auth.py</div><div class="fd"><b>Autenticación.</b> Carga <code class="inl">GEMINI_API_KEY</code> desde <code class="inl">.env</code> (o la pide).</div></div>
+      <div class="filecard"><div class="fn">main.py</div><div class="fd"><b>Cliente CLI.</b> Demo, <code class="inl">--max-turns</code>, <code class="inl">--interactivo</code>. Imprime resumen + JSON con la traza.</div></div>
+      <div class="filecard"><div class="fn">app.py</div><div class="fd"><b>Cliente Streamlit.</b> Chat + sidebar + expander de debug. Guarda <code class="inl">agent_state</code> en <code class="inl">session_state</code>.</div></div>
+    </div>
+
+    <h3>Cómo se hablan los módulos: los <code class="inl">import</code></h3>
+    <pre><span class="c"># src/agent.py — orquesta llm + state</span>
+<span class="k">from</span> src.llm   <span class="k">import</span> preguntar_al_modelo
+<span class="k">from</span> src.state <span class="k">import</span> actualizar_estado, calcular_done, crear_estado
+
+cambios = <span class="f">preguntar_al_modelo</span>(estado, mensaje)  <span class="c"># llm.py → JSON sin "done"</span>
+estado  = <span class="f">actualizar_estado</span>(estado, cambios)    <span class="c"># state.py escribe preferencias/plan</span>
+estado  = <span class="f">calcular_done</span>(estado)               <span class="c"># state.py: PYTHON decide done</span>
+
+<span class="c"># main.py y app.py — solo conocen el contrato</span>
+<span class="k">from</span> src.agent <span class="k">import</span> procesar_turno
+estado = <span class="f">procesar_turno</span>(estado, mensaje)</pre>
+
+    <p>Las dependencias fluyen en <b>una sola dirección</b>: los clientes se apoyan en <code class="inl">agent</code>, que se apoya en <code class="inl">llm</code> y <code class="inl">state</code>.</p>
+    <pre>config.py · gemini_auth.py       <span class="c"># parámetros y clave</span>
+   ▲
+state.py  ◄───►  llm.py          <span class="c"># fuente de verdad · habla con el modelo</span>
+       ▲         ▲
+        agent.py                 <span class="c"># procesar_turno: orquesta el turno</span>
+           ▲
+ main.py ◄─┴─► app.py            <span class="c"># CLI y web: solo consumen</span></pre>
+
+    <div class="callout key">
+      <span class="lab">Cómo explicarlo con tus palabras</span>
+      Piensa en un asesor de viajes: el <b>LLM</b> es el becario que propone ideas en una ficha (JSON), <b>state</b> es la carpeta oficial donde el jefe apunta lo confirmado y decide si el plan está cerrado (<code class="inl">done</code>), <b>agent</b> es el jefe que en cada turno pide la ficha, la pasa a limpio y anota en el registro (traza). La <b>terminal</b> y la <b>web</b> son dos ventanillas de atención que usan al mismo jefe.
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROYECTO ================= -->
+<section id="proyecto">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">7</div><h2>El proyecto de la Live Review: agente de calidad del aire</h2></div>
+    <p class="lead">La práctica integradora del sprint. Sobre este mismo patrón modular, <b>tú implementas</b> <code class="inl">procesar_turno</code> y <code class="inl">run_demo</code> en <code class="inl">src/agent.py</code>; el resto de archivos vienen dados. Dominio: <b>aclarar una consulta sobre calidad del aire en Madrid</b> y cerrar con un plan de consulta. Sin RAG ni tools, y <b>sin inventar mediciones ni umbrales</b> (no hay datos ni corpus).</p>
+
+    <div class="two-col">
+      <div class="card">
+        <h4>Lo que implementas tú</h4>
+        <ul class="clean">
+          <li><code class="inl">src/agent.py</code> → <code class="inl">procesar_turno</code>: un turno (LLM → <code class="inl">actualizar_estado</code> → <code class="inl">calcular_done</code> → traza, con manejo de error)</li>
+          <li><code class="inl">src/agent.py</code> → <code class="inl">run_demo</code>: recorre <code class="inl">DEMO_MENSAJES</code> con tope <code class="inl">max_turns</code></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Lo que viene dado (no tocar)</h4>
+        <ul class="clean">
+          <li><code class="inl">src/state.py</code> (crear / actualizar / <code class="inl">calcular_done</code>), <code class="inl">src/llm.py</code> (JSON sin <code class="inl">done</code>)</li>
+          <li><code class="inl">main.py</code>, <code class="inl">app.py</code>, <code class="inl">verificar.py</code>, <code class="inl">config.py</code>, <code class="inl">gemini_auth.py</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>El dominio: preferencias de la consulta</h3>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Preferencia</th><th>Ejemplo</th></tr></thead>
+        <tbody>
+          <tr><td><code class="inl">zona</code></td><td>centro, Escuelas Aguirre</td></tr>
+          <tr><td><code class="inl">contaminante</code></td><td>NO2, PM10, magnitud 83</td></tr>
+          <tr><td><code class="inl">tipo_consulta</code></td><td><code class="inl">que_mide</code> / <code class="inl">interpretar</code> / <code class="inl">comparar</code> / <code class="inl">general</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout"><span class="lab">Regla de cierre</span> <code class="inl">done=true</code> lo decide <b>Python</b> (<code class="inl">calcular_done</code>) cuando hay las <b>tres</b> preferencias y el <code class="inl">plan</code> tiene <b>≥2 ítems</b>. El LLM nunca devuelve <code class="inl">done</code>.</div>
+
+    <h3>Secuencia recomendada</h3>
+    <div class="two-col">
+      <div class="card">
+        <h4>CLI (arregla el backend primero)</h4>
+        <pre>python main.py --check       <span class="c"># [FAIL] hasta implementar agent.py</span>
+python main.py --interactivo <span class="c"># chat turno a turno (Fase 1)</span>
+python main.py               <span class="c"># demo de 5 mensajes (Fase 2)</span>
+python main.py --max-turns 2 <span class="c"># corte: solo 2 de 5</span>
+python main.py --check       <span class="c"># todo [OK] cuando termines</span></pre>
+      </div>
+      <div class="card">
+        <h4>Web (app dada)</h4>
+        <pre>streamlit run app.py</pre>
+        <p class="mini">La UI <b>ya llama</b> a <code class="inl">procesar_turno</code>: no la reimplementes. Chat + sidebar (<code class="inl">max_turns</code>, "Nueva conversación") + expander con preferencias, plan, <code class="inl">done</code> y traza.</p>
+      </div>
+    </div>
+
+    <h3>Las dos memorias de la app (importante)</h3>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Clave</th><th>Dónde vive</th><th>Qué guarda</th></tr></thead>
+        <tbody>
+          <tr><td><code class="inl">st.session_state.messages</code></td><td>Frontend (UI)</td><td>Burbujas <code class="inl">{role, content}</code> para pintar el chat</td></tr>
+          <tr><td><code class="inl">st.session_state.agent_state</code></td><td>Backend (tarea)</td><td>Preferencias, plan, <code class="inl">done</code>, <code class="inl">error</code>, <code class="inl">traza</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Pruebas sugeridas</h3>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Prueba</th><th>Ejemplo / acción</th><th>Qué observar</th></tr></thead>
+        <tbody>
+          <tr><td>Pedido vago</td><td>"Quiero orientarme sobre calidad del aire."</td><td>Pregunta; <code class="inl">plan</code> vacío; <code class="inl">done=false</code></td></tr>
+          <tr><td>Preferencias</td><td>"Me interesa el NO2, zona centro."</td><td>Se rellenan <code class="inl">contaminante</code> / <code class="inl">zona</code></td></tr>
+          <tr><td>Cierre</td><td>"Sí, adelante con el plan de consulta."</td><td><code class="inl">plan</code> con ≥2 ítems; <code class="inl">done=true</code></td></tr>
+          <tr><td>Sin inventar</td><td>"¿Cuál es el valor de NO2 ahora?"</td><td>Se niega a inventar; ofrece plan de consulta</td></tr>
+          <tr><td>Tope</td><td><code class="inl">--max-turns 2</code></td><td>Corte por <code class="inl">max_turns</code>; aviso en la respuesta</td></tr>
+          <tr><td>Error</td><td>API key inválida en <code class="inl">.env</code></td><td><code class="inl">error</code> en el estado + mensaje amigable</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout key">
+      <span class="lab">Criterio de cierre (lo defiendes en la sesión)</span>
+      Qué hace y qué devuelve <code class="inl">procesar_turno(estado, mensaje)</code> · quién decide <code class="inl">done</code> (Python, no el LLM) · por qué hace falta <code class="inl">max_turns</code> además de <code class="inl">done</code> · qué vive en <code class="inl">messages</code> vs <code class="inl">agent_state</code> · por qué este agente <b>no</b> inventa mediciones.
+    </div>
+  </div>
+</section>
+
+<!-- ================= CHECKLIST ================= -->
+<section id="checklist">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">✓</div><h2>Checklist del sprint</h2></div>
+    <div class="two-col">
+      <div class="card">
+        <h4>Conceptos que debes dominar</h4>
+        <ul class="clean">
+          <li>Agente vs LLM / chatbot / asistente / RAG</li>
+          <li>El ciclo: loop + estado + parada + LLM</li>
+          <li>One-shot (RAG) vs multi-paso (agente)</li>
+          <li><code class="inl">AgentState</code>: quién escribe qué; <code class="inl">done</code> lo decide Python</li>
+          <li><code class="inl">messages</code> (UI) ≠ estado ≠ long-term</li>
+          <li>Parada: <code class="inl">done</code>, <code class="inl">max_turns</code>, error; y la traza</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Práctica con el proyecto</h4>
+        <ul class="clean">
+          <li><code class="inl">python main.py</code> cierra con <code class="inl">done=true</code> y plan ≥2</li>
+          <li><code class="inl">--max-turns 2</code> muestra el corte</li>
+          <li>Un pedido vago hace que el agente pregunte</li>
+          <li><code class="inl">streamlit run app.py</code> funciona tras la CLI</li>
+          <li>Distingues <code class="inl">messages</code> de <code class="inl">agent_state</code> en la app</li>
+          <li>Sabes leer la <code class="inl">traza</code> turno a turno</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout key">
+      <span class="lab">Si te quedas con una sola idea</span>
+      Un agente es <b>loop + estado + parada + LLM</b>, con un contrato único (<code class="inl">procesar_turno</code>) que la UI solo consume. El LLM propone estructura; <b>Python decide</b> <code class="inl">done</code> y los límites. Este es el primero de los tres sprints del módulo de agentes; en los siguientes el agente pasará a actuar con herramientas.
+    </div>
+  </div>
+</section>
+
+<footer>
+  Guía visual del Sprint 11 · Bootcamp IA Generativa · Módulo 5 AI Agents · basada en la teoría del sprint y la práctica Live Review <b>01_agente_calidad_aire</b>.
+</footer>
+
+<script>
+  const links = [...document.querySelectorAll('nav.toc a')];
+  const sections = links.map(a => document.querySelector(a.getAttribute('href')));
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const id = '#'+e.target.id;
+        links.forEach(a=>a.classList.toggle('active', a.getAttribute('href')===id));
+      }
+    });
+  }, {rootMargin:'-45% 0px -50% 0px', threshold:0});
+  sections.forEach(s=>s&&obs.observe(s));
+</script>
+</body>
+</html>
