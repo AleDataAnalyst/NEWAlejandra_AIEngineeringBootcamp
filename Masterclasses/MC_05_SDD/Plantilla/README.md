@@ -119,7 +119,12 @@ Si intenta seguir con la siguiente tarea, dile que pare.
 
 ## Para cerrar
 ```bash
-git status          # comprueba que NO aparecen .env ni output/
+git status
+```
+
+Comprueba que **no** aparecen `.env` ni `output/`. Después:
+
+```bash
 git add -A
 git commit -m "SDD: spec 001 + T1"
 git push -u origin feature/sdd
