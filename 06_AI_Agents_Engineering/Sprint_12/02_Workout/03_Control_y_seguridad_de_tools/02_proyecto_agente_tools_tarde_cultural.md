@@ -1,4 +1,4 @@
-![Cabecera](../../assets/cabecera_thebridge.png)
+![Cabecera](../../../Sprint_11/assets/cabecera_thebridge.png)
 
 ### [02_proyecto_agente_tools_tarde_cultural](https://github.com/aie-online-tb/Sprint12_Proyecto_Agente_tools_tarde_cultural)
 

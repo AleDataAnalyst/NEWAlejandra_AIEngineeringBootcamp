@@ -2,6 +2,9 @@
 
 # Proyecto: Agente con tools — tarde cultural
 
+> **Esto no es la Live Review.** Es el proyecto de referencia del bloque (dominio **tarde cultural**).  
+> La Live Review del Sprint 12 está en [`Practica_live_review/`](../../../Practica_live_review/) (calidad del aire: mismas mecánicas, otras tools / prefs).
+
 Agente que usa **function calling** con tres tools. El propio agente (el código en este proyecto) valida, ejecuta y limita (`max_steps`, allowlist, traza) para que el LLM no pueda ejecutar tools no permitidas. El LLM decide *qué* tool pedir; el agente decide lo que se debe ejecutar.
 
 | Tool | Rol |

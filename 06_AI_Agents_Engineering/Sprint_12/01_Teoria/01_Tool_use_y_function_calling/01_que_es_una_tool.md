@@ -4,6 +4,8 @@
 
 Una **tool** (herramienta) es una **función de Python** que el agente puede invocar para obtener información o hacer algo que el modelo no debería fingir.
 
+![Tool Use](../../assets/Agent_Tool_Loop.png)
+
 Ejemplos del sprint:
 
 | Tool | Por qué no “inventarla” en prosa |

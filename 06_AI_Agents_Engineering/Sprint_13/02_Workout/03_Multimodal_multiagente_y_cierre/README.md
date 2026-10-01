@@ -2,28 +2,27 @@
 
 # Multimodal, multiagente y cierre (Sprint 13)
 
-Tercer bloque: **panorama** multiagente y multimodal. El hito del sprint sigue siendo el **proyecto LangGraph + HITL** (teoría).
+Tercer bloque: **multiagente + multimodal** y el **proyecto hito** (tarde cultural).
 
-| Notebook | Qué aprendéis |
-|----------|----------------|
-| [`01_multiagente_supervisor.ipynb`](./01_multiagente_supervisor.ipynb) | Overview multiagente: bucle supervisor, especialistas, `FINISH`, `MemorySaver` |
-| [`02_multimodal_imagen_texto.ipynb`](./02_multimodal_imagen_texto.ipynb) | LangGraph lineal + Gemini multimodal (`google-genai` en el nodo) |
+| Notebook / stub | Qué aprendéis |
+|-----------------|---------------|
+| [`01_multiagente_supervisor.ipynb`](./01_multiagente_supervisor.ipynb) | Overview: bucle supervisor, especialistas, `FINISH`, `MemorySaver` |
+| [`02_multimodal_imagen_texto.ipynb`](./02_multimodal_imagen_texto.ipynb) | LangGraph lineal + Gemini multimodal |
+| [`03_proyecto_agente_langgraph_tarde_cultural.md`](./03_proyecto_agente_langgraph_tarde_cultural.md) | Stub → proyecto multiagente en teoría |
 
-Proyecto: [`02_proyecto_agente_langgraph_tarde_cultural.md`](./02_proyecto_agente_langgraph_tarde_cultural.md) → carpeta en teoría.
+Teoría: [`01_multiagente.md`](../../01_Teoria/03_Multimodal_multiagente_y_cierre/01_multiagente.md) · [`02_multimodal.md`](../../01_Teoria/03_Multimodal_multiagente_y_cierre/02_multimodal.md)
 
-Teoría: [`01_Teoria/03_Multimodal_multiagente_y_cierre/`](../../01_Teoria/03_Multimodal_multiagente_y_cierre/)
+Prerrequisito: bloques 1–2 (ReAct, checkpoints, HITL).
 
-Prerrequisito: bloque 2 — checkpoints y HITL.
+## Dependencias (notebooks)
 
-## Dependencias
-
-LangGraph (notebook 1):
+Multiagente:
 
 ```bash
 # %pip install -qU langgraph langchain-google-genai langchain-core python-dotenv
 ```
 
-Multimodal (notebook 2):
+Multimodal:
 
 ```bash
 # %pip install -qU langgraph google-genai python-dotenv
