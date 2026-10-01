@@ -1,0 +1,9 @@
+{
+  // Copilot lee AGENTS.md y .github/copilot-instructions.md como contexto fijo
+  "chat.useAgentsMdFile": true,
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+  // Activa los comandos /sdd-* de .github/prompts
+  "chat.promptFiles": true,
+  "python.testing.pytestEnabled": true,
+  "python.testing.pytestArgs": ["tests"]
+}
