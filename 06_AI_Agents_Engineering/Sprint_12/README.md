@@ -27,11 +27,11 @@ S13  migrar agente a LangGraph + HITL + multimodal / multi-agente intro
 
 ---
 
-## Tools del sprint
+## Tools de los workouts (tarde cultural)
 
 | Tool | Rol |
 |------|-----|
-| `RAG_buscar_en_guia` | RAG sobre guía/FAQ (copia mínima S10) |
+| `RAG_buscar_en_guia` | RAG sobre `guia_cultural.txt` |
 | `API_consultar_eventos_madrid` | Open data Madrid + fallback JSON local |
 | `hora_actual` | Fecha/hora |
 
@@ -70,8 +70,16 @@ S13  migrar agente a LangGraph + HITL + multimodal / multi-agente intro
 
 | Workout | Descripción |
 |---------|-------------|
-| [01_proyecto_agente_tools_tarde_cultural/](./02_Workout/03_Control_y_seguridad_de_tools/01_proyecto_agente_tools_tarde_cultural/) | 3 tools + control + Streamlit (**hito** del sprint / Live Review) |
+| [05_proyecto_agente_tools_tarde_cultural/](./01_Teoria/03_Control_y_seguridad_de_tools/05_proyecto_agente_tools_tarde_cultural/) | 3 tools + control + Streamlit (proyecto en teoría; workout B03) |
 | [02_proyecto_agente_tools_tarde_cultural.md](./02_Workout/03_Control_y_seguridad_de_tools/02_proyecto_agente_tools_tarde_cultural.md) | Stub repo (opcional) |
+
+---
+
+## 🎯 Practica live review
+
+📁 [`Practica_live_review/`](./Practica_live_review/) — [`01_agente_tools_calidad_aire/`](./Practica_live_review/01_agente_tools_calidad_aire/) (+ [`_SOLUTION`](./Practica_live_review/01_agente_tools_calidad_aire_SOLUTION/))
+
+**Mismo patrón** de tools (allowlist, `max_steps`, FC manual, Streamlit cliente). **Otro dominio:** calidad del aire (`zona` / `contaminante` / `tipo_consulta`; RAG guía + API Madrid + `hora_actual`). El alumno completa allowlist / `ejecutar_tool`, el hueco de `run_tool_loop`, y `procesar_turno` + `run_demo`.
 
 ---
 
@@ -81,7 +89,7 @@ S13  migrar agente a LangGraph + HITL + multimodal / multi-agente intro
 
 📁 Teoría puente: [`03_panorama_langgraph.md`](./01_Teoria/03_Control_y_seguridad_de_tools/03_panorama_langgraph.md)
 
-> **Obligatorio** ejecutar los dos notebooks **después** del proyecto con tools. No sustituyen ese proyecto. No hay Live Review de LangGraph en este sprint (pasa a Sprint 13).
+> **Obligatorio** ejecutar los dos notebooks **después** del proyecto con tools (workout B03 y/o Live Review). No sustituyen ese trabajo. No hay Live Review de LangGraph en este sprint (pasa a Sprint 13).
 
 | Notebook | Contenido |
 |----------|-----------|
@@ -99,9 +107,11 @@ notebook 1 tool (hora) + FC
     ↓
 notebook multi-tool + RAG + API
     ↓
-proyecto 3 tools + control + Streamlit   ← hito / Live Review S12
+proyecto cultural 3 tools + control + Streamlit   ← workout B03
     ↓
-notebooks LangGraph (lineal + condicionales)  ← obligatorio consumir
+Live Review: agente tools · calidad del aire       ← Practica_live_review/
+    ↓
+notebooks LangGraph (lineal + condicionales)       ← obligatorio consumir
 ```
 
 ## Fuera de alcance
@@ -110,4 +120,4 @@ HITL formal · multi-agente · multimodal · LangGraph como orquestador del proy
 
 ## Estado
 
-Teoría, notebooks de tools, proyecto con control + Streamlit, notebooks LangGraph y live review (tools): **contenidos**.
+Teoría, notebooks de tools, proyecto cultural + Streamlit, Live Review (calidad del aire + tools) y notebooks LangGraph: **contenidos**.

@@ -41,4 +41,4 @@ No confundas el historial del chat con la traza interna de tools.
 - Mismos campos de estado.
 - Errores visibles (no stack trace crudo al alumno en Streamlit).
 
-El proyecto del workout implementa exactamente este patrón.
+El proyecto en teoría ([`05_proyecto_agente_tools_tarde_cultural/`](./05_proyecto_agente_tools_tarde_cultural/)) implementa exactamente este patrón. La Live Review ([`Practica_live_review/`](../../Practica_live_review/)) reutiliza el mismo contrato con dominio calidad del aire.

@@ -11,7 +11,7 @@ Estos patrones los enlazaréis con Streamlit en el proyecto cultural (`thread_id
 | [`01_memoria_y_checkpoints.ipynb`](./01_memoria_y_checkpoints.ipynb) | `MemorySaver`, `thread_id`, `add_messages`, `get_state` |
 | [`02_hitl_aprobar_plan.ipynb`](./02_hitl_aprobar_plan.ipynb) | `interrupt_before`, pausa, `update_state`, reanudar con `invoke(None)` |
 
-Teoría: [`01_Teoria/02_HITL_guardrails_y_persistencia/`](../../01_Teoria/02_HITL_guardrails_y_persistencia/)
+Teoría: [`01_persistencia_y_hitl.md`](../../01_Teoria/02_HITL_guardrails_y_persistencia/01_persistencia_y_hitl.md)
 
 Prerrequisito: bloque 1 — ReAct en LangGraph.
 
