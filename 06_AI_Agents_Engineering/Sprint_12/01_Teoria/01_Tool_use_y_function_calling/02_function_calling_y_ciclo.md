@@ -8,7 +8,7 @@
 2. Responder con un **function call** estructurado (nombre + args), no solo texto.
 3. Recibir después el **resultado** de la tool y continuar.
 
-Por ejemlo, en Gemini lo haces con el SDK `google-genai`: declaras `FunctionDeclaration` / `Tool` y pasas `tools=` en la config.
+Por ejemplo, en Gemini lo haces con el SDK `google-genai`: declaras `FunctionDeclaration` / `Tool` y pasas `tools=` en la config.
 
 ---
 
@@ -41,23 +41,21 @@ Puede haber **varias** vueltas (varias tools) antes del texto final. Esto se sue
 
 ---
 
-## Manual vs automático
+## Manual vs automático (AFC)
 
-El SDK de Python puede **ejecutar tools solo** (*automatic function calling*). Este sería el modo automático de funcionamiento de un agente con function calling:
+El SDK de Gemini puede ejecutar tools **solo** (*automatic function calling*, AFC). En ese modo el SDK orquesta el bucle por ti.
 
-1. Llamada al modelo → ¿pide tool?
-2. Si sí: ejecutas tú la función.
-3. Devuelves el resultado como `Part.from_function_response` (en Google Gemini) o equivalente según el SDK.
-4. Vuelves a llamar al modelo con el historial.
+En este sprint (proyecto cultural y Live Review) **desactivamos el AFC** (`disable=True`) y hacemos el loop **a mano** (`run_tool_loop`) para ver allowlist, traza y `max_steps`:
 
-El modo automático es un atajo; **el control** (allowlist, validación, traza) sigue siendo tuyo. Si no quieres usar el modo automático, puedes hacerlo manualmente.
+1. Llamada al modelo → ¿pide tool (`function_call`)?
+2. Si sí: **tú** ejecutas la función en Python (tras allowlist / validación).
+3. Devuelves el resultado como `Part.from_function_response` (o equivalente).
+4. Vuelves a llamar al modelo con el historial actualizado.
+5. Si no pide tool → texto final.
 
-El modo manual es el que te permite tener más control sobre el funcionamiento del agente. En este modo, el agente debe:
+El AFC automático es un atajo cómodo para demos; **el control** (allowlist, validación, traza, `max_steps`) lo quieres ver y decidir tú. Por eso el modo **manual** es el de los proyectos del sprint.
 
-1. Detectar cuándo el modelo pide una tool.
-2. Ejecutar la función en Python.
-3. Devolver el resultado al modelo en el formato esperado (`Part.from_function_response` o equivalente según el SDK).
-4. Vuelves a llamar al modelo con el historial.
+Puede haber un warning del SDK al desactivar AFC: **no es un error** de vuestro código.
 
 ---
 

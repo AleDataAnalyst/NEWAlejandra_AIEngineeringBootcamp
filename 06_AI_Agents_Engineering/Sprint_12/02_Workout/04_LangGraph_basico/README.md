@@ -2,9 +2,9 @@
 
 # LangGraph básico (Sprint 12)
 
-**Obligatorio** leer y ejecutar estos notebooks **después** del proyecto del agente con tools + Streamlit.
+**Obligatorio** leer y ejecutar estos notebooks **después** del proyecto del agente con tools + Streamlit (workout B03 y/o Live Review).
 
-No sustituyen ese proyecto: el hito con tools sigue siendo el agente en Python. Aquí practicáis la API de LangGraph (State, nodos, edges, condicionales). La práctica evaluable con grafo llega en **Sprint 13**.
+No sustituyen ese trabajo: el hito con tools sigue siendo el agente en Python. Aquí practicáis la API de LangGraph (State, nodos, edges, condicionales). La práctica evaluable con grafo llega en **Sprint 13**.
 
 Dominio: **tarde cultural**. LLM: `langchain-google-genai` + misma `GEMINI_API_KEY`.
 

@@ -54,12 +54,13 @@ Cada step deja huella legible:
 ```
 
 Útil para debug en el expander de Streamlit y para live review.
+(En la Live Review de calidad del aire el patrón es el mismo; cambian nombres de tools y ejemplos de `args`.)
 
 No mandes la traza completa al LLM en cada prompt (ruido); guárdala en el estado de Python.
 
 ---
 
-## done (sigue siendo de Python)
+## Calcular `done` en el agente
 
 Tras el loop de tools, puedes sintetizar `preferencias` / `plan` (JSON) y calcular `done` como en S11.  
 El LLM **no** debe tener una tool `marcar_done`.

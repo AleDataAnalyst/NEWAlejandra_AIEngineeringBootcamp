@@ -8,6 +8,8 @@ Aquí empieza el salto: el modelo **elige** una herramienta y **Python la ejecut
 
 > **Tool use** = el agente pide una acción; el código la hace; el resultado vuelve al modelo.
 
+![Tool Use](../../assets/how_ai_agents_works.jpg)
+
 ---
 
 ## Objetivos del bloque
