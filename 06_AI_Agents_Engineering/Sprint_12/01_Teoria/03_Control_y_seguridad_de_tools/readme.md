@@ -34,10 +34,19 @@ Repaso amplio (Sprint 11): [`03_panorama_langgraph.md`](../../../Sprint_11/01_Te
 
 ---
 
-## Workout / proyecto
+## Proyecto
+
+📁 [05_proyecto_agente_tools_tarde_cultural/](./05_proyecto_agente_tools_tarde_cultural/) — 3 tools + control + Streamlit (**tarde cultural**; workout de referencia).
+
+## Workout (enlaces)
 
 | Recurso | Cubre |
 |---------|--------|
-| [01_proyecto_agente_tools_tarde_cultural/](../../02_Workout/03_Control_y_seguridad_de_tools/01_proyecto_agente_tools_tarde_cultural/) | 3 tools + control + Streamlit |
+| [05_proyecto… (en teoría)](./05_proyecto_agente_tools_tarde_cultural/) | Proyecto ejecutable: allowlist, `max_steps`, CLI + Streamlit |
+| Guion vídeo | [01_proyecto_agente_tools_tarde_cultural.md](../../02_Workout/03_Control_y_seguridad_de_tools/guiones_video/01_proyecto_agente_tools_tarde_cultural.md) |
 | [02_proyecto_agente_tools_tarde_cultural.md](../../02_Workout/03_Control_y_seguridad_de_tools/02_proyecto_agente_tools_tarde_cultural.md) | Stub repo (opcional) |
 | [04_LangGraph_basico/](../../02_Workout/04_LangGraph_basico/) | Notebooks LangGraph (después del proyecto; obligatorio consumir) |
+
+## Live Review
+
+📁 [`Practica_live_review/`](../../Practica_live_review/) — agente con tools · **calidad del aire** (allowlist, FC, `max_steps`, Streamlit). Mismas mecánicas; otros nombres de tools / prefs / corpus.

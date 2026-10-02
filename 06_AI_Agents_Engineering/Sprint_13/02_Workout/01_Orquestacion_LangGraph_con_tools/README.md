@@ -10,7 +10,7 @@ Dominio de demo: `calcular` y `buscar_dato` locales; `obtener_clima` vía **Open
 |----------|----------------|
 | [`01_agente_tools_en_langgraph.ipynb`](./01_agente_tools_en_langgraph.ipynb) | `@tool`, `ToolNode`, router ReAct y `MAX_STEPS` en Python |
 
-Teoría: [`01_Teoria/01_Orquestacion_LangGraph_con_tools/`](../../01_Teoria/01_Orquestacion_LangGraph_con_tools/)
+Teoría: [`01_react_con_tools.md`](../../01_Teoria/01_Orquestacion_LangGraph_con_tools/01_react_con_tools.md) · [`02_migracion_desde_s12.md`](../../01_Teoria/01_Orquestacion_LangGraph_con_tools/02_migracion_desde_s12.md)
 
 Prerrequisito: S12 — [`04_LangGraph_basico`](../../../Sprint_12/02_Workout/04_LangGraph_basico/)
 
