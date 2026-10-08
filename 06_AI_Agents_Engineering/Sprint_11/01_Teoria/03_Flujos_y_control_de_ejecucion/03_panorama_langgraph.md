@@ -4,7 +4,7 @@
 
 En este sprint generamos agentes **escribiendo el loop en Python**: estado, actualización, parada (`done`, `max_turns`), traza. Ese enfoque se mantiene: es la base para entender qué orquesta cualquier framework.
 
-Más adelante **ahondaremos en el ecosistema LangGraph** para montar agentes con grafos. Aquí el objetivo es llevarnos una **idea completa del entorno**: qué es, cómo se monta mentalmente, qué piezas existen y dónde leer más.
+Más adelante **ahondaremos en el ecosistema LangGraph** para montar agentes con grafos (práctica de API en Sprint 12; proyecto en Sprint 13). Aquí el objetivo es llevarnos una **idea completa del entorno**: qué es, cómo se monta mentalmente, qué piezas existen y dónde leer más.
 
 > LangGraph **no sustituye** diseñar buen estado y buenas paradas: las hace más explícitas.
 

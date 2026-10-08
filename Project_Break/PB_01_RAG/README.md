@@ -1,4 +1,4 @@
-![Cabecera](../assets/cabecera_thebridge.png)
+![Cabecera](../assets/cabecera_rag.png)
 
 # Project Break 1 — RAG Engineering
 
@@ -20,7 +20,7 @@ Este Project Break es la **primera pieza** de un proyecto incremental del bootca
 | Pieza | Proyecto | Rol |
 |-------|----------|-----|
 | **1** | **Project Break RAG** | Sistema RAG modular y usable |
-| **2** | Project Break Agentes | Ese RAG se reutilizará como **tool** del agente |
+| **2** | [Project Break Agentes · LangGraph](../PB_02_Agentes_LangGraph/) | Ese RAG se reutilizará como **tool** del agente |
 | **3** | Proyecto final MLOps | Empaquetar, desplegar y monitorizar el sistema |
 
 Se recomienda diseñar el retrieve/generación como funciones claras (p. ej. `rag_ask(consulta) -> str`), no mezcladas con la UI, para poder reutilizar el código después.
@@ -59,8 +59,6 @@ Tendréis que elegir una temática para el corpus y curarlo vosotros: buscar la 
 ## Trabajo en equipo y Git
 
 Gestión del proyecto con **GitHub desde el primer día**. La **organización interna del equipo** (quién hace qué y en qué orden) la decidís vosotros.
-
-#### [Formulario para formar equipos](https://docs.google.com/spreadsheets/d/1CtZzV-_gIJM6zHYnUvYQhDij2tlB0Wmb/edit?gid=310427911#gid=310427911)
 
 ### Reglas mínimas
 
