@@ -1,3 +1,5 @@
+![Cabecera](../assets/cabecera_sql.png)
+
 # 🏋️ Workout — SQL y Bases de Datos
 
 Recorrido guiado por SQL desde Python: conectar, consultar, filtrar, agregar, combinar tablas con JOINs y gestionar bases de datos.

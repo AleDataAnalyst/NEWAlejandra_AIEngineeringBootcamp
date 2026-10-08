@@ -1,3 +1,5 @@
+![Cabecera](./assets/cabecera_sql.png)
+
 # 📘 SQL y Bases de Datos
 
 En este contenido damos el salto de trabajar con datos en memoria (listas, pandas) a interactuar con **bases de datos relacionales**: cómo conectar Python a una base SQLite, escribir queries SQL, combinar tablas con JOINs y gestionar bases de datos (crear, insertar, actualizar y borrar).

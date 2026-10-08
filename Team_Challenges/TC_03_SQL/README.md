@@ -1,3 +1,5 @@
+![Cabecera](../assets/cabecera_sql.png)
+
 # 🎯 Práctica Obligatoria — SQL y Bases de Datos
 
 Esta práctica se compone de dos partes independientes:
