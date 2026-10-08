@@ -1,3 +1,5 @@
+![Cabecera](../assets/cabecera_sql.png)
+
 # 🏋️ Ejercicios — SQL y Bases de Datos
 
 Ejercicios de práctica para consolidar lo visto en el Workout: consultas, joins y gestión de bases de datos, sobre datos reales.

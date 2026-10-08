@@ -17,15 +17,17 @@ El sprint responde a una pregunta central:
 | Sprint | Pregunta | Fase |
 |--------|----------|------|
 | **11** (este) | ¿Qué es un agente y cómo mantiene estado? | Fundamentos |
-| **12** | ¿Cómo actúa con herramientas (+ RAG)? | Tool use + LangGraph |
-| **13** | ¿Cómo planifica con autonomía controlada? | Autonomía + HITL |
+| **12** | ¿Cómo actúa con herramientas (+ RAG)? | Tool use + LangGraph básico |
+| **13** | ¿Cómo planifica con autonomía controlada? | LangGraph (proyecto) + HITL |
 
 ```text
 S10  pregunta → responder() → una respuesta (+ fuentes)
  ↓
 S11  mensaje  → procesar_turno() → conversación + AgentState → resultado
  ↓
-S12  + tools (incluida búsqueda RAG) + LangGraph en código
+S12  + tools (incluida búsqueda RAG) + notebooks LangGraph (API básica)
+ ↓
+S13  agente en LangGraph + HITL (+ multimodal / multi-agente intro)
 ```
 
 ---
@@ -95,7 +97,7 @@ Este bloque es **solo teoría** (sin workout propio). La práctica empieza en el
 | 0 | [Introducción](./01_Teoria/03_Flujos_y_control_de_ejecucion/00_introduccion.md) | De demo a sistema controlable. |
 | 1 | [Condiciones de parada](./01_Teoria/03_Flujos_y_control_de_ejecucion/01_condiciones_de_parada.md) | Objetivo, sin progreso, `max_turns`. |
 | 2 | [Errores y logging de pasos](./01_Teoria/03_Flujos_y_control_de_ejecucion/02_errores_y_logging_de_pasos.md) | API/parseo; abortar vs reintentar; traza. |
-| 3 | [Panorama LangGraph](./01_Teoria/03_Flujos_y_control_de_ejecucion/03_panorama_langgraph.md) | Nodos, estado, edges (sin código aún). |
+| 3 | [Panorama LangGraph](./01_Teoria/03_Flujos_y_control_de_ejecucion/03_panorama_langgraph.md) | Nodos, estado, edges (mapa mental; práctica en S12). |
 | 4 | [De CLI a Streamlit](./01_Teoria/03_Flujos_y_control_de_ejecucion/04_de_cli_a_streamlit.md) | Contrato `procesar_turno`; UI = cliente. |
 
 📁 Proyecto ejecutable: [`05_proyecto_agentes_tarde_cultural_streamlit/`](./01_Teoria/03_Flujos_y_control_de_ejecucion/05_proyecto_agentes_tarde_cultural_streamlit/)
@@ -128,6 +130,6 @@ Este bloque es **solo teoría** (sin workout propio). La práctica empieza en el
 - **Streamlit** solo al final (Bloque 3), reutilizando el patrón del miniproyecto de S10.
 - Dominio workouts / proyecto B3: **agenda cultural**. Live Review: **calidad del aire** (sin RAG) — mismos contratos, otros campos de estado.
 - En S11 el tope se llama **`max_turns`** (no `max_steps`).
-- **No** LangGraph en código, **no** function calling, **no** Bedrock.
+- **No** function calling ni proyecto LangGraph en este sprint (**no** Bedrock). LangGraph en código empieza con notebooks en S12.
 
 **Consejo:** al terminar S11 deberías poder explicar en voz alta la diferencia entre `responder()` (S10) y `procesar_turno()` (S11), mostrar un `AgentState` que evoluciona turno a turno y exponerlo en Streamlit.

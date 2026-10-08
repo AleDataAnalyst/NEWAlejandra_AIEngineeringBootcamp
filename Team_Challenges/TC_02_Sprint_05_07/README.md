@@ -1,4 +1,4 @@
-![Cabecera](assets/cabecera_thebridge.png)
+![Cabecera](../assets/cabecera_gemini.png)
 
 # Team Challenge · Sprint 05–07 — Employee Onboarding Assistant
 
@@ -18,6 +18,7 @@ Esta práctica integra conceptos de:
 |---------|-----|
 | `data/` | Lore de Bridge SA, documentos de onboarding, FAQ, empleados demo, casos trampa de ejemplo |
 | `entregables/` | Plantillas de matriz, recomendación y rúbrica |
+| `ejemplos_conexion_proveedores_ia.ipynb` | *(Opcional)* Ejemplos de conexión a otros proveedores — Cohere, Hugging Face (nube y local) |
 
 ---
 
