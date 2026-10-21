@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<title>Guía visual · Sprint 14 — AI APIs & Backend Services</title>
+<style>
+  :root{
+    --bg:#ffffff; --bg2:#f4f4f5; --card:#ffffff; --card2:#fafafa;
+    --border:#e6e4e5; --text:#141416; --muted:#54545a; --dim:#8a8a8f;
+    --accent:#e4002b; --accent2:#18181b; --amber:#6b7280; --rose:#e4002b;
+    --green:#18181b; --violet:#3f3f46; --code:#161618;
+    --shadow:0 10px 30px rgba(0,0,0,.08);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:linear-gradient(180deg,#faf7fd,#ffffff 260px);
+    color:var(--text); font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.65; font-size:16px;
+  }
+  h1,h2,h3,h4,.sec-num,.hero .kicker,.pipe .st-nm{font-family:'Sora','Inter',sans-serif}
+  a{color:var(--accent); text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  .wrap{max-width:1180px; margin:0 auto; padding:0 22px}
+  header.hero{
+    padding:56px 22px 30px; text-align:center;
+    border-bottom:1px solid var(--border);
+    background:radial-gradient(1200px 420px at 50% -120px, rgba(228,0,43,.10), transparent);
+  }
+  .kicker{
+    display:inline-block; font-size:12.5px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--accent); background:rgba(228,0,43,.07); border:1px solid rgba(228,0,43,.25);
+    padding:5px 12px; border-radius:999px; margin-bottom:16px; font-weight:600;
+  }
+  h1{font-size:clamp(28px,4.4vw,44px); margin:.1em 0 .2em; line-height:1.12; letter-spacing:-.02em}
+  .hero p{color:var(--muted); max-width:760px; margin:10px auto 0; font-size:17px}
+  .hero .tag{color:var(--dim); font-size:13.5px; margin-top:18px}
+
+  nav.toc{
+    position:sticky; top:0; z-index:20; background:rgba(255,255,255,.88);
+    backdrop-filter:blur(10px); border-bottom:1px solid var(--border);
+  }
+  nav.toc .wrap{display:flex; gap:6px; overflow-x:auto; padding:10px 22px; scrollbar-width:thin}
+  nav.toc a{
+    white-space:nowrap; color:var(--muted); font-size:13.5px; font-weight:600;
+    padding:7px 13px; border-radius:9px; border:1px solid transparent;
+  }
+  nav.toc a:hover{color:var(--text); background:var(--card); text-decoration:none}
+  nav.toc a.active{color:var(--text); background:var(--card2); border-color:var(--border)}
+
+  section{padding:44px 0 8px}
+  section > .wrap > .sec-head{display:flex; align-items:center; gap:14px; margin-bottom:6px}
+  .sec-num{
+    flex:0 0 auto; width:38px; height:38px; border-radius:11px; display:grid; place-items:center;
+    font-weight:700; font-size:16px; color:#fff; background:linear-gradient(135deg,var(--accent),var(--accent2));
+  }
+  h2{font-size:clamp(22px,3vw,30px); margin:0; letter-spacing:-.01em}
+  .lead{color:var(--muted); font-size:16.5px; margin:6px 0 26px; max-width:840px}
+  h3{font-size:19px; margin:30px 0 10px; letter-spacing:-.01em}
+  h4{font-size:15.5px; margin:20px 0 8px; color:var(--text)}
+  p{margin:10px 0}
+
+  .grid{display:grid; gap:16px}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:960px){.g4{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 20px; box-shadow:var(--shadow); min-width:0;
+  }
+  .card h4{margin-top:0}
+  .card .ico{font-size:22px}
+  .pill{
+    display:inline-block; font-size:12px; font-weight:600; padding:3px 10px; border-radius:999px;
+    border:1px solid var(--border); color:var(--muted); background:var(--bg2);
+  }
+  .pill.a{color:var(--accent); border-color:rgba(228,0,43,.35); background:rgba(228,0,43,.08)}
+  .pill.t{color:var(--accent2); border-color:rgba(24,24,27,.3); background:rgba(24,24,27,.06)}
+  .pill.v{color:var(--violet); border-color:rgba(63,63,70,.3); background:rgba(63,63,70,.06)}
+  .pill.g{color:var(--green); border-color:rgba(24,24,27,.3); background:rgba(24,24,27,.06)}
+  .pill.am{color:var(--amber); border-color:rgba(107,114,128,.3); background:rgba(107,114,128,.08)}
+
+  .tbl{overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); margin:16px 0}
+  table{border-collapse:collapse; width:100%; font-size:14.5px; min-width:520px}
+  th,td{padding:11px 14px; text-align:left; border-bottom:1px solid var(--border); vertical-align:top}
+  th{background:var(--bg2); color:var(--muted); font-weight:600; font-size:12.5px; text-transform:uppercase; letter-spacing:.04em}
+  tr:last-child td{border-bottom:none}
+  td strong{color:var(--text)}
+
+  pre{
+    background:var(--code); border:1px solid var(--border); border-radius:12px;
+    padding:16px 18px; overflow-x:auto; font-size:13.5px; line-height:1.5;
+    font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace; color:#d5dde6; margin:14px 0;
+  }
+  pre .c{color:#8a8a90}
+  pre .k{color:#ff5c6c}
+  pre .s{color:#e8e8ea}
+  pre .f{color:#ff8f9a}
+  pre .n{color:#ffffff}
+  code.inl{background:var(--bg2); border:1px solid var(--border); border-radius:6px; padding:1px 6px; font-size:13px; font-family:Consolas,monospace; color:var(--accent)}
+
+  .callout{
+    border-left:3px solid var(--accent); background:rgba(228,0,43,.05);
+    padding:14px 18px; border-radius:0 12px 12px 0; margin:18px 0;
+  }
+  .callout.warn{border-color:var(--amber); background:rgba(107,114,128,.07)}
+  .callout.key{border-color:var(--accent2); background:rgba(24,24,27,.05)}
+  .callout .lab{font-weight:700; font-size:12.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:3px}
+
+  ul.clean{list-style:none; padding-left:0; margin:12px 0}
+  ul.clean li{padding:7px 0 7px 28px; position:relative; border-bottom:1px dashed var(--border)}
+  ul.clean li:last-child{border-bottom:none}
+  ul.clean li:before{content:"▹"; position:absolute; left:6px; color:var(--accent)}
+
+  .modmap{display:grid; grid-template-columns:1fr; gap:0; margin:20px 0}
+  .layer{
+    border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin:8px 0; background:var(--card);
+    position:relative;
+  }
+  .layer .lname{font-weight:700; font-size:14px; color:var(--text)}
+  .layer .ldesc{color:var(--muted); font-size:13.5px; margin-top:2px}
+  .layer.entry{border-color:rgba(228,0,43,.4)}
+  .layer.cfg{border-color:rgba(107,114,128,.45)}
+  .layer.engine{border-color:rgba(24,24,27,.35)}
+  .layer.io{border-color:rgba(63,63,70,.4)}
+  .flowarrow{text-align:center; color:var(--dim); font-size:20px; margin:-2px 0}
+
+  .filecard{display:flex; gap:12px; align-items:flex-start; padding:12px 0; border-bottom:1px dashed var(--border)}
+  .filecard:last-child{border-bottom:none}
+  .filecard .fn{
+    flex:0 0 auto; font-family:Consolas,monospace; font-size:13px; color:#ff6b6b;
+    background:var(--code); border:1px solid var(--border); border-radius:7px; padding:4px 9px; min-width:118px; text-align:center;
+  }
+  .filecard .fd{color:var(--muted); font-size:14px; min-width:0}
+  .filecard .fd b{color:var(--text)}
+  @media(max-width:560px){.filecard{flex-direction:column; gap:6px}}
+
+  .step{display:flex; gap:14px; margin:14px 0}
+  .step .num{flex:0 0 auto; width:30px; height:30px; border-radius:50%; background:var(--card2); border:1px solid var(--border); display:grid; place-items:center; font-weight:700; font-size:14px; color:var(--accent)}
+  .step .body{flex:1}
+  .step .body b{color:var(--text)}
+
+  .pipe{display:flex; align-items:stretch; gap:0; flex-wrap:wrap; margin:18px 0}
+  .pipe .stage{flex:1 1 140px; min-width:130px; border:1px solid var(--border); border-radius:12px; background:var(--card); padding:12px 12px; text-align:center; position:relative}
+  .pipe .stage .st-ic{font-size:20px}
+  .pipe .stage .st-nm{font-weight:700; font-size:13.5px; margin-top:4px; color:var(--text)}
+  .pipe .stage .st-ds{font-size:11.5px; color:var(--dim); margin-top:2px; line-height:1.35}
+  .pipe .sep{flex:0 0 26px; display:grid; place-items:center; color:var(--dim); font-size:20px}
+  @media(max-width:820px){.pipe .sep{width:100%; flex-basis:100%; transform:rotate(90deg); height:22px}}
+
+  footer{margin-top:50px; padding:30px 22px 60px; border-top:1px solid var(--border); text-align:center; color:var(--dim); font-size:13.5px}
+
+  .antipattern{border-left:3px solid var(--rose); background:rgba(228,0,43,.05); padding:12px 16px; border-radius:0 10px 10px 0; margin:10px 0; font-size:14.5px}
+  .goodpattern{border-left:3px solid var(--green); background:rgba(24,24,27,.05); padding:12px 16px; border-radius:0 10px 10px 0; margin:10px 0; font-size:14.5px}
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  .two-col > *{min-width:0}
+  @media(max-width:820px){.two-col{grid-template-columns:1fr}}
+  .mini{font-size:13px; color:var(--dim)}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="kicker">Bootcamp IA Generativa · Guía del alumno · Módulo 6 Backend & Deploy</span>
+  <h1>Sprint 14 — AI APIs & Backend Services</h1>
+  <p>En S10–13 el sistema vivía detrás de <b>CLI</b> o <b>Streamlit</b>: la lógica (<code class="inl">responder</code>, <code class="inl">procesar_turno</code>) compartía proceso con el cliente. Aquí esa lógica se <b>expone como API HTTP</b> con FastAPI, se conecta al agente/RAG y se añade <b>persistencia</b> con SQL + SQLModel (SQLite).</p>
+  <div class="tag">Guía visual y sintetizada · orientada a la Live Review: <b>API agente calidad del aire + historial</b></div>
+</header>
+
+<nav class="toc" id="toc">
+  <div class="wrap">
+    <a href="#mapa">Mapa del módulo</a>
+    <a href="#fastapi">1 · FastAPI y APIs</a>
+    <a href="#integracion">2 · API sobre agente ★</a>
+    <a href="#persistencia">3 · SQL + SQLModel</a>
+    <a href="#proyecto">4 · Live Review</a>
+    <a href="#checklist">Checklist</a>
+  </div>
+</nav>
+
+<!-- ================= MAPA ================= -->
+<section id="mapa">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">◎</div><h2>De demo local a servicio HTTP</h2></div>
+    <p class="lead">Primer sprint del módulo <b>Backend &amp; Deploy</b> (S14–16). La pregunta central: <b>¿cómo expongo RAG/agente como servicio HTTP y guardo lo necesario, sin mezclar UI y lógica?</b></p>
+
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Sprint</th><th>Pregunta</th><th>Fase</th></tr></thead>
+        <tbody>
+          <tr><td><strong>14 (este)</strong></td><td>¿Cómo expongo el sistema como API y persisto datos?</td><td>Backend</td></tr>
+          <tr><td><strong>15</strong></td><td>¿Cómo empaqueto y publico el servicio?</td><td>Deploy</td></tr>
+          <tr><td><strong>16</strong></td><td>¿Cómo lo opero (logs, seguridad light, informe)?</td><td>Operar</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>De S13 (grafo en RAM) al servicio HTTP + historial</h3>
+    <pre>S10–13   Streamlit / CLI ──import──► <span class="f">procesar_turno()</span>  (UI y cerebro juntos)
+ ↓
+S14      Cliente ──HTTP──► <span class="f">FastAPI</span> ──► procesar_turno()
+                                 + <span class="f">SQLModel</span> (historial.db — SQLite)
+ ↓
+S15      Docker + PaaS  (URL pública)
+ ↓
+S16      Observabilidad light + informe  →  Project Break 3</pre>
+
+    <h3>Los tres bloques del sprint</h3>
+    <div class="grid g3">
+      <div class="card"><div class="ico">🌐</div><h4>1 · FastAPI y APIs</h4><p class="mini">HTTP, REST, códigos; <code class="inl">uvicorn</code>, Swagger, Pydantic (<code class="inl">AskIn</code>/<code class="inl">AskOut</code>), <code class="inl">/health</code>, errores, <code class="inl">.env</code>.</p></div>
+      <div class="card"><div class="ico">🔌</div><h4>2 · Integración de RAG/Agents ★</h4><p class="mini">Mismo contrato, otro transporte: <code class="inl">POST /ask</code> envuelve <code class="inl">procesar_turno</code>; límites y secrets en el servidor.</p></div>
+      <div class="card"><div class="ico">🗄️</div><h4>3 · SQL + SQLModel</h4><p class="mini">Dos tablas (<code class="inl">Conversation</code>, <code class="inl">Message</code>); <code class="inl">engine</code>, <code class="inl">Session</code>, <code class="inl">save_turn</code>, GET historial.</p></div>
+    </div>
+
+    <div class="callout key">
+      <span class="lab">Idea que atraviesa el sprint</span>
+      <b>La API es un adaptador, no un segundo cerebro.</b> FastAPI traduce HTTP ↔ Python; el agente/RAG sigue siendo el mismo <code class="inl">procesar_turno</code>; SQLModel añade un rastro que sobrevive al reinicio de <code class="inl">uvicorn</code>.
+    </div>
+
+    <h3>Escalera pedagógica</h3>
+    <div class="pipe">
+      <div class="stage"><div class="st-ic">🧪</div><div class="st-nm">CRUD FastAPI</div><div class="st-ds">Pydantic + Swagger</div></div>
+      <div class="sep">→</div>
+      <div class="stage"><div class="st-ic">🤖</div><div class="st-nm">API sobre agente</div><div class="st-ds"><code>/ask</code> + <code>/approve</code></div></div>
+      <div class="sep">→</div>
+      <div class="stage"><div class="st-ic">💾</div><div class="st-nm">Intro SQLModel</div><div class="st-ds">notebook</div></div>
+      <div class="sep">→</div>
+      <div class="stage"><div class="st-ic">🧩</div><div class="st-nm">API + historial</div><div class="st-ds">SQLite</div></div>
+      <div class="sep">→</div>
+      <div class="stage"><div class="st-ic">🏁</div><div class="st-nm">Live Review ★</div><div class="st-ds">calidad del aire</div></div>
+    </div>
+
+    <h3>Stack del sprint</h3>
+    <div class="grid g4">
+      <div class="card"><h4>🐍 FastAPI</h4><p class="mini">Framework ASGI (Starlette + Pydantic). Rutas con decoradores, Swagger automático en <code class="inl">/docs</code>.</p></div>
+      <div class="card"><h4>📐 Pydantic</h4><p class="mini">Contratos del body (<code class="inl">AskIn</code>, <code class="inl">AskOut</code>). Si el JSON no cumple → 422 automático.</p></div>
+      <div class="card"><h4>🗃️ SQLModel</h4><p class="mini">ORM sobre SQLAlchemy; clases Python ↔ tablas SQL. <code class="inl">Session</code>, <code class="inl">add</code>, <code class="inl">select</code>.</p></div>
+      <div class="card"><h4>📦 SQLite</h4><p class="mini">RDBMS en un fichero (<code class="inl">historial.db</code>). Sin servidor; en producción cambia la URL.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 1 · FastAPI ================= -->
+<section id="fastapi">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">1</div><h2>FastAPI y APIs para sistemas de IA</h2></div>
+    <p class="lead">Antes la demo era <code class="inl">python main.py --ask "..."</code> o un Streamlit en <code class="inl">localhost</code>. Ahora el <b>mismo cerebro</b> se expone por HTTP: otros clientes (Swagger, <code class="inl">curl</code>, Postman, un front) pueden hablar con él sin importar su código.</p>
+
+    <h3>Capas y responsabilidades</h3>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Capa</th><th>Responsabilidad</th><th>Ejemplo</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Cliente</strong></td><td>Pregunta y muestra resultado</td><td>Swagger, <code class="inl">curl</code>, Postman</td></tr>
+          <tr><td><strong>API</strong></td><td>Traduce HTTP ↔ Python (rutas, schemas, errores)</td><td><code class="inl">POST /ask</code> + <code class="inl">AskIn</code></td></tr>
+          <tr><td><strong>Lógica</strong></td><td><code class="inl">responder</code> / <code class="inl">procesar_turno</code> (RAG, agente, tools)</td><td>Lo del S10–13 sin tocar</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>HTTP y familias de códigos</h3>
+    <div class="grid g3">
+      <div class="card"><h4><span class="pill g">2xx</span> OK</h4><p class="mini">200 respuesta, 201 creado. El flujo normal del <code class="inl">/ask</code>.</p></div>
+      <div class="card"><h4><span class="pill a">4xx</span> cliente</h4><p class="mini">400 (vacío tras <code class="inl">strip</code>), 404 (hilo inexistente), <b>422</b> validación Pydantic automática.</p></div>
+      <div class="card"><h4><span class="pill am">5xx</span> servidor</h4><p class="mini">500 / 502 / 503. Mensaje corto al cliente; traza <b>solo</b> en logs.</p></div>
+    </div>
+
+    <h3>App mínima + Swagger</h3>
+    <pre><span class="k">from</span> fastapi <span class="k">import</span> FastAPI
+
+app = FastAPI(title=<span class="s">"Demo IA"</span>)
+
+@app.<span class="f">get</span>(<span class="s">"/health"</span>)
+<span class="k">def</span> <span class="f">health</span>():
+    <span class="k">return</span> {<span class="s">"status"</span>: <span class="s">"ok"</span>}
+
+<span class="c"># $ uvicorn app:app --reload --port 8000</span>
+<span class="c"># → http://127.0.0.1:8000/docs  (Swagger)</span></pre>
+
+    <h3>Pydantic: tres sitios donde se valida</h3>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Sitio</th><th>Ejemplo</th><th>Herramienta</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Path</strong></td><td><code class="inl">/items/{item_id}</code></td><td>tipo + <code class="inl">Path(..., ge=1)</code></td></tr>
+          <tr><td><strong>Query</strong></td><td><code class="inl">?q=jazz&amp;page=1</code></td><td>tipo + <code class="inl">Query(...)</code></td></tr>
+          <tr><td><strong>Body</strong></td><td>JSON <code class="inl">POST</code></td><td><code class="inl">BaseModel</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Contrato <code class="inl">AskIn</code> / <code class="inl">AskOut</code></h3>
+    <pre><span class="k">from</span> pydantic <span class="k">import</span> BaseModel, Field
+
+<span class="k">class</span> <span class="f">AskIn</span>(BaseModel):
+    pregunta: <span class="k">str</span> = Field(min_length=1, max_length=2000)
+    thread_id: <span class="k">str</span> | <span class="k">None</span> = <span class="k">None</span>
+    auto_aprobar: <span class="k">bool</span> = <span class="k">True</span>
+
+<span class="k">class</span> <span class="f">AskOut</span>(BaseModel):
+    respuesta: <span class="k">str</span>
+    thread_id: <span class="k">str</span>
+    done: <span class="k">bool</span> = <span class="k">False</span>
+    pendiente_hitl: <span class="k">bool</span> = <span class="k">False</span>
+    error: <span class="k">str</span> | <span class="k">None</span> = <span class="k">None</span></pre>
+
+    <h3>Health, errores y <code class="inl">.env</code></h3>
+    <div class="grid g3">
+      <div class="card"><h4><code class="inl">GET /health</code></h4><p class="mini">Pulso del servicio: <b>no llama al LLM</b>. Útil para liveness checks y para que oncall sepa si el proceso vive. Metadatos no sensibles OK: <code class="inl">{"status":"ok","storage":"sqlite"}</code>.</p></div>
+      <div class="card"><h4><code class="inl">HTTPException</code></h4><p class="mini">Código + mensaje corto al cliente. 404 si no existe hilo; 400 si <code class="inl">pregunta</code> queda vacía tras <code class="inl">strip</code>; 422 lo da Pydantic solo.</p></div>
+      <div class="card"><h4><code class="inl">.env</code> + <code class="inl">config.py</code></h4><p class="mini"><code class="inl">GEMINI_API_KEY</code>, <code class="inl">DATABASE_URL</code>, <code class="inl">DEBUG</code>. Nunca en el repo; nunca en el JSON de error. En PaaS → panel del servicio.</p></div>
+    </div>
+
+    <h3>Middleware (idea)</h3>
+    <p class="mini">Capa que envuelve peticiones y respuestas antes/después de las rutas: <b>CORS</b> si un front en otro origen la llama, <b>logging</b> de latencia, <b>auth</b>, <b>gzip</b>. En este sprint rara vez lo tocáis — es vocabulario para S15–16.</p>
+
+    <div class="callout warn">
+      <span class="lab">Errores típicos</span>
+      Confundir 400 con 422 (422 lo pone Pydantic si el JSON no cumple el schema; 400 lo pones tú por regla de negocio) · devolver la API key en el mensaje de error · hardcodear <code class="inl">GEMINI_API_KEY</code> en <code class="inl">app.py</code> · subir <code class="inl">.env</code> al repo · olvidar <code class="inl">.env</code> en <code class="inl">.gitignore</code>.
+    </div>
+  </div>
+</section>
+
+<!-- ================= 2 · Integración ================= -->
+<section id="integracion">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">2</div><h2>Integración de RAG / Agents en el backend ★</h2></div>
+    <p class="lead">En S10–13 ya separasteis UI y lógica. En S14 el dibujo es el mismo con un eslabón HTTP más: la UI deja de ser el dueño del cerebro. El <b>core = API</b>; Streamlit, si vuelve, será solo un cliente HTTP.</p>
+
+    <h3>Antes vs ahora</h3>
+    <pre><span class="c">S10–13</span>
+[Browser] → Streamlit ──import──► procesar_turno() / agente
+
+<span class="c">S14 (ahora)</span>
+Cliente (Swagger, curl, Postman…)
+        ↓  HTTP
+     <span class="f">FastAPI</span>  →  procesar_turno() / agente</pre>
+
+    <h3>Del CLI a la API</h3>
+    <pre><span class="k">from</span> src.agent <span class="k">import</span> procesar_turno
+
+@app.<span class="f">post</span>(<span class="s">"/ask"</span>, response_model=AskOut)
+<span class="k">def</span> <span class="f">ask</span>(body: AskIn) -> AskOut:
+    out = <span class="f">procesar_turno</span>(body.pregunta)   <span class="c"># misma lógica que CLI</span>
+    <span class="k">return</span> AskOut(
+        respuesta=out[<span class="s">"respuesta"</span>],
+        thread_id=body.thread_id <span class="k">or</span> <span class="s">"default"</span>,
+        done=out.get(<span class="s">"done"</span>, <span class="k">False</span>),
+    )</pre>
+
+    <h3>Checklist de migración</h3>
+    <div class="grid g2">
+      <div class="card"><h4>Preparación</h4>
+        <ul class="clean">
+          <li>La lógica vive en un módulo importable (<code class="inl">src/…</code>), no sólo en un notebook</li>
+          <li>Devuelve un <b>dict</b> (o Pydantic) estable</li>
+          <li>FastAPI solo traduce HTTP ↔ ese dict</li>
+          <li>No reescribes el grafo LangGraph — lo <b>envuelves</b></li>
+        </ul>
+      </div>
+      <div class="card"><h4>Contrato <code class="inl">POST /ask</code></h4>
+        <ul class="clean">
+          <li>Body mínimo: <code class="inl">pregunta</code> (+ <code class="inl">thread_id</code> si hay hilos)</li>
+          <li>Respuesta corta: <code class="inl">respuesta</code>, <code class="inl">thread_id</code>, <code class="inl">done</code></li>
+          <li>Extras (<code class="inl">fuentes</code>, <code class="inl">pendiente_hitl</code>, <code class="inl">error</code>) solo si los pide el cliente</li>
+          <li>Elige <code class="inl">/ask</code> <b>o</b> <code class="inl">/chat</code> y sé consistente</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Quién decide qué (límites, timeouts, secrets)</h3>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Control</th><th>Dónde</th><th>Por qué</th></tr></thead>
+        <tbody>
+          <tr><td>Longitud / forma de <code class="inl">pregunta</code></td><td>Pydantic / ruta</td><td>El cliente puede mandar basura</td></tr>
+          <tr><td>Timeout HTTP al LLM</td><td>Cliente HTTP / wrapper del LLM</td><td>La red / el modelo pueden colgarse</td></tr>
+          <tr><td><code class="inl">max_turns</code> / <code class="inl">done</code></td><td>Lógica del agente (S11–13)</td><td>Es decisión de negocio del grafo</td></tr>
+          <tr><td>API keys</td><td>Variables de entorno</td><td>No pueden vivir en el repo</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout key">
+      <span class="lab">Regla del bootcamp</span>
+      <b>Pydantic valida la forma; la lógica del agente decide el contenido; el LLM solo propone.</b> El modelo no decide “¿paro ya?” si Python puede calcularlo.
+    </div>
+
+    <h3>Dejamos Streamlit como núcleo</h3>
+    <p class="mini">El <b>core</b> de la app es ahora la API FastAPI. Un front futuro (Streamlit, React, móvil…) sería sólo un cliente HTTP que hace <code class="inl">httpx.post(f"{API_URL}/ask", json=...)</code>: cambia la URL, no la lógica.</p>
+
+    <div class="callout warn">
+      <span class="lab">Errores típicos</span>
+      Reescribir el grafo dentro de la ruta en vez de importarlo · meter el prompt en <code class="inl">app.py</code> · usar el LLM para decidir banderas de control · exponer tracebacks completos o la API key al cliente · duplicar <code class="inl">max_turns</code> en API y agente.
+    </div>
+  </div>
+</section>
+
+<!-- ================= 3 · Persistencia ================= -->
+<section id="persistencia">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">3</div><h2>Persistencia con SQL y SQLModel</h2></div>
+    <p class="lead">Sin DB, al reiniciar <code class="inl">uvicorn</code> se borra todo lo que vivía en RAM (incluido el <code class="inl">MemorySaver</code>). Guardamos lo justo con <b>SQLite + SQLModel</b>: un hilo (<code class="inl">thread_id</code>) y los mensajes <code class="inl">user</code> / <code class="inl">assistant</code>.</p>
+
+    <h3>Dos capas</h3>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Capa</th><th>Rol</th><th>En este sprint</th></tr></thead>
+        <tbody>
+          <tr><td><strong>SQLModel</strong></td><td>Cómo habláis vosotros con la DB (clases Python, <code class="inl">Session</code>)</td><td>Lo escribís vosotros</td></tr>
+          <tr><td><strong>RDBMS</strong></td><td>Dónde viven los datos y quién ejecuta el SQL</td><td><b>SQLite</b> (<code class="inl">historial.db</code>)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="mini">Misma API de código; cambia sobre todo la URL del motor. En producción (S15+) podríais apuntar a Postgres sin reescribir los modelos: <code class="inl">postgresql+psycopg://usuario:password@host:5432/ia_demo</code>.</p>
+
+    <h3>SQL mínimo (lo que hay debajo)</h3>
+    <pre><span class="k">SELECT</span> role, content
+<span class="k">FROM</span>   message
+<span class="k">WHERE</span>  thread_id = <span class="s">'demo-aire'</span>
+<span class="k">ORDER BY</span> id;
+
+<span class="k">INSERT INTO</span> message (thread_id, role, content)
+<span class="k">VALUES</span> (<span class="s">'demo-aire'</span>, <span class="s">'user'</span>, <span class="s">'¿Cómo está el NO2?'</span>);</pre>
+    <p class="mini"><b>PK</b> identifica una fila (en <code class="inl">conversation</code> suele ser el propio <code class="inl">thread_id</code>; en <code class="inl">message</code>, un entero autoincremental). <b>FK</b> <code class="inl">message.thread_id → conversation.id</code> enlaza el 1–N.</p>
+
+    <h3>Modelos del historial</h3>
+    <pre><span class="k">from</span> datetime <span class="k">import</span> datetime, timezone
+<span class="k">from</span> typing <span class="k">import</span> Optional
+<span class="k">from</span> sqlmodel <span class="k">import</span> Field, SQLModel
+
+<span class="k">def</span> <span class="f">_now</span>() -> datetime:
+    <span class="k">return</span> datetime.<span class="f">now</span>(timezone.utc)
+
+<span class="k">class</span> <span class="f">Conversation</span>(SQLModel, table=<span class="k">True</span>):
+    id: <span class="k">str</span> = Field(primary_key=<span class="k">True</span>, max_length=100)
+    created_at: datetime = Field(default_factory=_now)
+
+<span class="k">class</span> <span class="f">Message</span>(SQLModel, table=<span class="k">True</span>):
+    id: Optional[<span class="k">int</span>] = Field(default=<span class="k">None</span>, primary_key=<span class="k">True</span>)
+    thread_id: <span class="k">str</span> = Field(foreign_key=<span class="s">"conversation.id"</span>, index=<span class="k">True</span>, max_length=100)
+    role: <span class="k">str</span>     <span class="c"># 'user' | 'assistant'</span>
+    content: <span class="k">str</span>
+    created_at: datetime = Field(default_factory=_now)</pre>
+
+    <h3>Engine, sesión y arranque</h3>
+    <pre><span class="k">from</span> sqlmodel <span class="k">import</span> SQLModel, Session, create_engine
+<span class="k">from</span> src.models <span class="k">import</span> Conversation, Message  <span class="c"># registran las tablas</span>
+
+engine = <span class="f">create_engine</span>(DATABASE_URL, echo=<span class="k">False</span>)
+
+<span class="k">def</span> <span class="f">ensure_schema</span>() -> <span class="k">None</span>:
+    SQLModel.metadata.<span class="f">create_all</span>(engine)
+
+<span class="k">def</span> <span class="f">get_session</span>() -> Session:
+    <span class="k">return</span> <span class="f">Session</span>(engine)</pre>
+    <p class="mini">Llamad a <code class="inl">ensure_schema()</code> al arrancar la app (<code class="inl">lifespan</code>). <code class="inl">echo=True</code> imprime el SQL en consola — útil para aprender.</p>
+
+    <h3>Un turno = 2 <code class="inl">Message</code> + 1 <code class="inl">Conversation</code> si falta</h3>
+    <pre><span class="k">def</span> <span class="f">save_turn</span>(thread_id: <span class="k">str</span>, pregunta: <span class="k">str</span>, respuesta: <span class="k">str</span>) -> <span class="k">None</span>:
+    <span class="k">with</span> <span class="f">get_session</span>() <span class="k">as</span> session:
+        conv = session.<span class="f">get</span>(Conversation, thread_id)
+        <span class="k">if</span> conv <span class="k">is</span> <span class="k">None</span>:
+            session.<span class="f">add</span>(<span class="f">Conversation</span>(id=thread_id))
+            session.<span class="f">commit</span>()
+
+        session.<span class="f">add</span>(<span class="f">Message</span>(thread_id=thread_id, role=<span class="s">"user"</span>, content=pregunta))
+        session.<span class="f">add</span>(<span class="f">Message</span>(thread_id=thread_id, role=<span class="s">"assistant"</span>, content=respuesta))
+        session.<span class="f">commit</span>()</pre>
+
+    <h3>Orden del turno con historial</h3>
+    <div class="step"><div class="num">1</div><div class="body"><b>Validar body</b> (Pydantic ya hace la mayoría; añade reglas de negocio como «pregunta no vacía tras <code class="inl">strip</code>»).</div></div>
+    <div class="step"><div class="num">2</div><div class="body"><b>Llamar a la lógica</b> de IA (<code class="inl">procesar_turno</code> / <code class="inl">responder</code>).</div></div>
+    <div class="step"><div class="num">3</div><div class="body"><b>Persistir si la lógica respondió OK</b>. Si falla el LLM, no insertes una respuesta vacía.</div></div>
+    <div class="step"><div class="num">4</div><div class="body"><b>Devolver JSON</b> con <code class="inl">AskOut</code>. El cliente ya puede llamar a <code class="inl">GET /threads/{id}/messages</code>.</div></div>
+
+    <h3>Dos almacenes distintos</h3>
+    <pre>Pregunta del usuario
+        │
+        ├─► SQLModel → RDBMS (SQLite / Postgres)   (quién preguntó qué — <b>historial</b>)
+        │
+        └─► Vector DB                              (chunks del corpus — RAG)</pre>
+    <p class="mini">El historial tabular y los embeddings del RAG viven en <b>sistemas distintos</b>: uno es texto estructurado por hilo, el otro es búsqueda semántica. No se sustituyen.</p>
+
+    <div class="callout warn">
+      <span class="lab">Errores típicos</span>
+      Cambiar <code class="inl">models.py</code> tras arrancar y no borrar <code class="inl">historial.db</code> (las tablas no se recrean solas) · olvidar el <code class="inl">commit</code> · dejar la URL <code class="inl">sqlite:///</code> hardcodeada en vez de leer <code class="inl">DATABASE_URL</code> · persistir aunque el agente haya fallado · usar <code class="inl">session.query</code> antiguo en vez de <code class="inl">select</code>.
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4 · Live Review ================= -->
+<section id="proyecto">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">4</div><h2>Live Review — API agente calidad del aire + historial</h2></div>
+    <p class="lead">Agente <b>LangGraph de calidad del aire</b> (grafo dado) expuesto con <b>FastAPI + SQLModel</b>. Vosotros cableáis Pydantic, modelos SQL, <code class="inl">save_turn</code> y rutas HTTP: 5 TODOs encadenados.</p>
+
+    <h3>Contrato HTTP</h3>
+    <pre><span class="k">POST</span> /ask { pregunta, thread_id?, auto_aprobar? }
+  → procesar_turno (grafo, <b>dado</b>)
+  → save_turn si el turno cierra (sin HITL pendiente)
+
+<span class="k">POST</span> /approve { thread_id, aprobado }   <span class="c"># dado</span>
+<span class="k">GET</span>  /health
+<span class="k">GET</span>  /threads/{thread_id}/messages      <span class="c"># TODO alumno</span></pre>
+
+    <h3>Qué se da / qué se pide</h3>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Dado por el profesor</th><th>TODO alumno</th></tr></thead>
+        <tbody>
+          <tr><td>Agente (<code class="inl">src/agent.py</code>, <code class="inl">graph.py</code>, <code class="inl">tools/</code>, <code class="inl">data/</code>)</td><td><strong>1.</strong> <code class="inl">schemas.py</code> — <code class="inl">AskIn</code>/<code class="inl">AskOut</code>/<code class="inl">ApproveIn</code>/<code class="inl">MessageOut</code></td></tr>
+          <tr><td><code class="inl">engine</code>, <code class="inl">ensure_schema</code>, <code class="inl">list_messages</code></td><td><strong>2.</strong> <code class="inl">src/models.py</code> — <code class="inl">Conversation</code>, <code class="inl">Message</code></td></tr>
+          <tr><td><code class="inl">/health</code>, <code class="inl">lifespan</code>, <code class="inl">/approve</code></td><td><strong>3.</strong> <code class="inl">save_turn</code> en <code class="inl">src/db.py</code></td></tr>
+          <tr><td>Helpers <code class="inl">_estado_sesion</code>, <code class="inl">_persistir_si_hay_respuesta</code></td><td><strong>4.</strong> Completar <code class="inl">POST /ask</code></td></tr>
+          <tr><td></td><td><strong>5.</strong> Completar <code class="inl">GET /threads/{id}/messages</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Arquitectura del proyecto</h3>
+    <div class="filecard"><div class="fn">app.py</div><div class="fd"><b>FastAPI</b>: <code class="inl">/health</code>, <code class="inl">/ask</code> + GET messages (TODO), <code class="inl">/approve</code> + <code class="inl">lifespan</code> que llama a <code class="inl">ensure_schema</code>.</div></div>
+    <div class="filecard"><div class="fn">schemas.py</div><div class="fd"><b>TODO 1</b>: contratos Pydantic con <code class="inl">Field(..., min_length=1)</code> donde toque.</div></div>
+    <div class="filecard"><div class="fn">config.py</div><div class="fd"><code class="inl">DATABASE_URL</code> → <code class="inl">historial.db</code>, paths, modelo Gemini.</div></div>
+    <div class="filecard"><div class="fn">src/agent.py</div><div class="fd">Dado: <code class="inl">procesar_turno</code> + <code class="inl">aprobar_plan</code> sobre el grafo.</div></div>
+    <div class="filecard"><div class="fn">src/graph.py</div><div class="fd">Dado: LangGraph multiagente con HITL (<code class="inl">interrupt_before</code>).</div></div>
+    <div class="filecard"><div class="fn">src/models.py</div><div class="fd"><b>TODO 2</b>: <code class="inl">Conversation</code> (PK string) + <code class="inl">Message</code> (PK autoincremental + FK <code class="inl">thread_id</code>).</div></div>
+    <div class="filecard"><div class="fn">src/db.py</div><div class="fd"><b>TODO 3</b>: <code class="inl">save_turn</code>. Dado: <code class="inl">list_messages</code>, <code class="inl">engine</code>.</div></div>
+    <div class="filecard"><div class="fn">src/tools/</div><div class="fd">RAG guía, API aire Madrid, hora, imagen demo.</div></div>
+
+    <h3>Flujo de un <code class="inl">POST /ask</code> (TODO 4)</h3>
+    <div class="pipe">
+      <div class="stage"><div class="st-ic">📥</div><div class="st-nm">AskIn</div><div class="st-ds">validación Pydantic</div></div>
+      <div class="sep">→</div>
+      <div class="stage"><div class="st-ic">🧠</div><div class="st-nm">_estado_sesion</div><div class="st-ds">RAM por <code>thread_id</code></div></div>
+      <div class="sep">→</div>
+      <div class="stage"><div class="st-ic">🕸️</div><div class="st-nm">procesar_turno</div><div class="st-ds">grafo + tools</div></div>
+      <div class="sep">→</div>
+      <div class="stage"><div class="st-ic">🙋</div><div class="st-nm">auto_aprobar?</div><div class="st-ds">si hay HITL</div></div>
+      <div class="sep">→</div>
+      <div class="stage"><div class="st-ic">💾</div><div class="st-nm">save_turn</div><div class="st-ds">si no queda HITL</div></div>
+      <div class="sep">→</div>
+      <div class="stage"><div class="st-ic">📤</div><div class="st-nm">AskOut</div><div class="st-ds">JSON de respuesta</div></div>
+    </div>
+
+    <h3>Orden recomendado</h3>
+    <pre>schemas  →  models  →  save_turn  →  POST /ask  →  GET …/messages</pre>
+    <p class="mini">Cada paso descansa en el anterior: sin <code class="inl">AskIn</code> no hay body; sin <code class="inl">Message</code> no hay <code class="inl">save_turn</code>; sin <code class="inl">save_turn</code> el GET devolverá vacío.</p>
+
+    <h3>Mensajes de prueba (mismo <code class="inl">thread_id</code>)</h3>
+    <pre>POST /ask
+{
+  <span class="s">"pregunta"</span>: <span class="s">"Zona centro, contaminante NO2. Consulta la guía y datos de la API de Madrid. Propón un plan breve."</span>,
+  <span class="s">"thread_id"</span>: <span class="s">"demo-aire"</span>,
+  <span class="s">"auto_aprobar"</span>: <span class="k">true</span>
+}
+
+POST /ask
+{
+  <span class="s">"pregunta"</span>: <span class="s">"¿Qué significa un pico de PM2.5 en hora punta?"</span>,
+  <span class="s">"thread_id"</span>: <span class="s">"demo-aire"</span>,
+  <span class="s">"auto_aprobar"</span>: <span class="k">true</span>
+}
+
+GET  /threads/demo-aire/messages
+  → al menos 4 filas: user/assistant/user/assistant</pre>
+
+    <div class="callout key">
+      <span class="lab">Idea del proyecto en una frase</span>
+      <b>El agente es el mismo que en S13; cambia el enchufe.</b> FastAPI publica <code class="inl">procesar_turno</code> por HTTP y SQLModel deja rastro: tras reiniciar <code class="inl">uvicorn</code>, la sesión RAM se pierde, pero el historial SQL <b>sigue ahí</b>.
+    </div>
+
+    <h3>Arranque y verificación</h3>
+    <pre>$ python -m venv .venv && source .venv/bin/activate
+$ pip install -r requirements.txt
+$ cp .env.example .env    <span class="c"># pega GEMINI_API_KEY</span>
+$ uvicorn app:app --reload --port 8000
+  → http://127.0.0.1:8000/docs
+
+$ python verificar.py --check   <span class="c"># solo /health, sin Gemini</span>
+$ python verificar.py           <span class="c"># flujo completo</span></pre>
+    <p class="mini">⏱️ Cada <code class="inl">/ask</code> puede tardar <b>1–3 min</b> (grafo multiagente). Si editas <code class="inl">models.py</code> tras arrancar: <b>borra <code class="inl">historial.db</code></b> y reinicia uvicorn para recrear las tablas.</p>
+  </div>
+</section>
+
+<!-- ================= CHECKLIST ================= -->
+<section id="checklist">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">✓</div><h2>Checklist del sprint</h2></div>
+    <div class="two-col">
+      <div class="card">
+        <h4>Conceptos que debes dominar</h4>
+        <ul class="clean">
+          <li>HTTP, códigos 2xx/4xx/5xx; 400 vs 422 (Pydantic)</li>
+          <li>Decoradores <code class="inl">@app.get/post</code>, <code class="inl">response_model</code>, Swagger (<code class="inl">/docs</code>)</li>
+          <li>Validación Path / Query / Body con Pydantic (<code class="inl">Field</code>, <code class="inl">min_length</code>)</li>
+          <li><code class="inl">AskIn</code>/<code class="inl">AskOut</code> como contrato del sistema de IA</li>
+          <li><code class="inl">/health</code> vs <code class="inl">/ask</code>; <code class="inl">HTTPException</code> y mensajes seguros</li>
+          <li><code class="inl">.env</code> + <code class="inl">config.py</code>; secrets fuera del repo y del JSON</li>
+          <li>SQLModel: <code class="inl">table=True</code>, <code class="inl">Field</code>, <code class="inl">foreign_key</code>, <code class="inl">index</code></li>
+          <li>Sesión: <code class="inl">add</code>/<code class="inl">commit</code>/<code class="inl">select</code>; <code class="inl">create_all</code> al arrancar</li>
+          <li>Un turno = 2 <code class="inl">Message</code> + <code class="inl">Conversation</code> si falta</li>
+          <li>UI = cliente; backend = contrato limpio</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Práctica con la Live Review</h4>
+        <ul class="clean">
+          <li>TODO 1 — <code class="inl">schemas.py</code>: 4 modelos con validación</li>
+          <li>TODO 2 — <code class="inl">src/models.py</code>: <code class="inl">Conversation</code> + <code class="inl">Message</code> con FK</li>
+          <li>TODO 3 — <code class="inl">save_turn</code>: crea <code class="inl">Conversation</code> si falta, mete 2 <code class="inl">Message</code>, <code class="inl">commit</code></li>
+          <li>TODO 4 — <code class="inl">POST /ask</code>: sesión, <code class="inl">procesar_turno</code>, <code class="inl">auto_aprobar</code>, persistir si cierra</li>
+          <li>TODO 5 — <code class="inl">GET …/messages</code>: <code class="inl">db.list_messages</code> → <code class="inl">list[MessageOut]</code></li>
+          <li><code class="inl">python verificar.py</code> sin pendientes</li>
+          <li>Dos <code class="inl">/ask</code> + GET → ≥ 4 mensajes en SQLite</li>
+          <li>Reinicio de <code class="inl">uvicorn</code>: el historial sigue; la sesión RAM no</li>
+          <li>Swagger (<code class="inl">/docs</code>) abre y permite probar sin cliente externo</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout key">
+      <span class="lab">Si te quedas con una sola idea</span>
+      <b>La API es un adaptador; el cerebro sigue siendo el agente; SQLModel lo recuerda.</b> FastAPI valida, <code class="inl">procesar_turno</code> responde, <code class="inl">save_turn</code> deja huella. El mismo contrato servirá en S15 cuando empaquetéis con Docker y publiquéis en un PaaS.
+    </div>
+  </div>
+</section>
+
+<footer>
+  Guía visual del Sprint 14 · Bootcamp IA Generativa · Módulo 6 Backend &amp; Deploy · basada en la teoría del sprint (FastAPI · integración de agents · SQL + SQLModel) y la práctica Live Review <b>API agente calidad del aire + historial</b>.
+</footer>
+
+<script>
+  const links = [...document.querySelectorAll('nav.toc a')];
+  const sections = links.map(a => document.querySelector(a.getAttribute('href')));
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const id = '#'+e.target.id;
+        links.forEach(a=>a.classList.toggle('active', a.getAttribute('href')===id));
+      }
+    });
+  }, {rootMargin:'-45% 0px -50% 0px', threshold:0});
+  sections.forEach(s=>s&&obs.observe(s));
+</script>
+</body>
+</html>
